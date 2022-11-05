@@ -5,10 +5,9 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Tab } from "@headlessui/react"
 import Loading from "../../../components/loading"
-import AccessDenied from "../../../components/access-denied"
 import { useSession } from "next-auth/react"
 import LessonPlan from "../../../components/lessonPlan"
-import NewModal from "../../../components/newModal"
+import NewModal from "../../../components/modal"
 import AddLessonPlan from "../../../components/addLessonPlan"
 
 type Student = {

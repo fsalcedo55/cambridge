@@ -1,83 +1,73 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useState } from "react"
 
 interface Props {
+  isOpen: boolean
+  setIsOpen: any
+  loading?: boolean
+  currentStudent?: any
+  actionFunction?: any
   title: string
-  content: any
-  buttonTitle: string
-  buttonStyle: string
+  description: any
+  closeButton: string
+  actionButton?: string
+  actionButtonStyle?: string
+  actionButtonLoading?: string
 }
 
 export default function Modal({
-  content,
+  isOpen,
+  setIsOpen,
+  loading,
+  currentStudent,
+  actionFunction,
   title,
-  buttonTitle,
-  buttonStyle,
+  description,
+  closeButton,
+  actionButton,
+  actionButtonStyle,
+  actionButtonLoading,
 }: Props) {
-  let [isOpen, setIsOpen] = useState(false)
-
-  function closeModal() {
-    setIsOpen(false)
-  }
-
-  function openModal() {
-    setIsOpen(true)
-  }
-
   return (
     <>
-      <div>
-        <button type="button" onClick={openModal} className={buttonStyle}>
-          {buttonTitle}
-        </button>
-      </div>
-
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-full p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+      <Transition appear show={isOpen}>
+        <Dialog
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          className="relative z-50"
+        >
+          <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <Dialog.Title
+                as="h3"
+                className="text-lg font-medium leading-6 text-gray-900"
               >
-                <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                {title}
+              </Dialog.Title>
+              <Dialog.Description className="mt-2">
+                {description}
+              </Dialog.Description>
+              <div className="flex flex-col mt-1 gap-2">
+                {actionButton && loading ? (
+                  <button className="btn btn-error loading btn-disabled">
+                    {actionButtonLoading}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => actionFunction(currentStudent)}
+                    className={actionButtonStyle}
                   >
-                    {title}
-                  </Dialog.Title>
-                  <div className="mt-2">{content}</div>
-
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="btn btn-outline"
-                      onClick={closeModal}
-                    >
-                      Close
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
+                    {actionButton}
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="btn btn-outline"
+                >
+                  {closeButton}
+                </button>
+              </div>
+            </Dialog.Panel>
           </div>
         </Dialog>
       </Transition>

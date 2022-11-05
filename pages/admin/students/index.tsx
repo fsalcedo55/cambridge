@@ -4,7 +4,7 @@ import PageHeading from "../../../components/pageHeading"
 import AddStudent from "../../../components/addStudent"
 import { useEffect, useState } from "react"
 import Loading from "../../../components/loading"
-import NewModal from "../../../components/newModal"
+import Modal from "../../../components/modal"
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -129,7 +129,7 @@ export default function Students() {
       ) : (
         <div>
           {/* Delete Modal */}
-          <NewModal
+          <Modal
             isOpen={isOpenDeleteModal}
             setIsOpen={setIsOpenDeleteModal}
             loading={deleteLoading}
@@ -158,7 +158,7 @@ export default function Students() {
               + Add Student
             </button>
             {/* Add Student Modal */}
-            <NewModal
+            <Modal
               isOpen={isOpenAddModal}
               setIsOpen={setIsOpenAddModal}
               loading={isLoading}

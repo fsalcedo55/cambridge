@@ -66,5 +66,7 @@ async function deleteStudent(req: NextApiRequest, res: NextApiResponse) {
       where: { id: body.student.id },
     })
     return res.status(200).json({ success: true })
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 }

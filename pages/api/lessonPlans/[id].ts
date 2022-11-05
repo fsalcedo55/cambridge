@@ -11,6 +11,8 @@ export default async function handler(
     return await addLessonPlan(req, res)
   } else if (req.method === "GET") {
     return await getLessonPlans(req, res)
+  } else if (req.method === "DELETE") {
+    return await deleteLessonPlan(req, res)
   } else {
     return res
       .status(405)
@@ -49,5 +51,17 @@ async function getLessonPlans(req: NextApiRequest, res: NextApiResponse) {
       error: "Error fetching lesson plans from database",
       success: false,
     })
+  }
+}
+
+async function deleteLessonPlan(req: NextApiRequest, res: NextApiResponse) {
+  const body = req.body
+  try {
+    const lessonPlan = await prisma.lessonPlan.delete({
+      where: { id: body.lessonPlan.id },
+    })
+    return res.status(200).json({ success: true })
+  } catch (error) {
+    console.log(error)
   }
 }

@@ -101,12 +101,12 @@ export default function Users() {
                       : "None"}
                   </td>
                   <td>
-                    <Modal
-                      content={<EditUserForm user={user} />}
+                    {/* <Modal
+                      description={<EditUserForm user={user} />}
                       title="Edit User"
-                      buttonTitle="Edit"
-                      buttonStyle="btn btn-outline btn-xs"
-                    />
+                      actionButton="Edit"
+                      actionButtonStyle="btn btn-outline btn-xs"
+                    /> */}
                   </td>
                 </tr>
               ))}

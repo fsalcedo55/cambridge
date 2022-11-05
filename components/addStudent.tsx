@@ -56,7 +56,7 @@ export default function AddStudent({ teachers, handleSubmit }: Props) {
               id="studentFirstName"
               name="studentFirstName"
               type="text"
-              className="w-full max-w-xs mb-1 input input-bordered"
+              className="w-full max-w-md mb-1 input input-bordered"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.studentFirstName}
@@ -75,7 +75,7 @@ export default function AddStudent({ teachers, handleSubmit }: Props) {
               id="studentLastName"
               name="studentLastName"
               type="text"
-              className="w-full max-w-xs mb-2 input input-bordered"
+              className="w-full max-w-md mb-2 input input-bordered"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.studentLastName}
@@ -94,7 +94,7 @@ export default function AddStudent({ teachers, handleSubmit }: Props) {
               id="studentDateOfBirth"
               name="studentDateOfBirth"
               type="date"
-              className="w-full max-w-xs mb-2 input input-bordered"
+              className="w-full max-w-md mb-2 input input-bordered"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.studentDateOfBirth}
@@ -112,7 +112,7 @@ export default function AddStudent({ teachers, handleSubmit }: Props) {
 
             <select
               name="teacher"
-              className="w-full max-w-xs select select-bordered"
+              className="w-full max-w-md select select-bordered"
               defaultValue={defaultValueState}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -131,7 +131,7 @@ export default function AddStudent({ teachers, handleSubmit }: Props) {
               ) : null}
             </div>
 
-            <button type="submit" className="max-w-xs my-4 btn btn-primary">
+            <button type="submit" className="max-w-md my-2 btn btn-primary">
               Add Student
             </button>
           </form>

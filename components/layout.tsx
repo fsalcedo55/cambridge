@@ -2,18 +2,23 @@ import Header from "./header"
 import Footer from "./footer"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/router"
 import Loading from "./loading"
 import { HiUsers } from "react-icons/hi"
 import { FaChild } from "react-icons/fa"
 import { AiFillHome } from "react-icons/ai"
+import { useEffect } from "react"
 
 interface Props {
   children: React.ReactNode
 }
 
 export default function Layout({ children }: Props) {
+  const router = useRouter()
   const { data: session, status } = useSession()
   const loading = status === "loading"
+
+  console.log("aspath: ", router.asPath)
 
   return (
     <>
@@ -40,32 +45,59 @@ export default function Layout({ children }: Props) {
               <div className="text-lg font-semibold">
                 <li>
                   <Link href="/admin/dashboard">
-                    <a>
-                      <span>
-                        <AiFillHome />
-                      </span>
-                      <span>Dashboard</span>
-                    </a>
+                    {router.pathname === "/admin/dashboard" ? (
+                      <a className="active bg-primary-focus">
+                        <span>
+                          <AiFillHome />
+                        </span>
+                        <span>Dashboard</span>
+                      </a>
+                    ) : (
+                      <a>
+                        <span>
+                          <AiFillHome />
+                        </span>
+                        <span>Dashboard</span>
+                      </a>
+                    )}
                   </Link>
                 </li>
                 <li>
                   <Link href="/admin/users">
-                    <a>
-                      <span>
-                        <HiUsers />
-                      </span>
-                      <span>Users</span>
-                    </a>
+                    {router.pathname === "/admin/users" ? (
+                      <a className="active bg-primary-focus">
+                        <span>
+                          <HiUsers />
+                        </span>
+                        <span>Users</span>
+                      </a>
+                    ) : (
+                      <a>
+                        <span>
+                          <HiUsers />
+                        </span>
+                        <span>Users</span>
+                      </a>
+                    )}
                   </Link>
                 </li>
                 <li>
                   <Link href="/admin/students">
-                    <a>
-                      <span>
-                        <FaChild />
-                      </span>
-                      <span>Students</span>
-                    </a>
+                    {router.pathname.includes("/admin/students") ? (
+                      <a className="active bg-primary-focus">
+                        <span>
+                          <FaChild />
+                        </span>
+                        <span>Students</span>
+                      </a>
+                    ) : (
+                      <a>
+                        <span>
+                          <FaChild />
+                        </span>
+                        <span>Students</span>
+                      </a>
+                    )}
                   </Link>
                 </li>
               </div>

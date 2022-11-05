@@ -36,7 +36,7 @@ export default function AddLessonPlan({ handleSubmit }: Props) {
           id="title"
           name="title"
           type="text"
-          className="w-full max-w-xs mb-1 input input-bordered"
+          className="w-full max-w-md mb-1 input input-bordered"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.title}
@@ -51,7 +51,7 @@ export default function AddLessonPlan({ handleSubmit }: Props) {
           id="date"
           name="date"
           type="date"
-          className="w-full max-w-xs mb-2 input input-bordered"
+          className="w-full max-w-md mb-2 input input-bordered"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.date}
@@ -61,7 +61,7 @@ export default function AddLessonPlan({ handleSubmit }: Props) {
             <p className="text-xs text-error">{formik.errors.date}</p>
           ) : null}
         </div>
-        <button type="submit" className="max-w-xs my-4 btn btn-primary">
+        <button type="submit" className="max-w-md my-2 btn btn-primary">
           Add Lesson Plan
         </button>
       </form>
