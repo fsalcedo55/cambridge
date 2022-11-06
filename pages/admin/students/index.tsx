@@ -133,7 +133,7 @@ export default function Students() {
             isOpen={isOpenDeleteModal}
             setIsOpen={setIsOpenDeleteModal}
             loading={deleteLoading}
-            currentStudent={currentStudent}
+            currentData={currentStudent}
             actionFunction={deleteStudent}
             closeButton="Cancel"
             actionButton="Delete"
@@ -162,7 +162,7 @@ export default function Students() {
               isOpen={isOpenAddModal}
               setIsOpen={setIsOpenAddModal}
               loading={isLoading}
-              currentStudent={currentStudent}
+              currentData={currentStudent}
               actionFunction={addStudent}
               closeButton="Cancel"
               title="Add Student"

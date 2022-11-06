@@ -5,15 +5,22 @@ import { useState } from "react"
 interface Props {
   title: string
   date: string
+  handleDeleteModal: any
+  deleteLessonPlan: any
+  isOpenDeleteModal: boolean
+  setIsOpenDeleteModal: any
+  id: string
 }
 
-export default function LessonPlan({ title, date }: Props) {
-  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
-
-  const handleDelete = async () => {
-    setIsOpenDeleteModal(true)
-  }
-
+export default function LessonPlan({
+  title,
+  date,
+  handleDeleteModal,
+  deleteLessonPlan,
+  isOpenDeleteModal,
+  setIsOpenDeleteModal,
+  id,
+}: Props) {
   return (
     <div className="flex flex-col px-4 py-1 rounded-lg shadow bg-gradient-to-b from-[#f9fafb] border border-base-300">
       <div className="flex justify-between">
@@ -33,7 +40,7 @@ export default function LessonPlan({ title, date }: Props) {
             type="button"
             className="text-xl text-base-300 hover:text-error tooltip tooltip-error tooltip-right"
             data-tip="Delete"
-            onClick={() => handleDelete()}
+            onClick={handleDeleteModal}
           >
             <RiDeleteBinLine />
           </button>
@@ -42,8 +49,8 @@ export default function LessonPlan({ title, date }: Props) {
             isOpen={isOpenDeleteModal}
             setIsOpen={setIsOpenDeleteModal}
             // loading={deleteLoading}
-            // currentStudent={currentStudent}
-            // actionFunction={deleteStudent}
+            currentData={id}
+            actionFunction={deleteLessonPlan}
             closeButton="Cancel"
             actionButton="Delete"
             actionButtonLoading="Deleting"

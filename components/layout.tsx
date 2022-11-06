@@ -46,7 +46,7 @@ export default function Layout({ children }: Props) {
                 <li>
                   <Link href="/admin/dashboard">
                     {router.pathname === "/admin/dashboard" ? (
-                      <a className="active bg-primary-focus">
+                      <a className="active bg-primary-focus text-base-100">
                         <span>
                           <AiFillHome />
                         </span>
@@ -65,7 +65,7 @@ export default function Layout({ children }: Props) {
                 <li>
                   <Link href="/admin/users">
                     {router.pathname === "/admin/users" ? (
-                      <a className="active bg-primary-focus">
+                      <a className="active bg-primary-focus text-base-100">
                         <span>
                           <HiUsers />
                         </span>
@@ -84,7 +84,7 @@ export default function Layout({ children }: Props) {
                 <li>
                   <Link href="/admin/students">
                     {router.pathname.includes("/admin/students") ? (
-                      <a className="active bg-primary-focus">
+                      <a className="active bg-primary-focus text-base-100">
                         <span>
                           <FaChild />
                         </span>

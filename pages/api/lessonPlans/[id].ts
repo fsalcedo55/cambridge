@@ -22,7 +22,6 @@ export default async function handler(
 
 async function addLessonPlan(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body
-  console.log({ body })
   try {
     const newLessonPlan = await prisma.lessonPlan.create({
       data: {
@@ -58,10 +57,10 @@ async function deleteLessonPlan(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body
   try {
     const lessonPlan = await prisma.lessonPlan.delete({
-      where: { id: body.lessonPlan.id },
+      where: { id: body },
     })
     return res.status(200).json({ success: true })
   } catch (error) {
-    console.log(error)
+    console.log("Error deleting lesson plan from database: ", error)
   }
 }

@@ -73,6 +73,6 @@ model LessonPlan {
     date      String
     Student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
     studentId String
-    User      User    @relation(fields: [userId], references: [id])
+    User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String
 }

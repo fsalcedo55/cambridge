@@ -4,7 +4,7 @@ interface Props {
   isOpen: boolean
   setIsOpen: any
   loading?: boolean
-  currentStudent?: any
+  currentData?: any
   actionFunction?: any
   title: string
   description: any
@@ -18,7 +18,7 @@ export default function Modal({
   isOpen,
   setIsOpen,
   loading,
-  currentStudent,
+  currentData,
   actionFunction,
   title,
   description,
@@ -47,14 +47,14 @@ export default function Modal({
               <Dialog.Description className="mt-2">
                 {description}
               </Dialog.Description>
-              <div className="flex flex-col mt-1 gap-2">
+              <div className="flex flex-col gap-2 mt-1">
                 {actionButton && loading ? (
                   <button className="btn btn-error loading btn-disabled">
                     {actionButtonLoading}
                   </button>
                 ) : (
                   <button
-                    onClick={() => actionFunction(currentStudent)}
+                    onClick={() => actionFunction(currentData)}
                     className={actionButtonStyle}
                   >
                     {actionButton}

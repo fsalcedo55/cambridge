@@ -1,13 +1,13 @@
 import Layout from "../../../components/layout"
 import PageHeading from "../../../components/pageHeading"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Tab } from "@headlessui/react"
 import Loading from "../../../components/loading"
 import { useSession } from "next-auth/react"
 import LessonPlan from "../../../components/lessonPlan"
-import NewModal from "../../../components/modal"
+import Modal from "../../../components/modal"
 import AddLessonPlan from "../../../components/addLessonPlan"
 
 type Student = {
@@ -28,6 +28,10 @@ export default function AdminStudentPage() {
   })
   const [isOpen, setIsOpen] = useState(false)
   const [lessonPlans, setLessonPlans] = useState<any[]>([])
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
+  const [currentLessonPlan, setCurrentLessonPlan] = useState("")
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false)
+  const lessonId = useRef("")
 
   useEffect(() => {
     if (router.isReady) {
@@ -35,6 +39,37 @@ export default function AdminStudentPage() {
       getLessonPlans()
     }
   }, [router.isReady])
+
+  useEffect(() => {
+    console.log("currentLessonPlan inside useeffect: ", currentLessonPlan)
+  }, [currentLessonPlan])
+
+  const handleDeleteModal = (lessonPlanId: string) => {
+    setIsOpenDeleteModal(true)
+    lessonId.current = lessonPlanId
+  }
+
+  const deleteLessonPlan = async () => {
+    setIsLoadingDelete(true)
+    const body = lessonId.current
+    try {
+      const response = await fetch(`/api/lessonPlans/${body}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+      if (response.status != 200) {
+        console.log("Not able to delete lesson plan")
+      } else {
+        console.log("Lesson plan deleted")
+        setIsOpenDeleteModal(false)
+        getLessonPlans()
+      }
+    } catch (error) {
+      console.log("Error deleting from API Call", error)
+    }
+    setIsLoadingDelete(false)
+  }
 
   const getStudent = async () => {
     setIsLoading(true)
@@ -86,10 +121,9 @@ export default function AdminStudentPage() {
       const response = await fetch(`/api/lessonPlans/${id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-        cache: "force-cache",
       })
       const data = await response.json()
-      setLessonPlans(data.lessonPlans.reverse())
+      setLessonPlans(data.lessonPlans)
     } catch (error) {
       console.log(error)
     }
@@ -141,7 +175,7 @@ export default function AdminStudentPage() {
               >
                 + Add Lesson Plan
               </button>
-              <NewModal
+              <Modal
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
                 loading={isLoading}
@@ -155,11 +189,16 @@ export default function AdminStudentPage() {
           <Tab.Panels>
             <Tab.Panel className="flex flex-col gap-4">
               {lessonPlans &&
-                lessonPlans.map((lessonPlan, idx) => (
-                  <div key={idx}>
+                lessonPlans.map((lessonPlan) => (
+                  <div key={lessonPlan.id}>
                     <LessonPlan
                       title={lessonPlan.title}
                       date={lessonPlan.date}
+                      handleDeleteModal={() => handleDeleteModal(lessonPlan.id)}
+                      isOpenDeleteModal={isOpenDeleteModal}
+                      setIsOpenDeleteModal={setIsOpenDeleteModal}
+                      deleteLessonPlan={deleteLessonPlan}
+                      id={lessonPlan.id}
                     />
                   </div>
                 ))}
