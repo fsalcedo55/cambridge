@@ -7,7 +7,7 @@ import { Tab } from "@headlessui/react"
 import Loading from "../../../components/loading"
 import { useSession } from "next-auth/react"
 import LessonPlan from "../../../components/lessonPlan"
-import Modal from "../../../components/modal"
+import Modal from "@ui/modal"
 import AddLessonPlan from "../../../components/addLessonPlan"
 
 type Student = {

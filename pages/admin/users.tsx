@@ -3,7 +3,7 @@ import Layout from "../../components/layout"
 import PageHeading from "../../components/pageHeading"
 import { useEffect, useState } from "react"
 import Loading from "../../components/loading"
-import Modal from "../../components/modal"
+import Modal from "@ui/modal"
 import EditUserForm from "../../components/editUserForm"
 import { useRouter } from "next/router"
 import Image from "next/image"
@@ -14,6 +14,7 @@ export default function Users() {
   const [users, setUsers] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     getAllUsers()

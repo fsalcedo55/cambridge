@@ -1,6 +1,6 @@
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
-import Modal from "../components/modal"
 import { useState } from "react"
+import Modal from "@ui/modal"
 
 interface Props {
   title: string
