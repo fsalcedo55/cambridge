@@ -1,13 +1,13 @@
 import { useSession } from "next-auth/react"
-import Layout from "../../components/layout"
 import PageHeading from "../../components/pageHeading"
 import { useEffect, useState } from "react"
-import Loading from "../../components/loading"
+import Loading from "../../components/ui/loading"
 import Modal from "@ui/modal"
 import EditUserForm from "../../components/editUserForm"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import AccessDenied from "../../components/access-denied"
+import { getAllUsers } from "@services/user.services"
 
 export default function Users() {
   const { data: session } = useSession()
@@ -17,10 +17,10 @@ export default function Users() {
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    getAllUsers()
+    getAllUsersOld()
   }, [])
 
-  const getAllUsers = async () => {
+  const getAllUsersOld = async () => {
     setIsLoading(true)
     try {
       const response = await fetch("/api/users", {
@@ -49,7 +49,7 @@ export default function Users() {
   }
 
   return (
-    <Layout>
+    <div>
       <PageHeading pageTitle="Users" />
       {isLoading ? (
         <Loading />
@@ -77,10 +77,6 @@ export default function Users() {
                       <div className="flex items-center space-x-3">
                         <div className="avatar">
                           <div className="w-12 h-12 mask mask-squircle">
-                            {/* <img
-                                src={user.image}
-                                alt="Avatar Tailwind CSS Component"
-                              /> */}
                             <Image
                               src={user.image}
                               width={48}
@@ -115,6 +111,8 @@ export default function Users() {
           </table>
         </div>
       )}
-    </Layout>
+    </div>
   )
 }
+
+Users.auth = true

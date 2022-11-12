@@ -1,6 +1,6 @@
 import { useFormik } from "formik"
 import { useState } from "react"
-import Loading from "./loading"
+import Loading from "./ui/loading"
 import * as Yup from "yup"
 
 interface Values {

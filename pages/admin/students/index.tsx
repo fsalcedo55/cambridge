@@ -1,18 +1,16 @@
-import Layout from "../../../components/layout"
 import { useSession } from "next-auth/react"
 import PageHeading from "../../../components/pageHeading"
 import AddStudent from "../../../components/addStudent"
-import { useEffect, useState } from "react"
-import Loading from "../../../components/loading"
+import { useState } from "react"
+import Loading from "../../../components/ui/loading"
 import Modal from "@ui/modal"
-import Table from "@ui/Table"
+import Table from "@ui/table"
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
-import { IoMdMore } from "react-icons/io"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import Image from "next/image"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { getAllStudents } from "@services/students.services"
+import { getAllTeachers } from "@services/teachers.services"
 
 interface Student {
   studentFirstName: string
@@ -38,17 +36,20 @@ const studentTableHeaders = [
   { id: "header5", label: "" },
 ]
 
-const getStudents = async () => {
-  const { data } = await axios.get("/api/students")
-  return data.allStudents
-}
-
 export default function Students() {
+  const queryClient = useQueryClient()
+
   const {
     data: students,
     isLoading: studentsIsLoading,
-    isError: stdentsIsError,
-  } = useQuery(["students"], getStudents)
+    isError: studentsIsError,
+  } = useQuery(["students"], getAllStudents)
+
+  const {
+    data: teachers,
+    isLoading: teachersIsLoading,
+    isError: teachersIsError,
+  } = useQuery(["teachers"], getAllTeachers)
 
   const { data: session } = useSession()
   const [isLoadingState, setIsLoadingState] = useState(false)
@@ -56,11 +57,9 @@ export default function Students() {
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
-  const [teachers, setTeachers] = useState<any[]>([])
   const router = useRouter()
 
-  console.log({ students })
-
+  // Formatted rows for table cells
   const formattedRows = students?.map((student: Student, idx: number) => ({
     cells: [
       { content: idx + 1 },
@@ -69,12 +68,29 @@ export default function Students() {
         href: `/admin/students/${student.id}`,
       },
       { content: `${student.studentDateOfBirth}` },
-      { content: `${student.teacher.name}` },
+      {
+        content: (
+          <div className="flex items-center space-x-3">
+            <div className="avatar">
+              <div className="w-6 rounded-full">
+                <Image
+                  src={student.teacher?.image}
+                  width={24}
+                  height={24}
+                  alt={"teacher"}
+                />
+              </div>
+            </div>
+            <div>
+              <div>{student.teacher?.name}</div>
+            </div>
+          </div>
+        ),
+      },
       {
         content: (
           <div className="flex gap-2 text-xl text-base-300">
             <div
-              onClick={() => handleDelete(student)}
               className="hover:text-primary tooltip tooltip-left"
               data-tip="Edit"
             >
@@ -92,10 +108,6 @@ export default function Students() {
       },
     ],
   }))
-
-  useEffect(() => {
-    getAllTeachers()
-  }, [])
 
   const handleDelete = async (student: any) => {
     setIsOpenDeleteModal(true)
@@ -116,26 +128,12 @@ export default function Students() {
       } else {
         console.log("Student deleted succesfully")
         setIsOpenDeleteModal(false)
+        queryClient.invalidateQueries({ queryKey: ["students"] })
       }
     } catch (error) {
       console.log(error)
     }
     setDeleteLoading(false)
-  }
-
-  const getAllTeachers = async () => {
-    setIsLoadingState(true)
-    try {
-      const response = await fetch("/api/teachers", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      })
-      const data = await response.json()
-      setTeachers(data.allTeachers)
-    } catch (error) {
-      console.log("Error getting all teachers", error)
-    }
-    setIsLoadingState(false)
   }
 
   const addStudent = async (values: any) => {
@@ -154,7 +152,7 @@ export default function Students() {
       } else {
         console.log("New student added to the database")
         setIsOpenAddModal(false)
-        getStudents()
+        queryClient.invalidateQueries({ queryKey: ["students"] })
         //set a success banner here
       }
       //check response, if success is false, dont take them to success page
@@ -164,65 +162,68 @@ export default function Students() {
     setIsLoadingState(false)
   }
 
-  // if (session?.role === "admin") {
-  return (
-    <Layout>
-      <PageHeading pageTitle="Students" />
-      {isLoadingState ? (
-        <Loading />
-      ) : (
-        <div>
-          {/* Delete Modal */}
-          <Modal
-            isOpen={isOpenDeleteModal}
-            setIsOpen={setIsOpenDeleteModal}
-            loading={deleteLoading}
-            currentData={currentStudent}
-            actionFunction={deleteStudent}
-            closeButton="Cancel"
-            actionButton="Delete"
-            actionButtonLoading="Deleting"
-            actionButtonStyle="btn btn-error"
-            title="Delete Student"
-            description={
-              <div>
-                <p>This will permanently delete this student</p>
-                <p className="mt-2">
-                  Are you sure you want to delete this student? All of the data
-                  will be permanently removed. This action cannot be undone.
-                </p>
-              </div>
-            }
-          />
-          <div className="flex justify-end my-2">
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={() => setIsOpenAddModal(true)}
-            >
-              + Add Student
-            </button>
-            {/* Add Student Modal */}
+  if (session?.role === "admin") {
+    return (
+      <div>
+        <PageHeading pageTitle="Students" />
+        {isLoadingState ? (
+          <Loading />
+        ) : (
+          <div>
+            {/* Delete Modal */}
             <Modal
-              isOpen={isOpenAddModal}
-              setIsOpen={setIsOpenAddModal}
-              loading={isLoadingState}
+              isOpen={isOpenDeleteModal}
+              setIsOpen={setIsOpenDeleteModal}
+              loading={deleteLoading}
               currentData={currentStudent}
-              actionFunction={addStudent}
+              actionFunction={deleteStudent}
               closeButton="Cancel"
-              title="Add Student"
+              actionButton="Delete"
+              actionButtonLoading="Deleting"
+              actionButtonStyle="btn btn-error"
+              title="Delete Student"
               description={
-                <AddStudent teachers={teachers} handleSubmit={addStudent} />
+                <div>
+                  <p>This will permanently delete this student</p>
+                  <p className="mt-2">
+                    Are you sure you want to delete this student? All of the
+                    data will be permanently removed. This action cannot be
+                    undone.
+                  </p>
+                </div>
               }
             />
-          </div>
-          <Table headers={studentTableHeaders} rows={formattedRows} />
+            <div className="flex justify-end my-2">
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => setIsOpenAddModal(true)}
+              >
+                + Add Student
+              </button>
+              {/* Add Student Modal */}
+              <Modal
+                isOpen={isOpenAddModal}
+                setIsOpen={setIsOpenAddModal}
+                loading={isLoadingState}
+                currentData={currentStudent}
+                actionFunction={addStudent}
+                closeButton="Cancel"
+                title="Add Student"
+                description={
+                  <AddStudent teachers={teachers} handleSubmit={addStudent} />
+                }
+              />
+            </div>
+            <Table headers={studentTableHeaders} rows={formattedRows} />
 
-          <div className="overflow-x-auto"></div>
-        </div>
-      )}
-    </Layout>
-  )
-  // } else {
-  //   router.push("/")
-  // }
+            <div className="overflow-x-auto"></div>
+          </div>
+        )}
+      </div>
+    )
+    // } else {
+    //   router.push("/")
+  }
 }
+
+Students.auth = true

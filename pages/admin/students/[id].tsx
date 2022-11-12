@@ -1,10 +1,9 @@
-import Layout from "../../../components/layout"
 import PageHeading from "../../../components/pageHeading"
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Tab } from "@headlessui/react"
-import Loading from "../../../components/loading"
+import Loading from "../../../components/ui/loading"
 import { useSession } from "next-auth/react"
 import LessonPlan from "../../../components/lessonPlan"
 import Modal from "@ui/modal"
@@ -133,7 +132,7 @@ export default function AdminStudentPage() {
 
   if (session?.role === "admin") {
     return (
-      <Layout>
+      <div>
         {studentData ? (
           <div>
             <div className="text-sm breadcrumbs">
@@ -206,7 +205,9 @@ export default function AdminStudentPage() {
             <Tab.Panel>Settings go here</Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
-      </Layout>
+      </div>
     )
   }
 }
+
+AdminStudentPage.auth = true

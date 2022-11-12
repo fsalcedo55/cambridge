@@ -1,10 +1,9 @@
-import Layout from "../../components/layout"
 import PageHeading from "../../components/pageHeading"
 import { FaChild, FaChalkboardTeacher } from "react-icons/fa"
 
 export default function AdminDashboard() {
   return (
-    <Layout>
+    <div>
       <PageHeading pageTitle="Dashboard" />
       <div className="flex gap-4 text-center">
         <div className="w-48 text-center rounded-xl h-36 bg-info/75">
@@ -22,6 +21,8 @@ export default function AdminDashboard() {
           <h2 className="text-4xl font-bold">5</h2>
         </div>
       </div>
-    </Layout>
+    </div>
   )
 }
+
+AdminDashboard.auth = true

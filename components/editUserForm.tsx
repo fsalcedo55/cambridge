@@ -1,6 +1,6 @@
 import { Formik, Field, Form, FormikHelpers } from "formik"
 import { useState } from "react"
-import Loading from "./loading"
+import Loading from "./ui/loading"
 
 interface Values {
   role: string

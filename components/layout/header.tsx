@@ -1,5 +1,6 @@
 import { signIn, signOut, useSession } from "next-auth/react"
-import Loading from "./loading"
+import Loading from "../ui/loading"
+import Image from "next/image"
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
@@ -9,7 +10,15 @@ export default function Header() {
   const loading = status === "loading"
 
   return (
-    <div className="flex justify-end h-16 px-16 navbar bg-base-100">
+    <div className="flex justify-between w-screen h-16 pr-16 shadow navbar bg-base-100">
+      <div className="flex justify-center w-64">
+        <Image
+          src="/Spanish-For-Us-Logo-1080p (2).png"
+          alt="logo"
+          width={118}
+          height={36}
+        />
+      </div>
       <div>
         {!session && loading ? (
           <div>
