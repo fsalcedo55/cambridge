@@ -1,52 +1,70 @@
 import { useSession } from "next-auth/react"
 import PageHeading from "../../components/pageHeading"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Loading from "../../components/ui/loading"
 import Modal from "@ui/modal"
 import EditUserForm from "../../components/editUserForm"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import AccessDenied from "../../components/access-denied"
+import { useQuery } from "@tanstack/react-query"
 import { getAllUsers } from "@services/user.services"
+import Table from "@ui/Table"
+
+interface User {
+  id: string
+  name: string
+  email: string
+  emailVerified: null
+  image: string
+  role: string
+}
+
+const userTableHeaders = [
+  { id: "header1", label: "" },
+  { id: "header2", label: "Name" },
+  { id: "header3", label: "Email" },
+  { id: "header4", label: "Role" },
+]
 
 export default function Users() {
+  const { data: users, isLoading } = useQuery(["users"], getAllUsers)
+
   const { data: session } = useSession()
-  const [users, setUsers] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-
-  useEffect(() => {
-    getAllUsersOld()
-  }, [])
-
-  const getAllUsersOld = async () => {
-    setIsLoading(true)
-    try {
-      const response = await fetch("/api/users", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        cache: "force-cache",
-      })
-      const data = await response.json()
-      console.log(data)
-      setUsers(data.allUsers)
-      if (response.status != 200) {
-        console.log("Error fetching users from the database")
-      } else {
-        console.log("Success fetching users")
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    setIsLoading(false)
-  }
-
-  console.log("users: ", users)
 
   if (session?.role != "admin") {
     return <AccessDenied />
   }
+
+  //Formatted rows for table cells
+  const formattedRows = users?.map((user: User, idx: number) => ({
+    cells: [
+      { content: idx + 1 },
+      {
+        content: (
+          <div className="flex items-center space-x-3">
+            <div className="avatar">
+              <div className="w-6 rounded-full">
+                <Image
+                  src={user.image}
+                  width={24}
+                  height={24}
+                  alt={"teacher"}
+                />
+              </div>
+            </div>
+            <div>
+              <div>{user.name}</div>
+            </div>
+          </div>
+        ),
+      },
+      { content: user.email },
+      { content: user.role },
+    ],
+  }))
 
   return (
     <div>
@@ -54,61 +72,8 @@ export default function Users() {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="table w-full table-compact">
-            {/* <!-- head --> */}
-            <thead>
-              <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* <!-- row --> */}
-              {users?.map((user, idx) => (
-                <tr key={idx}>
-                  <td>{idx + 1}</td>
-                  <td>
-                    {" "}
-                    <td className="border-none">
-                      <div className="flex items-center space-x-3">
-                        <div className="avatar">
-                          <div className="w-12 h-12 mask mask-squircle">
-                            <Image
-                              src={user.image}
-                              width={48}
-                              height={48}
-                              alt={"teacher"}
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <div className="font-bold">{user.name}</div>
-                        </div>
-                      </div>
-                    </td>
-                  </td>
-                  <td>{user.email}</td>
-                  <td>
-                    {user.role
-                      ? user.role[0].toUpperCase() + user.role.slice(1)
-                      : "None"}
-                  </td>
-                  <td>
-                    {/* <Modal
-                      description={<EditUserForm user={user} />}
-                      title="Edit User"
-                      actionButton="Edit"
-                      actionButtonStyle="btn btn-outline btn-xs"
-                    /> */}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div>
+          <Table headers={userTableHeaders} rows={formattedRows} />
         </div>
       )}
     </div>
