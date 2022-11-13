@@ -6,7 +6,7 @@ import { Tab } from "@headlessui/react"
 import Loading from "../../../components/ui/loading"
 import { useSession } from "next-auth/react"
 import LessonPlan from "../../../components/lessonPlan"
-import Modal from "@ui/modal"
+import Modal from "../../../components/ui/modal"
 import AddLessonPlan from "../../../components/addLessonPlan"
 
 type Student = {
@@ -39,9 +39,7 @@ export default function AdminStudentPage() {
     }
   }, [router.isReady])
 
-  useEffect(() => {
-    console.log("currentLessonPlan inside useeffect: ", currentLessonPlan)
-  }, [currentLessonPlan])
+  useEffect(() => {}, [currentLessonPlan])
 
   const handleDeleteModal = (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -185,6 +183,7 @@ export default function AdminStudentPage() {
               />
             </div>
           </div>
+
           <Tab.Panels>
             <Tab.Panel className="flex flex-col gap-4">
               {lessonPlans &&

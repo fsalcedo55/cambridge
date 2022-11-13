@@ -17,8 +17,6 @@ export default function Layout({ children }: Props) {
   const { data: session, status } = useSession()
   const loading = status === "loading"
 
-  console.log("aspath: ", router.asPath)
-
   return (
     <div className="relative">
       <header className="fixed top-0 z-50">

@@ -2,14 +2,14 @@ import { useSession } from "next-auth/react"
 import PageHeading from "../../components/pageHeading"
 import { useState } from "react"
 import Loading from "../../components/ui/loading"
-import Modal from "@ui/modal"
+import Modal from "../../components/ui/modal"
 import EditUserForm from "../../components/editUserForm"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import AccessDenied from "../../components/access-denied"
 import { useQuery } from "@tanstack/react-query"
-import { getAllUsers } from "@services/user.services"
-import Table from "@ui/Table"
+import { getAllUsers } from "../../services/user.services"
+import Table from "../../components/ui/table"
 
 interface User {
   id: string

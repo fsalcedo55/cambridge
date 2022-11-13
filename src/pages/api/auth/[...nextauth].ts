@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import prisma from "../../../lib/prismadb"
+import prisma from "../../../../lib/prismadb"
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -16,12 +16,11 @@ export const authOptions: NextAuthOptions = {
   ],
   theme: {
     colorScheme: "light",
+    logo: "/Spanish-For-Us-Logo-1080p (2).png", // Absolute URL to image
+    brandColor: "#0175BC",
+    buttonText: "#0175BC",
   },
   callbacks: {
-    // async jwt({ token }) {
-    //   token.userRole = "admin"
-    //   return token
-    // },
     async session({ session, token, user }) {
       if (user.email == process.env.ADMIN_EMAILS) {
         session.role = "admin"

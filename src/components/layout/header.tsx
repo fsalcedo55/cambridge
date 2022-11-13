@@ -1,6 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react"
 import Loading from "../ui/loading"
 import Image from "next/image"
+import Link from "next/link"
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
@@ -64,6 +65,11 @@ export default function Header() {
                     tabIndex={0}
                     className="p-2 mt-3 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
                   >
+                    <li>
+                      <Link href={`/admin/dashboard`}>
+                        <p>Dashboard</p>
+                      </Link>
+                    </li>
                     <li>
                       <a
                         href={`/api/auth/signout`}

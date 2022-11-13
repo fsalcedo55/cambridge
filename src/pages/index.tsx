@@ -9,12 +9,6 @@ export default function IndexPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
-  useEffect(() => {
-    if (session?.role === "admin") {
-      router.push("/admin/dashboard")
-    }
-  }, [session])
-
   if (status === "loading") {
     return (
       <div className="min-h-screen">

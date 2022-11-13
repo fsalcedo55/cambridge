@@ -2,31 +2,16 @@ import { useSession } from "next-auth/react"
 import PageHeading from "../../../components/pageHeading"
 import AddStudent from "../../../components/addStudent"
 import { useState } from "react"
-import Loading from "../../../components/ui/loading"
+import Loading from "@ui/loading"
 import Modal from "@ui/modal"
-import Table from "@ui/Table"
+import Table from "@ui/table"
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getAllStudents } from "@services/students.services"
 import { getAllTeachers } from "@services/teachers.services"
-
-interface Student {
-  studentFirstName: string
-  studentLastName: string
-  studentDateOfBirth: string
-  userId: string
-  id: string
-  teacher: {
-    id: string
-    name: string
-    email: string
-    emailVerified: null
-    image: string
-    role: string
-  }
-}
+import { Student } from "@interfaces/index"
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
@@ -214,7 +199,11 @@ export default function Students() {
                 }
               />
             </div>
-            <Table headers={studentTableHeaders} rows={formattedRows} />
+            {studentsIsLoading ? (
+              <Loading />
+            ) : (
+              <Table headers={studentTableHeaders} rows={formattedRows} />
+            )}
 
             <div className="overflow-x-auto"></div>
           </div>

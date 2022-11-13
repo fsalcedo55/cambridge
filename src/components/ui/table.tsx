@@ -24,8 +24,8 @@ interface IRows {
 
 export default function Table({ rows, headers }: TableProps) {
   return (
-    <div className="overflow-x-auto">
-      <table className="table w-full shadow table-zebra table-compact">
+    <div className="overflow-x-auto rounded-lg shadow">
+      <table className="table w-full table-zebra table-compact">
         {/* <!-- head --> */}
         <thead>
           <tr>

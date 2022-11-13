@@ -37,16 +37,17 @@ model Session {
 }
 
 model User {
-    id            String       @id @default(cuid())
-    name          String?
-    email         String?      @unique
-    emailVerified DateTime?
-    image         String?
-    role          String?
-    accounts      Account[]
-    sessions      Session[]
-    students      Student[]
-    lessonPlans   LessonPlan[]
+    id                 String              @id @default(cuid())
+    name               String?
+    email              String?             @unique
+    emailVerified      DateTime?
+    image              String?
+    role               String?
+    accounts           Account[]
+    sessions           Session[]
+    students           Student[]
+    lessonPlans        LessonPlan[]
+    lessonPlanComments LessonPlanComment[]
 }
 
 model Student {
@@ -68,11 +69,20 @@ model VerificationToken {
 }
 
 model LessonPlan {
-    id        String  @id @default(cuid())
+    id        String              @id @default(cuid())
     title     String
     date      String
-    Student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    Student   Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
     studentId String
-    User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    User      User                @relation(fields: [userId], references: [id], onDelete: SetNull)
     userId    String
+    comments  LessonPlanComment[]
+}
+
+model LessonPlanComment {
+    id           String      @id @default(cuid())
+    LessonPlan   LessonPlan? @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
+    lessonPlanId String?
+    User         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+    userId       String?
 }
