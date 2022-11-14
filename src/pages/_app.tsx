@@ -1,6 +1,6 @@
 import { SessionProvider } from "next-auth/react"
 import "../styles/globals.css"
-import type { AppProps } from "next/app"
+import type { AppProps, AppType } from "next/app"
 import type { Session } from "next-auth"
 // import type { Session } from "auth"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
@@ -10,9 +10,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query"
 import Layout from "../components/layout/layout"
-
-// Use of the <SessionProvider> is mandatory to allow components that call
-// `useSession()` anywhere in your application to access the `session` object.
+import { trpc } from "../utils/trpc"
 
 const queryClient = new QueryClient({
   // defaultOptions: {
@@ -23,10 +21,13 @@ const queryClient = new QueryClient({
   // },
 })
 
-export default function App({
+// Use of the <SessionProvider> is mandatory to allow components that call
+// `useSession()` anywhere in your application to access the `session` object.
+
+const MyApp: AppType = ({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps<{ session: Session; dehydratedState: unknown }>) {
+}: AppProps<{ session: Session; dehydratedState: unknown }>) => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
@@ -44,3 +45,5 @@ export default function App({
     </QueryClientProvider>
   )
 }
+
+export default trpc.withTRPC(MyApp)

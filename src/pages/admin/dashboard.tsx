@@ -1,10 +1,16 @@
 import PageHeading from "../../components/pageHeading"
 import { FaChild, FaChalkboardTeacher } from "react-icons/fa"
+import { trpc } from "../../utils/trpc"
 
 export default function AdminDashboard() {
+  const result = trpc.greeting.useQuery({ name: "hehehehehe" })
+
+  console.log("result: ", result)
+
   return (
     <div>
       <PageHeading pageTitle="Dashboard" />
+      <div>{result && result.data?.text}</div>
       <div className="flex gap-4 text-center">
         <div className="w-48 text-center rounded-xl h-36 bg-info/75">
           <div className="flex justify-center p-4 text-4xl">
