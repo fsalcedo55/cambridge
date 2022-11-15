@@ -5,21 +5,22 @@ interface TableProps {
     id: string
     label: any
   }[]
-  rows: IRows[]
+  rows?: IRows[]
 }
 
 interface IRows {
-  id: string
-  cells: {
-    content:
-      | string
-      | number
-      | boolean
-      | React.ReactFragment
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    href?: string
-    icon?: boolean
-  }[]
+  id?: string
+  cells:
+    | {
+        content:
+          | string
+          | number
+          | boolean
+          | React.ReactFragment
+          | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+        href?: string | undefined
+        icon?: boolean
+      }[]
 }
 
 export default function Table({ rows, headers }: TableProps) {
@@ -41,11 +42,8 @@ export default function Table({ rows, headers }: TableProps) {
             <tr key={idx}>
               {row.cells?.map((cell, cellIdx) =>
                 cell.href ? (
-                  <Link href={cell.href}>
-                    <td
-                      key={cellIdx}
-                      className="font-bold link link-hover hover:text-primary"
-                    >
+                  <Link href={cell.href} key={cellIdx}>
+                    <td className="font-bold link link-hover hover:text-primary">
                       {cell.content}
                     </td>
                   </Link>

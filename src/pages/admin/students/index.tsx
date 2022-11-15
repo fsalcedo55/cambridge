@@ -12,6 +12,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getAllStudents } from "@services/students.services"
 import { getAllTeachers } from "@services/teachers.services"
 import { Student } from "@interfaces/index"
+import { trpc } from "src/utils/trpc"
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
@@ -23,12 +24,7 @@ const studentTableHeaders = [
 
 export default function Students() {
   const queryClient = useQueryClient()
-
-  const {
-    data: students,
-    isLoading: studentsIsLoading,
-    isError: studentsIsError,
-  } = useQuery(["students"], getAllStudents)
+  const students = trpc.student.allStudents.useQuery()
 
   const {
     data: teachers,
@@ -45,7 +41,7 @@ export default function Students() {
   const router = useRouter()
 
   // Formatted rows for table cells
-  const formattedRows = students?.map((student: Student, idx: number) => ({
+  const formattedRows = students.data?.map((student, idx: number) => ({
     cells: [
       { content: idx + 1 },
       {
@@ -59,7 +55,7 @@ export default function Students() {
             <div className="avatar">
               <div className="w-6 rounded-full">
                 <Image
-                  src={student.teacher?.image}
+                  src={`${student.teacher?.image}`}
                   width={24}
                   height={24}
                   alt={"teacher"}
@@ -199,7 +195,7 @@ export default function Students() {
                 }
               />
             </div>
-            {studentsIsLoading ? (
+            {students.isLoading ? (
               <Loading />
             ) : (
               <Table headers={studentTableHeaders} rows={formattedRows} />

@@ -24,22 +24,25 @@ const queryClient = new QueryClient({
 // Use of the <SessionProvider> is mandatory to allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
 
-const MyApp: AppType = ({
+const MyApp: AppType<{ session: Session }> = ({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps<{ session: Session; dehydratedState: unknown }>) => {
+}: AppProps<{
+  session: Session
+  // dehydratedState: unknown
+}>) => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <Hydrate state={pageProps.dehydratedState}>
-          {Component.auth ? (
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          ) : (
+        {/* <Hydrate state={pageProps.dehydratedState}> */}
+        {Component.auth ? (
+          <Layout>
             <Component {...pageProps} />
-          )}
-        </Hydrate>
+          </Layout>
+        ) : (
+          <Component {...pageProps} />
+        )}
+        {/* </Hydrate> */}
         <ReactQueryDevtools initialIsOpen={false} />
       </SessionProvider>
     </QueryClientProvider>
