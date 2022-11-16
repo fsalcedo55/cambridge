@@ -11,7 +11,7 @@ interface Values {
 }
 
 interface Props {
-  teachers: any[]
+  teachers?: any[]
   handleSubmit: any
 }
 
@@ -37,12 +37,9 @@ export default function AddStudent({ teachers, handleSubmit }: Props) {
       teacher: Yup.string().required("Required"),
     }),
     onSubmit: (values, actions) => {
-      console.log("values, actions: ", values, actions)
       handleSubmit(values)
     },
   })
-
-  console.log(formik.errors)
 
   return (
     <div>

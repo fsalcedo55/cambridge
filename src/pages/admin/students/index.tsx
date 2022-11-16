@@ -23,14 +23,27 @@ const studentTableHeaders = [
 ]
 
 export default function Students() {
+  const utils = trpc.useContext()
   const queryClient = useQueryClient()
-  const students = trpc.student.allStudents.useQuery()
+  const students = trpc.student.getAll.useQuery()
+  const teachers = trpc.teacher.getAll.useQuery()
+  const addStudentTRPC = trpc.student.add.useMutation({
+    onSuccess() {
+      utils.student.getAll.invalidate()
+    },
+  })
 
-  const {
-    data: teachers,
-    isLoading: teachersIsLoading,
-    isError: teachersIsError,
-  } = useQuery(["teachers"], getAllTeachers)
+  const addStudentNew = async (values: any) => {
+    addStudentTRPC.mutate({
+      studentFirstName: values.studentFirstName,
+      studentLastName: values.studentLastName,
+      studentDateOfBirth: values.studentDateOfBirth,
+      userId: values.teacher,
+    })
+    setIsOpenAddModal(false)
+  }
+
+  console.log("addStudentTRPC: ", addStudentTRPC)
 
   const { data: session } = useSession()
   const [isLoadingState, setIsLoadingState] = useState(false)
@@ -117,31 +130,31 @@ export default function Students() {
     setDeleteLoading(false)
   }
 
-  const addStudent = async (values: any) => {
-    setIsLoadingState(true)
+  // const addStudent = async (values: any) => {
+  //   setIsLoadingState(true)
 
-    const body = { ...values }
-    try {
-      const response = await fetch("/api/students", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-      if (response.status !== 200) {
-        console.log("Error adding student to database")
-        //set an error banner here
-      } else {
-        console.log("New student added to the database")
-        setIsOpenAddModal(false)
-        queryClient.invalidateQueries({ queryKey: ["students"] })
-        //set a success banner here
-      }
-      //check response, if success is false, dont take them to success page
-    } catch (error) {
-      console.log("Error submitting the 'Add Student' form.", error)
-    }
-    setIsLoadingState(false)
-  }
+  //   const body = { ...values }
+  //   try {
+  //     const response = await fetch("/api/students", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(body),
+  //     })
+  //     if (response.status !== 200) {
+  //       console.log("Error adding student to database")
+  //       //set an error banner here
+  //     } else {
+  //       console.log("New student added to the database")
+  //       setIsOpenAddModal(false)
+  //       queryClient.invalidateQueries({ queryKey: ["students"] })
+  //       //set a success banner here
+  //     }
+  //     //check response, if success is false, dont take them to success page
+  //   } catch (error) {
+  //     console.log("Error submitting the 'Add Student' form.", error)
+  //   }
+  //   setIsLoadingState(false)
+  // }
 
   if (session?.role === "admin") {
     return (
@@ -185,13 +198,14 @@ export default function Students() {
               <Modal
                 isOpen={isOpenAddModal}
                 setIsOpen={setIsOpenAddModal}
-                loading={isLoadingState}
-                currentData={currentStudent}
-                actionFunction={addStudent}
+                loading={addStudentTRPC.isLoading}
                 closeButton="Cancel"
                 title="Add Student"
                 description={
-                  <AddStudent teachers={teachers} handleSubmit={addStudent} />
+                  <AddStudent
+                    teachers={teachers.data}
+                    handleSubmit={addStudentNew}
+                  />
                 }
               />
             </div>

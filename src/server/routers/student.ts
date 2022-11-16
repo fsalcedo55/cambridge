@@ -14,9 +14,24 @@ const defaultStudentSelect = Prisma.validator<Prisma.StudentSelect>()({
 })
 
 export const studentRouter = router({
-  allStudents: publicProcedure.query(() => {
+  getAll: publicProcedure.query(() => {
     return prisma.student.findMany({
       select: defaultStudentSelect,
     })
   }),
+  add: publicProcedure
+    .input(
+      z.object({
+        studentFirstName: z.string(),
+        studentLastName: z.string(),
+        studentDateOfBirth: z.string(),
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const teacher = await prisma.student.create({
+        data: input,
+      })
+      return teacher
+    }),
 })
