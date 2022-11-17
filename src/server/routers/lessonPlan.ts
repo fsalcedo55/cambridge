@@ -11,15 +11,19 @@ const prisma = new PrismaClient()
 // })
 
 export const lessonPlanRouter = router({
-  getAll: publicProcedure
+  add: publicProcedure
     .input(
       z.object({
+        title: z.string(),
+        date: z.string(),
         studentId: z.string(),
+        userId: z.string(),
       })
     )
-    .query(({ input }) => {
-      return prisma.lessonPlan.findMany({
-        where: input,
+    .mutation(async ({ input }) => {
+      const lessonPlan = await prisma.lessonPlan.create({
+        data: input,
       })
+      return lessonPlan
     }),
 })

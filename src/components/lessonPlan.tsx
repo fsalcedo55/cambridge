@@ -1,10 +1,9 @@
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
-import { useState } from "react"
-import Modal from "./ui/modal"
+import Modal from "@ui/modal"
 
 interface Props {
   title: string
-  date: string
+  date: any
   handleDeleteModal: any
   deleteLessonPlan: any
   isOpenDeleteModal: boolean
