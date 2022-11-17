@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
-import PageHeading from "../../../components/pageHeading"
-import AddStudent from "../../../components/addStudent"
+import PageHeading from "@src/components/ui/pageHeading"
+import AddStudent from "@components/addStudent"
 import { useState } from "react"
 import Loading from "@ui/loading"
 import Modal from "@ui/modal"
@@ -8,10 +8,6 @@ import Table from "@ui/table"
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
 import { useRouter } from "next/router"
 import Image from "next/image"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { getAllStudents } from "@services/students.services"
-import { getAllTeachers } from "@services/teachers.services"
-import { Student } from "@interfaces/index"
 import { trpc } from "src/utils/trpc"
 
 const studentTableHeaders = [
@@ -23,12 +19,17 @@ const studentTableHeaders = [
 ]
 
 export default function Students() {
-  const queryClient = useQueryClient()
+  const { data: session } = useSession()
+  const router = useRouter()
   const students = trpc.student.getAll.useQuery()
   const teachers = trpc.teacher.getAll.useQuery()
   const addStudent = trpc.student.add.useMutation()
+  const deleteStudent = trpc.student.deleteSingleStudent.useMutation()
+  const [currentStudent, setCurrentStudent] = useState(null)
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
+  const [isOpenAddModal, setIsOpenAddModal] = useState(false)
 
-  const addStudentNew = async (values: any) => {
+  const handleAddStudentModal = async (values: any) => {
     try {
       await addStudent.mutateAsync({
         studentFirstName: values.studentFirstName,
@@ -42,13 +43,17 @@ export default function Students() {
     setIsOpenAddModal(false)
   }
 
-  const { data: session } = useSession()
-  const [isLoadingState, setIsLoadingState] = useState(false)
-  const [currentStudent, setCurrentStudent] = useState(null)
-  const [deleteLoading, setDeleteLoading] = useState(false)
-  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
-  const [isOpenAddModal, setIsOpenAddModal] = useState(false)
-  const router = useRouter()
+  const handleDeleteModal = async (student: any) => {
+    setIsOpenDeleteModal(true)
+    setCurrentStudent(student)
+  }
+
+  const handleDelete = async (student: any) => {
+    await deleteStudent.mutateAsync({
+      id: student.id,
+    })
+    setIsOpenDeleteModal(false)
+  }
 
   // Formatted rows for table cells
   const formattedRows = students.data?.map((student, idx: number) => ({
@@ -88,7 +93,7 @@ export default function Students() {
               <RiPencilLine />
             </div>
             <div
-              onClick={() => handleDelete(student)}
+              onClick={() => handleDeleteModal(student)}
               className="hover:text-error tooltip tooltip-error tooltip-right"
               data-tip="Delete"
             >
@@ -100,38 +105,11 @@ export default function Students() {
     ],
   }))
 
-  const handleDelete = async (student: any) => {
-    setIsOpenDeleteModal(true)
-    setCurrentStudent(student)
-  }
-
-  const deleteStudent = async (student: any) => {
-    setDeleteLoading(true)
-    const body = { student }
-    try {
-      const response = await fetch("/api/students", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-      if (response.status !== 200) {
-        console.log("Not able to delete student")
-      } else {
-        console.log("Student deleted succesfully")
-        setIsOpenDeleteModal(false)
-        queryClient.invalidateQueries({ queryKey: ["students"] })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    setDeleteLoading(false)
-  }
-
   if (session?.role === "admin") {
     return (
       <div>
         <PageHeading pageTitle="Students" />
-        {isLoadingState ? (
+        {students.isLoading ? (
           <Loading />
         ) : (
           <div>
@@ -139,9 +117,9 @@ export default function Students() {
             <Modal
               isOpen={isOpenDeleteModal}
               setIsOpen={setIsOpenDeleteModal}
-              loading={deleteLoading}
+              loading={deleteStudent.isLoading}
               currentData={currentStudent}
-              actionFunction={deleteStudent}
+              actionFunction={handleDelete}
               closeButton="Cancel"
               actionButton="Delete"
               actionButtonLoading="Deleting"
@@ -175,7 +153,7 @@ export default function Students() {
                 description={
                   <AddStudent
                     teachers={teachers.data}
-                    handleSubmit={addStudentNew}
+                    handleSubmit={handleAddStudentModal}
                   />
                 }
               />

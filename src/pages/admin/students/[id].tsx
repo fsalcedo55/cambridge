@@ -1,13 +1,15 @@
-import PageHeading from "../../../components/pageHeading"
+import PageHeading from "@src/components/ui/pageHeading"
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Tab } from "@headlessui/react"
-import Loading from "../../../components/ui/loading"
+import Loading from "@ui/loading"
+import LoadingSkeleton from "@ui/loadingSkeleton"
 import { useSession } from "next-auth/react"
-import LessonPlan from "../../../components/lessonPlan"
-import Modal from "../../../components/ui/modal"
-import AddLessonPlan from "../../../components/addLessonPlan"
+import LessonPlan from "@components/lessonPlan"
+import Modal from "@ui/modal"
+import AddLessonPlan from "@components/addLessonPlan"
+import { trpc } from "@src/utils/trpc"
 
 type Student = {
   studentFirstName: string
@@ -16,26 +18,32 @@ type Student = {
 }
 
 export default function AdminStudentPage() {
+  // const lessonPlansTRPC = trpc.lessonPlan.getAll.useQuery({studentId: })
   const { data: session } = useSession()
   const router = useRouter()
   const { id } = router.query
   const [isLoading, setIsLoading] = useState(false)
-  const [studentData, setStudentData] = useState<Student>({
-    studentFirstName: "",
-    studentLastName: "",
-    userId: "",
-  })
+  // const [studentData, setStudentData] = useState<Student>({
+  //   studentFirstName: "",
+  //   studentLastName: "",
+  //   userId: "",
+  // })
   const [isOpen, setIsOpen] = useState(false)
   const [lessonPlans, setLessonPlans] = useState<any[]>([])
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [currentLessonPlan, setCurrentLessonPlan] = useState("")
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
   const lessonId = useRef("")
+  const studentTRPC = trpc.student.byId.useQuery({
+    id: id as string,
+  })
+
+  console.log("studentTRPC: ", studentTRPC.data)
 
   useEffect(() => {
     if (router.isReady) {
-      getStudent()
-      getLessonPlans()
+      // getStudent()
+      // getLessonPlans()
     }
   }, [router.isReady])
 
@@ -60,7 +68,7 @@ export default function AdminStudentPage() {
       } else {
         console.log("Lesson plan deleted")
         setIsOpenDeleteModal(false)
-        getLessonPlans()
+        // getLessonPlans()
       }
     } catch (error) {
       console.log("Error deleting from API Call", error)
@@ -68,27 +76,27 @@ export default function AdminStudentPage() {
     setIsLoadingDelete(false)
   }
 
-  const getStudent = async () => {
-    setIsLoading(true)
-    console.log("there is an ID: ", id)
-    try {
-      const response = await fetch(`/api/students/${id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        cache: "force-cache",
-      })
-      const data = await response.json()
-      setStudentData(data.uniqueStudent)
-      if (response.status != 200) {
-        console.log("response status does not equal 200")
-      } else {
-        console.log("Got student data!")
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    setIsLoading(false)
-  }
+  // const getStudent = async () => {
+  //   setIsLoading(true)
+  //   console.log("there is an ID: ", id)
+  //   try {
+  //     const response = await fetch(`/api/students/${id}`, {
+  //       method: "GET",
+  //       headers: { "Content-Type": "application/json" },
+  //       cache: "force-cache",
+  //     })
+  //     const data = await response.json()
+  //     setStudentData(data.uniqueStudent)
+  //     if (response.status != 200) {
+  //       console.log("response status does not equal 200")
+  //     } else {
+  //       console.log("Got student data!")
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  //   setIsLoading(false)
+  // }
 
   const addLessonPlan = async (values: any) => {
     setIsLoading(true)
@@ -113,25 +121,41 @@ export default function AdminStudentPage() {
     setIsLoading(false)
   }
 
-  const getLessonPlans = async () => {
-    try {
-      const response = await fetch(`/api/lessonPlans/${id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      })
-      const data = await response.json()
-      setLessonPlans(data.lessonPlans)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const getLessonPlans = async () => {
+  //   try {
+  //     const response = await fetch(`/api/lessonPlans/${id}`, {
+  //       method: "GET",
+  //       headers: { "Content-Type": "application/json" },
+  //     })
+  //     const data = await response.json()
+  //     setLessonPlans(data.lessonPlans)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   console.log("lessonPlans: ", lessonPlans)
 
   if (session?.role === "admin") {
     return (
       <div>
-        {studentData ? (
+        {studentTRPC.isLoading ? (
+          <div>
+            <div className="text-sm breadcrumbs">
+              <ul>
+                <li>
+                  <Link href="/admin/students">
+                    <a className="hover:text-primary">Students</a>
+                  </Link>
+                </li>
+                <li>
+                  <LoadingSkeleton height="short" />
+                </li>
+              </ul>
+            </div>
+            <PageHeading pageTitle={<LoadingSkeleton />} />
+          </div>
+        ) : (
           <div>
             <div className="text-sm breadcrumbs">
               <ul>
@@ -142,17 +166,15 @@ export default function AdminStudentPage() {
                 </li>
                 <li>
                   <p>
-                    {`${studentData?.studentFirstName} ${studentData?.studentLastName}`}
+                    {`${studentTRPC.data?.studentFirstName} ${studentTRPC.data?.studentLastName}`}
                   </p>
                 </li>
               </ul>
             </div>
             <PageHeading
-              pageTitle={`${studentData?.studentFirstName} ${studentData?.studentLastName}`}
+              pageTitle={`${studentTRPC.data?.studentFirstName} ${studentTRPC.data?.studentLastName}`}
             />
           </div>
-        ) : (
-          <Loading />
         )}
 
         <Tab.Group>
@@ -186,8 +208,8 @@ export default function AdminStudentPage() {
 
           <Tab.Panels>
             <Tab.Panel className="flex flex-col gap-4">
-              {lessonPlans &&
-                lessonPlans.map((lessonPlan) => (
+              {studentTRPC.data?.lessonPlans &&
+                studentTRPC.data?.lessonPlans.map((lessonPlan) => (
                   <div key={lessonPlan.id}>
                     <LessonPlan
                       title={lessonPlan.title}

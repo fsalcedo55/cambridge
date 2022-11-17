@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react"
-import PageHeading from "../../components/pageHeading"
+import PageHeading from "../../components/ui/pageHeading"
 import { useState } from "react"
 import Loading from "../../components/ui/loading"
 import Modal from "../../components/ui/modal"

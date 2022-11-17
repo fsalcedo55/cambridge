@@ -1,6 +1,7 @@
 import { SessionProvider } from "next-auth/react"
 import "../styles/globals.css"
 import type { AppProps, AppType } from "next/app"
+import NextNProgress from "nextjs-progressbar"
 import type { Session } from "next-auth"
 // import type { Session } from "auth"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
@@ -35,6 +36,7 @@ const MyApp: AppType<{ session: Session }> = ({
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
         {/* <Hydrate state={pageProps.dehydratedState}> */}
+        <NextNProgress />
         {Component.auth ? (
           <Layout>
             <Component {...pageProps} />

@@ -19,6 +19,26 @@ export const studentRouter = router({
       select: defaultStudentSelect,
     })
   }),
+  byId: publicProcedure
+    .input(
+      z.object({
+        id: z.string().optional(),
+      })
+    )
+    .query(({ input }) => {
+      return prisma.student.findUnique({
+        where: input,
+        select: {
+          studentFirstName: true,
+          studentLastName: true,
+          studentDateOfBirth: true,
+          userId: true,
+          teacher: true,
+          id: true,
+          lessonPlans: true,
+        },
+      })
+    }),
   add: publicProcedure
     .input(
       z.object({
@@ -29,9 +49,20 @@ export const studentRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const teacher = await prisma.student.create({
+      const student = await prisma.student.create({
         data: input,
       })
-      return teacher
+      return student
+    }),
+  deleteSingleStudent: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const student = await prisma.student.delete({
+        where: input,
+      })
     }),
 })
