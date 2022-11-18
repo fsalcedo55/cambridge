@@ -15,7 +15,8 @@ const studentTableHeaders = [
   { id: "header2", label: "Name" },
   { id: "header3", label: "Age" },
   { id: "header4", label: "Teacher" },
-  { id: "header5", label: "" },
+  { id: "header5", label: "Lesson Plans" },
+  { id: "header6", label: "" },
 ]
 
 export default function Students() {
@@ -24,7 +25,7 @@ export default function Students() {
   const students = trpc.student.getAll.useQuery()
   const teachers = trpc.teacher.getAll.useQuery()
   const addStudent = trpc.student.add.useMutation()
-  const deleteStudent = trpc.student.deleteSingleStudent.useMutation()
+  const deleteStudent = trpc.student.deleteStudent.useMutation()
   const [currentStudent, setCurrentStudent] = useState(null)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
@@ -83,18 +84,19 @@ export default function Students() {
           </div>
         ),
       },
+      { content: student.lessonPlans.length },
       {
         content: (
           <div className="flex gap-2 text-xl text-base-300">
             <div
-              className="hover:text-primary tooltip tooltip-left"
+              className="hover:text-primary tooltip tooltip-top"
               data-tip="Edit"
             >
               <RiPencilLine />
             </div>
             <div
               onClick={() => handleDeleteModal(student)}
-              className="hover:text-error tooltip tooltip-error tooltip-right"
+              className="hover:text-error tooltip tooltip-error tooltip-top"
               data-tip="Delete"
             >
               <RiDeleteBinLine />
@@ -123,8 +125,9 @@ export default function Students() {
               closeButton="Cancel"
               actionButton="Delete"
               actionButtonLoading="Deleting"
-              actionButtonStyle="btn btn-error"
+              btnIntent="danger"
               title="Delete Student"
+              loadingLabel="Deleting..."
               description={
                 <div>
                   <p>This will permanently delete this student</p>
@@ -150,6 +153,7 @@ export default function Students() {
                 loading={addStudent.isLoading}
                 closeButton="Cancel"
                 title="Add Student"
+                loadingLabel="Adding Student..."
                 description={
                   <AddStudent
                     teachers={teachers.data}

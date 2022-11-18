@@ -4,11 +4,12 @@ import Modal from "@ui/modal"
 interface Props {
   title: string
   date: any
-  handleDeleteModal: any
+  handleDeleteModal: () => void
   deleteLessonPlan: any
   isOpenDeleteModal: boolean
-  setIsOpenDeleteModal: any
+  setIsOpenDeleteModal: (active: boolean) => void
   id: string
+  deleteLoading: boolean
 }
 
 export default function LessonPlan({
@@ -19,6 +20,7 @@ export default function LessonPlan({
   isOpenDeleteModal,
   setIsOpenDeleteModal,
   id,
+  deleteLoading,
 }: Props) {
   return (
     <div className="flex flex-col px-4 py-1 rounded-lg shadow bg-gradient-to-b from-[#f9fafb] border border-base-300">
@@ -47,12 +49,14 @@ export default function LessonPlan({
           <Modal
             isOpen={isOpenDeleteModal}
             setIsOpen={setIsOpenDeleteModal}
-            // loading={deleteLoading}
+            loading={deleteLoading}
+            loadingLabel="Deleting..."
+            btnIntent="danger"
             currentData={id}
             actionFunction={deleteLessonPlan}
             closeButton="Cancel"
             actionButton="Delete"
-            actionButtonLoading="Deleting"
+            actionButtonLoading="Deleting..."
             actionButtonStyle="btn btn-error"
             title="Delete Lesson Plan"
             description={

@@ -1,5 +1,6 @@
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import { Button } from "@ui/button"
 
 interface Values {
   title: string
@@ -8,9 +9,15 @@ interface Values {
 
 interface Props {
   handleSubmit: any
+  btnLoading: boolean
+  btnLabel: string
 }
 
-export default function AddLessonPlan({ handleSubmit }: Props) {
+export default function AddLessonPlan({
+  handleSubmit,
+  btnLoading,
+  btnLabel,
+}: Props) {
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -61,9 +68,16 @@ export default function AddLessonPlan({ handleSubmit }: Props) {
             <p className="text-xs text-error">{formik.errors.date}</p>
           ) : null}
         </div>
-        <button type="submit" className="max-w-md my-2 btn btn-primary">
+        <Button
+          type="submit"
+          className="max-w-md my-2"
+          intent="primary"
+          size="medium"
+          loading={btnLoading}
+          loadingLabel={btnLabel}
+        >
           Add Lesson Plan
-        </button>
+        </Button>
       </form>
     </div>
   )

@@ -10,6 +10,9 @@ import LessonPlan from "@components/lessonPlan"
 import Modal from "@ui/modal"
 import AddLessonPlan from "@components/addLessonPlan"
 import { trpc } from "@src/utils/trpc"
+import { HiOutlineFolderAdd } from "react-icons/hi"
+import Image from "next/image"
+import { Button } from "@ui/button"
 
 type Student = {
   studentFirstName: string
@@ -29,6 +32,7 @@ export default function AdminStudentPage() {
     id: id as string,
   })
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
+  const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
 
   const handleAddLessonPlan = async (values: any) => {
     try {
@@ -45,45 +49,57 @@ export default function AdminStudentPage() {
     setIsOpen(false)
   }
 
-  const handleDeleteModal = (lessonPlanId: string) => {
+  const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
     lessonId.current = lessonPlanId
   }
 
   const deleteLessonPlan = async () => {
-    const body = lessonId.current
     try {
-      const response = await fetch(`/api/lessonPlans/${body}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+      await deleteLessonPlanTRPC.mutateAsync({
+        id: lessonId.current,
       })
-      if (response.status != 200) {
-        console.log("Not able to delete lesson plan")
-      } else {
-        console.log("Lesson plan deleted")
-        setIsOpenDeleteModal(false)
-      }
-    } catch (error) {
-      console.log("Error deleting from API Call", error)
-    }
+    } catch (error) {}
+    setIsOpenDeleteModal(false)
   }
+
+  // const deleteLessonPlan = async () => {
+  //   const body = lessonId.current
+  //   try {
+  //     const response = await fetch(`/api/lessonPlans/${body}`, {
+  //       method: "DELETE",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(body),
+  //     })
+  //     if (response.status != 200) {
+  //       console.log("Not able to delete lesson plan")
+  //     } else {
+  //       console.log("Lesson plan deleted")
+  //       setIsOpenDeleteModal(false)
+  //     }
+  //   } catch (error) {
+  //     console.log("Error deleting from API Call", error)
+  //   }
+  // }
 
   const addLessonPlanBtn = (
     <div>
-      <button
-        className="btn btn-primary btn-sm"
-        onClick={() => setIsOpen(true)}
-      >
+      <Button intent="primary" onClick={() => setIsOpen(true)}>
         + Add Lesson Plan
-      </button>
+      </Button>
       <Modal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         loading={isLoading}
         closeButton="Cancel"
         title="Add Lesson Plan"
-        description={<AddLessonPlan handleSubmit={handleAddLessonPlan} />}
+        description={
+          <AddLessonPlan
+            handleSubmit={handleAddLessonPlan}
+            btnLoading={addLessonPlan.isLoading}
+            btnLabel="Adding Lesson Plan..."
+          />
+        }
       />
     </div>
   )
@@ -124,7 +140,23 @@ export default function AdminStudentPage() {
               </ul>
             </div>
             <PageHeading
+              userCard={true}
               pageTitle={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
+              content={
+                <div className="flex items-center gap-2">
+                  <div className="avatar">
+                    <div className="w-6 rounded-full">
+                      <Image
+                        src={`${student.data?.teacher.image}`}
+                        width={24}
+                        height={24}
+                        alt={"teacher"}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-sm">{student.data?.teacher.name}</div>
+                </div>
+              }
             />
           </div>
         )}
@@ -134,8 +166,14 @@ export default function AdminStudentPage() {
         ) : (
           <div>
             {student.data?.lessonPlans.length == 0 ? (
-              <div className="flex flex-col items-center justify-center gap-6 h-96">
-                <div>This student doesn&apos;t have any lesson plans.</div>
+              <div className="flex flex-col items-center justify-center gap-6 shadow h-96 rounded-xl">
+                <div className="text-6xl text-base-300">
+                  <HiOutlineFolderAdd />
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="font-bold">No lesson plans</div>
+                  <div className="">Get started by adding lesson plans.</div>
+                </div>
                 {addLessonPlanBtn}
               </div>
             ) : (
@@ -171,6 +209,7 @@ export default function AdminStudentPage() {
                               setIsOpenDeleteModal={setIsOpenDeleteModal}
                               deleteLessonPlan={deleteLessonPlan}
                               id={lessonPlan.id}
+                              deleteLoading={deleteLessonPlanTRPC.isLoading}
                             />
                           </div>
                         ))}

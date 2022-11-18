@@ -11,6 +11,7 @@ const defaultStudentSelect = Prisma.validator<Prisma.StudentSelect>()({
   userId: true,
   teacher: true,
   id: true,
+  lessonPlans: true,
 })
 
 export const studentRouter = router({
@@ -22,7 +23,7 @@ export const studentRouter = router({
   byId: publicProcedure
     .input(
       z.object({
-        id: z.string().optional(),
+        id: z.string(),
       })
     )
     .query(({ input }) => {
@@ -54,7 +55,7 @@ export const studentRouter = router({
       })
       return student
     }),
-  deleteSingleStudent: publicProcedure
+  deleteStudent: publicProcedure
     .input(
       z.object({
         id: z.string(),

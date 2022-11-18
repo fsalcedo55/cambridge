@@ -26,4 +26,15 @@ export const lessonPlanRouter = router({
       })
       return lessonPlan
     }),
+  delete: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const lessonPlan = await prisma.lessonPlan.delete({
+        where: input,
+      })
+    }),
 })

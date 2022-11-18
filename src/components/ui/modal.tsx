@@ -1,4 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react"
+import { Button } from "@ui/button"
 
 interface Props {
   isOpen: boolean
@@ -12,6 +13,8 @@ interface Props {
   actionButton?: string
   actionButtonStyle?: string
   actionButtonLoading?: string
+  loadingLabel?: string
+  btnIntent?: string
 }
 
 export default function Modal({
@@ -26,6 +29,8 @@ export default function Modal({
   actionButton,
   actionButtonStyle,
   actionButtonLoading,
+  loadingLabel,
+  btnIntent,
 }: Props) {
   return (
     <>
@@ -48,24 +53,24 @@ export default function Modal({
                 {description}
               </Dialog.Description>
               <div className="flex flex-col gap-2 mt-1">
-                {actionButton && loading ? (
-                  <button className="btn btn-error loading btn-disabled">
-                    {actionButtonLoading}
-                  </button>
-                ) : (
-                  <button
+                {actionButton && (
+                  <Button
                     onClick={() => actionFunction(currentData)}
-                    className={actionButtonStyle}
+                    loading={loading}
+                    loadingLabel={loadingLabel}
+                    size="medium"
+                    intent={btnIntent}
                   >
                     {actionButton}
-                  </button>
+                  </Button>
                 )}
-                <button
+                <Button
                   onClick={() => setIsOpen(false)}
-                  className="btn btn-outline"
+                  intent="cancel"
+                  size="medium"
                 >
                   {closeButton}
-                </button>
+                </Button>
               </div>
             </Dialog.Panel>
           </div>
