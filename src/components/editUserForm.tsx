@@ -1,95 +1,61 @@
-import { Formik, Field, Form, FormikHelpers } from "formik"
-import { useState } from "react"
-import Loading from "./ui/loading"
-
-interface Values {
-  role: string
-  user: any
-}
+import { useForm, SubmitHandler } from "react-hook-form"
+import Input from "@ui/input"
 
 interface Props {
-  user: any
+  student: any
 }
 
-export default function EditUserForm({ user }: Props) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [defaultValueState, setDefaultValueState] = useState("default")
+type Inputs = {
+  firstName: string
+  lastName: string
+  teachers: string
+}
 
-  console.log({ user })
+export default function EditUserForm({ student }: Props) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>()
+  const onSubmit: SubmitHandler<Inputs> = (data) =>
+    console.log("form data: ", data)
 
   return (
-    <div>
-      <div>
-        <h1>Name</h1>
-        <input
-          type="text"
-          className="w-full max-w-xs mb-2 input input-bordered"
-          disabled
-          placeholder={user?.name}
-        />
-        <Formik
-          initialValues={{
-            role: "",
-            user,
-          }}
-          onSubmit={(
-            values: Values,
-            { setSubmitting }: FormikHelpers<Values>
-          ) => {
-            setTimeout(() => {
-              const handleSubmit = async () => {
-                setIsLoading(true)
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+      <Input
+        label="First Name"
+        labelDefaultValue={student.studentFirstName}
+        inputName="firstName"
+        required={true}
+        register={{ ...register("firstName", { required: true }) }}
+      />
+      {/* <input
+        {...register("firstName", { required: true })}
+        className="w-full max-w-md input input-bordered input-primary"
+        defaultValue={student.studentFirstName}
+      /> */}
+      {errors.firstName && <span>This field is required</span>}
 
-                const body = { ...values }
-                console.log("body: ", body)
-                try {
-                  const response = await fetch("/api/users", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(body),
-                  })
-                  if (response.status !== 200) {
-                    console.log("something went wrong")
-                    //set an error banner here
-                  } else {
-                    console.log("form submitted successfully !!!")
-                    //set a success banner here
-                  }
-                  //check response, if success is false, dont take them to success page
-                } catch (error) {
-                  console.log("there was an error submitting", error)
-                }
-                setIsLoading(false)
-              }
-              handleSubmit()
-              setSubmitting(false)
-            }, 500)
-          }}
-        >
-          <Form className="flex flex-col">
-            <label htmlFor="role" className="my-2">
-              Role
-            </label>
-            <Field
-              name="role"
-              as="select"
-              className="w-full max-w-xs select select-bordered"
-              defaultValue={defaultValueState}
-            >
-              <option value={defaultValueState}>Assign a Role</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
-            </Field>
-            {isLoading ? (
-              <button className="max-w-xs my-4 btn loading">Processing</button>
-            ) : (
-              <button type="submit" className="max-w-xs my-4 btn">
-                Submit
-              </button>
-            )}
-          </Form>
-        </Formik>
-      </div>
-    </div>
+      <input
+        {...register("lastName", { required: true })}
+        className="w-full max-w-md input input-bordered input-primary"
+        defaultValue={student.studentLastName}
+      />
+      {errors.lastName && <span>This field is required</span>}
+
+      <select
+        {...register("teachers", { required: true })}
+        className="w-full max-w-md select select-bordered"
+        defaultValue={student.teacher.name}
+      >
+        <option value="">Select...</option>
+        <option value="Elizabeth Tejeda">Elizabeth Tejeda</option>
+        <option value="Paola Tellez">Paola Tellez</option>
+      </select>
+      {errors.teachers && <span>This field is required</span>}
+
+      <input type="submit" className="w-full max-w-md btn btn-primary" />
+    </form>
   )
 }

@@ -44,14 +44,14 @@ export default function Layout({ children }: Props) {
         {/* sidebar */}
         <div className="fixed flex-none p-4 h-96 top-16 drawer-side">
           {/* <label htmlFor="my-drawer-2" className="drawer-overlay"></label> */}
-          <ul className="w-64 p-4 h-72 bg-base-200 rounded-xl menu text-primary-content">
+          <ul className="w-64 p-4 h-72 bg-gradient-to-b from-gray-200 to-gray-100 rounded-xl menu text-base-content">
             {!session && loading && <Loading />}
             {session?.role == "admin" ? (
               <div className="text-lg font-semibold">
                 <li>
                   <Link href="/admin/dashboard">
                     {router.pathname === "/admin/dashboard" ? (
-                      <a className="active bg-base-300 text-primary-content">
+                      <a className="active bg-base-300 text-base-content">
                         <span>
                           <AiFillHome />
                         </span>
@@ -70,7 +70,7 @@ export default function Layout({ children }: Props) {
                 <li>
                   <Link href="/admin/users">
                     {router.pathname === "/admin/users" ? (
-                      <a className="active bg-base-300 text-primary-content">
+                      <a className="active bg-base-300 text-base-content">
                         <span>
                           <HiUsers />
                         </span>
@@ -89,7 +89,7 @@ export default function Layout({ children }: Props) {
                 <li>
                   <Link href="/admin/students">
                     {router.pathname.includes("/admin/students") ? (
-                      <a className="active bg-base-300 text-primary-content">
+                      <a className="active bg-base-300 text-base-content">
                         <span>
                           <FaChild />
                         </span>

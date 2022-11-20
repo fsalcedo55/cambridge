@@ -2,6 +2,7 @@ import { useFormik } from "formik"
 import { useState } from "react"
 import Loading from "./ui/loading"
 import * as Yup from "yup"
+import { Button } from "@ui/button"
 
 interface Values {
   studentFirstName: string
@@ -13,9 +14,16 @@ interface Values {
 interface Props {
   teachers?: any[]
   handleSubmit: any
+  btnLoading: boolean
+  btnLabel: string
 }
 
-export default function AddStudent({ teachers, handleSubmit }: Props) {
+export default function AddStudent({
+  teachers,
+  handleSubmit,
+  btnLoading,
+  btnLabel,
+}: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const [defaultValueState, setDefaultValueState] = useState("default")
 
@@ -128,9 +136,16 @@ export default function AddStudent({ teachers, handleSubmit }: Props) {
               ) : null}
             </div>
 
-            <button type="submit" className="max-w-md my-2 btn btn-primary">
-              Add Student
-            </button>
+            <Button
+              type="submit"
+              className="max-w-md my-2"
+              intent="primary"
+              size="medium"
+              loading={btnLoading}
+              loadingLabel={btnLabel}
+            >
+              + Add Student
+            </Button>
           </form>
         )}
       </div>

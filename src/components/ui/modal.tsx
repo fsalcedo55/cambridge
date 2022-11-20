@@ -14,7 +14,7 @@ interface Props {
   actionButtonStyle?: string
   actionButtonLoading?: string
   loadingLabel?: string
-  btnIntent?: string
+  btnIntent?: "primary" | "secondary" | "danger" | "cancel" | undefined
 }
 
 export default function Modal({

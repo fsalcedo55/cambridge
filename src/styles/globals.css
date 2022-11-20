@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Apply basic global styles to the body: */
+body {
+	@apply  bg-gradient-to-b from-base-100 to-gray-50
+}
+
+/* Remove trailing margin from forms for some browsers: */
+form {
+	margin-block-end: 0;
+}
+
+/* NOTE: Webkit autofill can be very annoying, and leave the auto-filled content invisible to the user. */
+/* We try to avoid this by setting this to a sane default, which seems to work based on some experimentation. */
+input:-webkit-autofill {
+	-webkit-text-fill-color: theme('colors.gray.800') !important;
+}

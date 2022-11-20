@@ -40,11 +40,13 @@ export function Button({
     <button
       type={type}
       className={clsx(`btn btn-sm ${className}`, {
-        "btn-primary": intent === "primary",
+        "bg-primary text-white border-0 hover:bg-primary-focus":
+          intent === "primary",
         "btn-secondary": intent === "secondary",
         "btn-error": intent === "danger",
-        "btn-outline": intent === "cancel",
-        "btn-disabled loading": loading,
+        "btn-outline bg-base-200 hover:bg-base-300 hover:text-base-content text-base-content border-0":
+          intent === "cancel",
+        "btn-disabled loading bg-base-300 text-base-content": loading,
         "btn-md": size === "medium",
         "btn-lg": size === "large",
       })}

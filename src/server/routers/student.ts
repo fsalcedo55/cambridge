@@ -66,4 +66,20 @@ export const studentRouter = router({
         where: input,
       })
     }),
+  editStudent: publicProcedure
+    .input(
+      z.object({
+        studentFirstName: z.string(),
+        studentLastName: z.string(),
+        studentDateOfBirth: z.string(),
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const student = await prisma.student.update({
+        where: { id: input.userId },
+        data: input,
+      })
+      return student
+    }),
 })

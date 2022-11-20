@@ -9,6 +9,7 @@ import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import { trpc } from "src/utils/trpc"
+import EditUserForm from "@src/components/editUserForm"
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
@@ -26,9 +27,10 @@ export default function Students() {
   const teachers = trpc.teacher.getAll.useQuery()
   const addStudent = trpc.student.add.useMutation()
   const deleteStudent = trpc.student.deleteStudent.useMutation()
-  const [currentStudent, setCurrentStudent] = useState(null)
+  const [currentStudent, setCurrentStudent] = useState<any>(null)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false)
 
   const handleAddStudentModal = async (values: any) => {
     try {
@@ -42,6 +44,11 @@ export default function Students() {
       console.log("Error adding new student to the database.")
     }
     setIsOpenAddModal(false)
+  }
+
+  const handleEditModal = async (student: any) => {
+    setIsOpenEditModal(true)
+    setCurrentStudent(student)
   }
 
   const handleDeleteModal = async (student: any) => {
@@ -89,14 +96,15 @@ export default function Students() {
         content: (
           <div className="flex gap-2 text-xl text-base-300">
             <div
-              className="hover:text-primary tooltip tooltip-top"
+              onClick={() => handleEditModal(student)}
+              className="cursor-pointer hover:text-primary tooltip tooltip-top"
               data-tip="Edit"
             >
               <RiPencilLine />
             </div>
             <div
               onClick={() => handleDeleteModal(student)}
-              className="hover:text-error tooltip tooltip-error tooltip-top"
+              className="cursor-pointer hover:text-error tooltip tooltip-error tooltip-top"
               data-tip="Delete"
             >
               <RiDeleteBinLine />
@@ -115,6 +123,14 @@ export default function Students() {
           <Loading />
         ) : (
           <div>
+            <div className="flex justify-end my-2">
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => setIsOpenAddModal(true)}
+              >
+                + Add Student
+              </button>
+            </div>
             {/* Delete Modal */}
             <Modal
               isOpen={isOpenDeleteModal}
@@ -126,12 +142,12 @@ export default function Students() {
               actionButton="Delete"
               actionButtonLoading="Deleting"
               btnIntent="danger"
-              title="Delete Student"
+              title={`Delete ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
               loadingLabel="Deleting..."
               description={
                 <div>
                   <p>This will permanently delete this student</p>
-                  <p className="mt-2">
+                  <p className="mt-2 mb-3">
                     Are you sure you want to delete this student? All of the
                     data will be permanently removed. This action cannot be
                     undone.
@@ -139,29 +155,30 @@ export default function Students() {
                 </div>
               }
             />
-            <div className="flex justify-end my-2">
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={() => setIsOpenAddModal(true)}
-              >
-                + Add Student
-              </button>
-              {/* Add Student Modal */}
-              <Modal
-                isOpen={isOpenAddModal}
-                setIsOpen={setIsOpenAddModal}
-                loading={addStudent.isLoading}
-                closeButton="Cancel"
-                title="Add Student"
-                loadingLabel="Adding Student..."
-                description={
-                  <AddStudent
-                    teachers={teachers.data}
-                    handleSubmit={handleAddStudentModal}
-                  />
-                }
-              />
-            </div>
+
+            {/* Add Student Modal */}
+            <Modal
+              isOpen={isOpenAddModal}
+              setIsOpen={setIsOpenAddModal}
+              closeButton="Cancel"
+              title="Add Student"
+              description={
+                <AddStudent
+                  teachers={teachers.data}
+                  handleSubmit={handleAddStudentModal}
+                  btnLabel="Adding Student..."
+                  btnLoading={addStudent.isLoading}
+                />
+              }
+            />
+            {/* Edit Student Modal */}
+            <Modal
+              isOpen={isOpenEditModal}
+              setIsOpen={setIsOpenEditModal}
+              closeButton="Cancel"
+              title={`Edit ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
+              description={<EditUserForm student={currentStudent} />}
+            />
             {students.isLoading ? (
               <Loading />
             ) : (
