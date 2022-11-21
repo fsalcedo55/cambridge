@@ -1,59 +1,3 @@
-/*
-import { useForm, SubmitHandler } from "react-hook-form"
-
-interface Props {
-  student: any
-}
-
-type Inputs = {
-  firstName: string
-  lastName: string
-  teachers: string
-}
-
-export default function EditUserForm({ student }: Props) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = (data) =>
-    console.log("form data: ", data)
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-      <input
-        {...register("firstName", { required: true })}
-        className="w-full max-w-md input input-bordered input-primary"
-        defaultValue={student.studentFirstName}
-      />
-      {errors.firstName && <span>This field is required</span>}
-
-      <input
-        {...register("lastName", { required: true })}
-        className="w-full max-w-md input input-bordered input-primary"
-        defaultValue={student.studentLastName}
-      />
-      {errors.lastName && <span>This field is required</span>}
-
-      <select
-        {...register("teachers", { required: true })}
-        className="w-full max-w-md select select-bordered"
-        defaultValue={student.teacher.name}
-      >
-        <option value="">Select...</option>
-        <option value="Elizabeth Tejeda">Elizabeth Tejeda</option>
-        <option value="Paola Tellez">Paola Tellez</option>
-      </select>
-      {errors.teachers && <span>This field is required</span>}
-
-      <input type="submit" className="w-full max-w-md btn btn-primary" />
-    </form>
-  )
-}
- */
-
 import React, { FC } from "react"
 import { useForm } from "react-hook-form"
 import { FormInput } from "@src/components/ui/form/form-input"
@@ -102,8 +46,6 @@ export default function EditStudentForm({
     closeModal()
   })
 
-  // const formattedArray = teachers?.map((el, idx) => el.name)
-
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2">
       <FormInput<RegistrationFormFields>
@@ -136,29 +78,12 @@ export default function EditStudentForm({
         errors={errors}
         defaultValue={currentStudent.studentDateOfBirth}
       />
-      {/* <FormInput<RegistrationFormFields>
-        id="teacher"
-        type="select"
-        name="teacher"
-        label="Teacher"
-        register={register}
-        rules={{ required: "You must select a teacher." }}
-        errors={errors}
-        defaultValue={currentStudent.teacher.name}
-        arrayData={teachers}
-        arrayDataElement="name"
-      /> */}
 
       <div>
         <label className="py-0 label">
           <span className="label-text">Teacher</span>
         </label>
-
         <select
-          // id="teacher"
-          // type="select"
-          // aria-label="teacher"
-          // defaultValue={currentStudent.teacher.name}
           className="w-full select select-bordered"
           {...register("teacher")}
         >
