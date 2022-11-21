@@ -1,6 +1,7 @@
 import { router, publicProcedure } from "../trpc"
 import { z } from "zod"
 import { PrismaClient, Prisma } from "@prisma/client"
+import { Input } from "@src/components/ui/form/input"
 
 const prisma = new PrismaClient()
 
@@ -15,7 +16,7 @@ const defaultStudentSelect = Prisma.validator<Prisma.StudentSelect>()({
 })
 
 export const studentRouter = router({
-  getAll: publicProcedure.query(() => {
+  getAll: publicProcedure.query(({ input }) => {
     return prisma.student.findMany({
       select: defaultStudentSelect,
     })
@@ -73,11 +74,12 @@ export const studentRouter = router({
         studentLastName: z.string(),
         studentDateOfBirth: z.string(),
         userId: z.string(),
+        id: z.string(),
       })
     )
     .mutation(async ({ input }) => {
       const student = await prisma.student.update({
-        where: { id: input.userId },
+        where: { id: input.id },
         data: input,
       })
       return student

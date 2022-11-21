@@ -55,8 +55,8 @@ model Student {
     studentFirstName   String
     studentLastName    String
     studentDateOfBirth String
-    teacher            User         @relation(fields: [userId], references: [id])
-    userId             String
+    teacher            User?        @relation(fields: [userId], references: [id])
+    userId             String?
     lessonPlans        LessonPlan[]
 }
 
@@ -74,7 +74,7 @@ model LessonPlan {
     date      String
     Student   Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
     studentId String
-    User      User                @relation(fields: [userId], references: [id], onDelete: SetNull)
+    User      User                @relation(fields: [userId], references: [id], onDelete: Restrict)
     userId    String
     comments  LessonPlanComment[]
 }

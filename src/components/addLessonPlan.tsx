@@ -50,7 +50,7 @@ export default function AddLessonPlan({
         />
         <div className="h-6">
           {formik.touched.title && formik.errors.title ? (
-            <p className="text-xs text-error">{formik.errors.title}</p>
+            <div className="text-xs text-error">{formik.errors.title}</div>
           ) : null}
         </div>
         <label>When did the class take place?</label>
@@ -65,7 +65,7 @@ export default function AddLessonPlan({
         />
         <div className="h-6">
           {formik.touched.date && formik.errors.date ? (
-            <p className="text-xs text-error">{formik.errors.date}</p>
+            <div className="text-xs text-error">{formik.errors.date}</div>
           ) : null}
         </div>
         <Button

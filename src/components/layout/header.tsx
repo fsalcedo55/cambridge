@@ -13,12 +13,14 @@ export default function Header() {
   return (
     <div className="flex justify-between w-screen h-16 pr-16 shadow navbar bg-base-100">
       <div className="flex justify-center w-64">
-        <Image
-          src="/Spanish-For-Us-Logo-1080p (2).png"
-          alt="logo"
-          width={118}
-          height={36}
-        />
+        <Link href="/">
+          <Image
+            src="/Spanish-For-Us-Logo-1080p (2).png"
+            alt="logo"
+            width={118}
+            height={36}
+          />
+        </Link>
       </div>
       <div>
         {!session && loading ? (

@@ -55,14 +55,14 @@ export default function Layout({ children }: Props) {
                         <span>
                           <AiFillHome />
                         </span>
-                        <span>Dashboard</span>
+                        <span>Admin Dashboard</span>
                       </a>
                     ) : (
                       <a>
                         <span>
                           <AiFillHome />
                         </span>
-                        <span>Dashboard</span>
+                        <span>Admin Dashboard</span>
                       </a>
                     )}
                   </Link>

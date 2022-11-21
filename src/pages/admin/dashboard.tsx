@@ -5,7 +5,7 @@ import { trpc } from "../../utils/trpc"
 export default function AdminDashboard() {
   return (
     <div>
-      <PageHeading pageTitle="Dashboard" />
+      <PageHeading pageTitle="Admin Dashboard" />
       <div className="flex gap-4 text-center">
         <div className="w-48 text-center rounded-xl h-36 bg-info/75">
           <div className="flex justify-center p-4 text-4xl">

@@ -1,20 +1,5 @@
 import clsx from "clsx"
 
-// const buttonStyles =
-// {  variants: {
-//     intent: {
-//       primary: "btn-primary",
-//       danger: "btn-error",
-//       disabled: "btn-disabled",
-//     },
-//     size: {
-//       small: "btn-sm",
-//       medium: "btn-md",
-//       large: "btn-lg",
-//     },
-//     defaultVariants: { intent: "primary", size: "small" },
-//   }}
-
 interface Props {
   children: React.ReactNode
   intent?: "primary" | "secondary" | "danger" | "cancel"
@@ -22,8 +7,9 @@ interface Props {
   loadingLabel?: string
   onClick?: any
   type?: "button" | "submit" | "reset" | undefined
-  size?: "medium" | "large"
+  size?: "small" | "medium" | "large"
   className?: string
+  fullWidth?: boolean
 }
 
 export function Button({
@@ -35,11 +21,12 @@ export function Button({
   type,
   size,
   className,
+  fullWidth,
 }: Props) {
   return (
     <button
       type={type}
-      className={clsx(`btn btn-sm ${className}`, {
+      className={clsx(`btn ${className}`, {
         "bg-primary text-white border-0 hover:bg-primary-focus":
           intent === "primary",
         "btn-secondary": intent === "secondary",
@@ -47,8 +34,10 @@ export function Button({
         "btn-outline bg-base-200 hover:bg-base-300 hover:text-base-content text-base-content border-0":
           intent === "cancel",
         "btn-disabled loading bg-base-300 text-base-content": loading,
+        "btn-sm": size === "small",
         "btn-md": size === "medium",
         "btn-lg": size === "large",
+        "min-w-full": fullWidth === true,
       })}
       onClick={onClick}
     >

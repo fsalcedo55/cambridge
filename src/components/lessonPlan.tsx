@@ -27,7 +27,7 @@ export default function LessonPlan({
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-semibold">{title}</h1>
-          <p className="text-xs text-base-300">{date}</p>
+          <div className="text-xs text-base-300">{date}</div>
         </div>
         <div className="flex gap-2">
           <button

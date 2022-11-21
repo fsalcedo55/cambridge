@@ -133,9 +133,9 @@ export default function AdminStudentPage() {
                   </Link>
                 </li>
                 <li>
-                  <p>
+                  <div>
                     {`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
-                  </p>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -146,15 +146,23 @@ export default function AdminStudentPage() {
                 <div className="flex items-center gap-2">
                   <div className="avatar">
                     <div className="w-6 rounded-full">
-                      <Image
-                        src={`${student.data?.teacher.image}`}
-                        width={24}
-                        height={24}
-                        alt={"teacher"}
-                      />
+                      {student.data?.teacher?.image ? (
+                        <Image
+                          src={`${student.data?.teacher.image}`}
+                          width={24}
+                          height={24}
+                          alt={"teacher"}
+                        />
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
-                  <div className="text-sm">{student.data?.teacher.name}</div>
+                  {student.data?.teacher?.name ? (
+                    <div className="text-sm">{student.data?.teacher.name}</div>
+                  ) : (
+                    ""
+                  )}
                 </div>
               }
             />

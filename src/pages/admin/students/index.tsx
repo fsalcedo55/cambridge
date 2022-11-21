@@ -9,7 +9,7 @@ import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import { trpc } from "src/utils/trpc"
-import EditUserForm from "@src/components/editUserForm"
+import EditStudentForm from "@src/components/editStudentForm"
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
@@ -27,6 +27,7 @@ export default function Students() {
   const teachers = trpc.teacher.getAll.useQuery()
   const addStudent = trpc.student.add.useMutation()
   const deleteStudent = trpc.student.deleteStudent.useMutation()
+  const editStudent = trpc.student.editStudent.useMutation()
   const [currentStudent, setCurrentStudent] = useState<any>(null)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
@@ -77,12 +78,16 @@ export default function Students() {
           <div className="flex items-center space-x-3">
             <div className="avatar">
               <div className="w-6 rounded-full">
-                <Image
-                  src={`${student.teacher?.image}`}
-                  width={24}
-                  height={24}
-                  alt={"teacher"}
-                />
+                {student.teacher?.image ? (
+                  <Image
+                    src={`${student.teacher?.image}`}
+                    width={24}
+                    height={24}
+                    alt={"teacher"}
+                  />
+                ) : (
+                  ""
+                )}
               </div>
             </div>
             <div>
@@ -177,7 +182,13 @@ export default function Students() {
               setIsOpen={setIsOpenEditModal}
               closeButton="Cancel"
               title={`Edit ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
-              description={<EditUserForm student={currentStudent} />}
+              description={
+                <EditStudentForm
+                  currentStudent={currentStudent}
+                  teachers={teachers.data}
+                  closeModal={() => setIsOpenEditModal(false)}
+                />
+              }
             />
             {students.isLoading ? (
               <Loading />

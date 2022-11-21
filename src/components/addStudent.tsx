@@ -69,9 +69,9 @@ export default function AddStudent({
             <div className="h-6">
               {formik.touched.studentFirstName &&
               formik.errors.studentFirstName ? (
-                <p className="text-xs text-error">
+                <div className="text-xs text-error">
                   {formik.errors.studentFirstName}
-                </p>
+                </div>
               ) : null}
             </div>
 
@@ -88,9 +88,9 @@ export default function AddStudent({
             <div className="h-6">
               {formik.touched.studentLastName &&
               formik.errors.studentLastName ? (
-                <p className="text-xs text-error">
+                <div className="text-xs text-error">
                   {formik.errors.studentLastName}
-                </p>
+                </div>
               ) : null}
             </div>
 
@@ -107,9 +107,9 @@ export default function AddStudent({
             <div className="h-6">
               {formik.touched.studentDateOfBirth &&
               formik.errors.studentDateOfBirth ? (
-                <p className="text-xs text-error">
+                <div className="text-xs text-error">
                   {formik.errors.studentDateOfBirth}
-                </p>
+                </div>
               ) : null}
             </div>
 
@@ -132,7 +132,9 @@ export default function AddStudent({
             </select>
             <div className="h-6">
               {formik.touched.teacher && formik.errors.teacher ? (
-                <p className="text-xs text-error">{formik.errors.teacher}</p>
+                <div className="text-xs text-error">
+                  {formik.errors.teacher}
+                </div>
               ) : null}
             </div>
 
