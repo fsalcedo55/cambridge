@@ -7,7 +7,7 @@ interface Props {
   loading?: boolean
   currentData?: any
   actionFunction?: any
-  title: string
+  title?: string
   description: any
   closeButton: string
   actionButton?: string
@@ -34,18 +34,27 @@ export default function Modal({
 }: Props) {
   return (
     <>
-      <Transition appear show={isOpen}>
+      <Transition
+        appear
+        show={isOpen}
+        enter="transition-opacity duration-75"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-550"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
         <Dialog
           open={isOpen}
           onClose={() => setIsOpen(false)}
           className="relative z-50"
         >
-          <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+          <div className="fixed inset-0 bg-black/20" aria-hidden="true" />
           <div className="fixed inset-0 flex items-center justify-center p-4">
             <Dialog.Panel className="w-full max-w-md p-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
               <Dialog.Title
                 as="h3"
-                className="text-lg font-medium leading-6 text-gray-900"
+                className="text-lg font-bold leading-6 text-gray-900"
               >
                 {title}
               </Dialog.Title>

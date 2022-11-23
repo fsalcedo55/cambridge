@@ -13,6 +13,7 @@ import { trpc } from "@src/utils/trpc"
 import { HiOutlineFolderAdd } from "react-icons/hi"
 import Image from "next/image"
 import { Button } from "@ui/button"
+import EditLessonPlan from "@src/components/editLessonPlan"
 
 type Student = {
   studentFirstName: string
@@ -27,10 +28,16 @@ export default function AdminStudentPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false)
+  const [isOpenAddCommentModal, setIsOpenAddCommentModal] = useState(false)
   const lessonId = useRef("")
-  const student = trpc.student.byId.useQuery({
-    id: id as string,
-  })
+  const currentLessonPlan = useRef({})
+  const student = trpc.student.byId.useQuery(
+    {
+      id: id as string,
+    },
+    { enabled: router.isReady }
+  )
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
 
@@ -40,7 +47,7 @@ export default function AdminStudentPage() {
         title: values.title,
         date: values.date,
         studentId: id as string,
-        userId: student.data?.teacher.id as string,
+        userId: student?.data?.teacher!.id as string,
       })
     } catch (error) {
       console.log(error)
@@ -63,111 +70,101 @@ export default function AdminStudentPage() {
     setIsOpenDeleteModal(false)
   }
 
-  // const deleteLessonPlan = async () => {
-  //   const body = lessonId.current
-  //   try {
-  //     const response = await fetch(`/api/lessonPlans/${body}`, {
-  //       method: "DELETE",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(body),
-  //     })
-  //     if (response.status != 200) {
-  //       console.log("Not able to delete lesson plan")
-  //     } else {
-  //       console.log("Lesson plan deleted")
-  //       setIsOpenDeleteModal(false)
-  //     }
-  //   } catch (error) {
-  //     console.log("Error deleting from API Call", error)
-  //   }
-  // }
+  const handleEditModal = async (lessonPlan: any) => {
+    currentLessonPlan.current = lessonPlan
+    setIsOpenEditModal(true)
+  }
+
+  const handleAddCommentModal = () => {
+    setIsOpenAddCommentModal(true)
+  }
 
   const addLessonPlanBtn = (
     <div>
-      <Button intent="primary" onClick={() => setIsOpen(true)}>
-        + Add Lesson Plan
-      </Button>
-      <Modal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        loading={isLoading}
-        closeButton="Cancel"
-        title="Add Lesson Plan"
-        description={
-          <AddLessonPlan
-            handleSubmit={handleAddLessonPlan}
-            btnLoading={addLessonPlan.isLoading}
-            btnLabel="Adding Lesson Plan..."
+      {router.isReady ? (
+        <div>
+          <Button intent="primary" onClick={() => setIsOpen(true)}>
+            + Add Lesson Plan
+          </Button>
+          <Modal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            loading={isLoading}
+            closeButton="Cancel"
+            title="Add Lesson Plan"
+            description={
+              <AddLessonPlan
+                handleSubmit={handleAddLessonPlan}
+                btnLoading={addLessonPlan.isLoading}
+                btnLabel="Adding Lesson Plan..."
+              />
+            }
           />
-        }
-      />
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   )
 
   if (session?.role === "admin") {
     return (
       <div>
-        {student.isLoading ? (
-          <div>
-            <div className="text-sm breadcrumbs">
-              <ul>
-                <li>
-                  <Link href="/admin/students">
-                    <a className="hover:text-primary">Students</a>
-                  </Link>
-                </li>
-                <li>
+        <div>
+          <div className="text-sm breadcrumbs">
+            <ul>
+              <li>
+                <Link href="/admin/students">
+                  <a className="hover:text-primary">Students</a>
+                </Link>
+              </li>
+              <li>
+                {student.isLoading ? (
                   <LoadingSkeleton height="short" />
-                </li>
-              </ul>
-            </div>
-            <PageHeading pageTitle={<LoadingSkeleton />} />
-          </div>
-        ) : (
-          <div>
-            <div className="text-sm breadcrumbs">
-              <ul>
-                <li>
-                  <Link href="/admin/students">
-                    <a className="hover:text-primary">Students</a>
-                  </Link>
-                </li>
-                <li>
+                ) : (
                   <div>
                     {`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
                   </div>
-                </li>
-              </ul>
-            </div>
-            <PageHeading
-              userCard={true}
-              pageTitle={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
-              content={
-                <div className="flex items-center gap-2">
-                  <div className="avatar">
-                    <div className="w-6 rounded-full">
-                      {student.data?.teacher?.image ? (
-                        <Image
-                          src={`${student.data?.teacher.image}`}
-                          width={24}
-                          height={24}
-                          alt={"teacher"}
-                        />
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                  {student.data?.teacher?.name ? (
-                    <div className="text-sm">{student.data?.teacher.name}</div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              }
-            />
+                )}
+              </li>
+            </ul>
           </div>
-        )}
+          {student.isLoading ? (
+            <PageHeading pageTitle={<LoadingSkeleton />} />
+          ) : (
+            <div>
+              <PageHeading
+                userCard={true}
+                pageTitle={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
+                content={
+                  <div className="flex items-center gap-2">
+                    <div className="avatar">
+                      <div className="w-6 rounded-full">
+                        {student.data?.teacher?.image && router.isReady ? (
+                          <Image
+                            src={`${student.data?.teacher.image}`}
+                            width={24}
+                            height={24}
+                            alt={"teacher"}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                    {student.data?.teacher?.name ? (
+                      <div className="text-sm">
+                        {student.data?.teacher.name}
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                }
+              />
+            </div>
+          )}
+        </div>
 
         {student.isLoading ? (
           <Loading />
@@ -213,11 +210,12 @@ export default function AdminStudentPage() {
                               handleDeleteModal={() =>
                                 handleDeleteModal(lessonPlan.id)
                               }
-                              isOpenDeleteModal={isOpenDeleteModal}
-                              setIsOpenDeleteModal={setIsOpenDeleteModal}
-                              deleteLessonPlan={deleteLessonPlan}
-                              id={lessonPlan.id}
-                              deleteLoading={deleteLessonPlanTRPC.isLoading}
+                              handleEditModal={() =>
+                                handleEditModal(lessonPlan)
+                              }
+                              handleAddCommentModal={() =>
+                                handleAddCommentModal()
+                              }
                             />
                           </div>
                         ))}
@@ -229,6 +227,48 @@ export default function AdminStudentPage() {
             )}
           </div>
         )}
+        {/* Add Comment Modal */}
+        <Modal
+          isOpen={isOpenAddCommentModal}
+          setIsOpen={setIsOpenAddCommentModal}
+          closeButton="Cancel"
+          description="Add comment..."
+        />
+        {/* Edit Modal */}
+        <Modal
+          isOpen={isOpenEditModal}
+          setIsOpen={setIsOpenEditModal}
+          closeButton="Cancel"
+          title="Edit Lesson Plan"
+          description={
+            <EditLessonPlan
+              currentLessonPlan={currentLessonPlan.current}
+              closeModal={() => setIsOpenEditModal(false)}
+            />
+          }
+        />
+        {/* Delete Modal */}
+        <Modal
+          isOpen={isOpenDeleteModal}
+          setIsOpen={setIsOpenDeleteModal}
+          loading={deleteLessonPlanTRPC.isLoading}
+          loadingLabel="Deleting..."
+          btnIntent="danger"
+          currentData={id}
+          actionFunction={deleteLessonPlan}
+          closeButton="Cancel"
+          actionButton="Delete"
+          actionButtonLoading="Deleting..."
+          actionButtonStyle="btn btn-error"
+          title="Delete Lesson Plan"
+          description={
+            <div>
+              <p className="mt-2">
+                Are you sure you want to delete this lesson plan?
+              </p>
+            </div>
+          }
+        />
       </div>
     )
   }

@@ -1,72 +1,59 @@
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
+import { TbMessage2 } from "react-icons/tb"
 import Modal from "@ui/modal"
+import Image from "next/image"
+import EditLessonPlan from "./editLessonPlan"
 
 interface Props {
   title: string
   date: any
   handleDeleteModal: () => void
-  deleteLessonPlan: any
-  isOpenDeleteModal: boolean
-  setIsOpenDeleteModal: (active: boolean) => void
-  id: string
-  deleteLoading: boolean
+  handleEditModal: () => void
+  handleAddCommentModal: () => void
 }
 
 export default function LessonPlan({
   title,
   date,
   handleDeleteModal,
-  deleteLessonPlan,
-  isOpenDeleteModal,
-  setIsOpenDeleteModal,
-  id,
-  deleteLoading,
+  handleEditModal,
+  handleAddCommentModal,
 }: Props) {
   return (
-    <div className="flex flex-col px-4 py-1 rounded-lg shadow bg-gradient-to-b from-[#f9fafb] border border-base-300">
+    <div className="flex flex-col px-4 py-1 border rounded-lg shadow bg-base-100 border-base-300">
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-semibold">{title}</h1>
           <div className="text-xs text-base-300">{date}</div>
         </div>
-        <div className="flex gap-2">
-          <button
-            className="text-xl text-base-300 hover:text-primary tooltip tooltip-left"
-            data-tip="Edit"
+        <div className="flex text-base-content">
+          <div
+            onClick={handleAddCommentModal}
+            className="flex items-center gap-0.5 hover:bg-base-200 rounded cursor-pointer p-2"
           >
-            <RiPencilLine />
-          </button>
-
-          <button
-            type="button"
-            className="text-xl text-base-300 hover:text-error tooltip tooltip-error tooltip-right"
-            data-tip="Delete"
+            <div className="text-xl">
+              <TbMessage2 />
+            </div>
+            <div className="text-sm">Comment</div>
+          </div>
+          <div
+            onClick={handleEditModal}
+            className="flex items-center gap-0.5 hover:bg-base-200 rounded cursor-pointer p-2"
+          >
+            <div className="text-xl">
+              <RiPencilLine />
+            </div>
+            <div className="text-sm">Edit</div>
+          </div>
+          <div
             onClick={handleDeleteModal}
+            className="flex items-center gap-0.5 hover:bg-base-200 rounded cursor-pointer p-2"
           >
-            <RiDeleteBinLine />
-          </button>
-          {/* Delete Modal */}
-          <Modal
-            isOpen={isOpenDeleteModal}
-            setIsOpen={setIsOpenDeleteModal}
-            loading={deleteLoading}
-            loadingLabel="Deleting..."
-            btnIntent="danger"
-            currentData={id}
-            actionFunction={deleteLessonPlan}
-            closeButton="Cancel"
-            actionButton="Delete"
-            actionButtonLoading="Deleting..."
-            actionButtonStyle="btn btn-error"
-            title="Delete Lesson Plan"
-            description={
-              <div>
-                <p className="mt-2">
-                  Are you sure you want to delete this lesson plan?
-                </p>
-              </div>
-            }
-          />
+            <div className="text-xl">
+              <RiDeleteBinLine />
+            </div>
+            <div className="text-sm">Delete</div>
+          </div>
         </div>
       </div>
       <div className="h-2"></div>
@@ -74,7 +61,12 @@ export default function LessonPlan({
       <div className="flex justify-start w-full gap-4 mb-2">
         <div className="avatar">
           <div className="w-10 h-10 rounded-full">
-            <img src="https://placeimg.com/192/192/people" />
+            <Image
+              src="https://placeimg.com/192/192/people"
+              alt="teacher-photo"
+              height={40}
+              width={40}
+            />
           </div>
         </div>
         <div className="flex flex-col px-3 py-1 text-sm rounded-lg bg-base-200">

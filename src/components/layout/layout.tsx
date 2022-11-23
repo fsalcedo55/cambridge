@@ -44,10 +44,10 @@ export default function Layout({ children }: Props) {
         {/* sidebar */}
         <div className="fixed flex-none p-4 h-96 top-16 drawer-side">
           {/* <label htmlFor="my-drawer-2" className="drawer-overlay"></label> */}
-          <ul className="w-64 p-4 h-72 bg-gradient-to-b from-gray-200 to-gray-100 rounded-xl menu text-base-content">
+          <ul className="w-64 h-64 p-4 bg-gradient-to-t from-gray-200 via-gray-50 to-gray-200 rounded-xl menu text-base-content">
             {!session && loading && <Loading />}
             {session?.role == "admin" ? (
-              <div className="text-lg font-semibold">
+              <div className="font-bold text-md">
                 <li>
                   <Link href="/admin/dashboard">
                     {router.pathname === "/admin/dashboard" ? (

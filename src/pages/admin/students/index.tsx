@@ -17,7 +17,7 @@ const studentTableHeaders = [
   { id: "header3", label: "Age" },
   { id: "header4", label: "Teacher" },
   { id: "header5", label: "Lesson Plans" },
-  { id: "header6", label: "" },
+  { id: "header6", label: "Actions" },
 ]
 
 export default function Students() {
@@ -96,7 +96,17 @@ export default function Students() {
           </div>
         ),
       },
-      { content: student.lessonPlans.length },
+      {
+        content: (
+          <div>
+            {student.lessonPlans.length > 0 ? (
+              <div className="font-bold">{student.lessonPlans.length}</div>
+            ) : (
+              <div>-</div>
+            )}{" "}
+          </div>
+        ),
+      },
       {
         content: (
           <div className="flex gap-2 text-xl text-base-300">

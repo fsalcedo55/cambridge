@@ -1,11 +1,10 @@
-import React, { FC } from "react"
 import { useForm } from "react-hook-form"
 import { FormInput } from "@src/components/ui/form/form-input"
 import { Button } from "./ui/button"
 import { trpc } from "@src/utils/trpc"
 import { Student } from "@src/interfaces"
 
-export type RegistrationFormFields = {
+export type FormFields = {
   firstName: string
   lastName: string
   dateOfBirth: string
@@ -28,7 +27,7 @@ export default function EditStudentForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegistrationFormFields>()
+  } = useForm<FormFields>()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -47,8 +46,8 @@ export default function EditStudentForm({
   })
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-2">
-      <FormInput<RegistrationFormFields>
+    <form onSubmit={onSubmit} className="flex flex-col">
+      <FormInput<FormFields>
         id="firstName"
         type="text"
         name="firstName"
@@ -58,7 +57,7 @@ export default function EditStudentForm({
         errors={errors}
         defaultValue={currentStudent.studentFirstName}
       />
-      <FormInput<RegistrationFormFields>
+      <FormInput<FormFields>
         id="lastName"
         type="text"
         name="lastName"
@@ -68,7 +67,7 @@ export default function EditStudentForm({
         errors={errors}
         defaultValue={currentStudent.studentLastName}
       />
-      <FormInput<RegistrationFormFields>
+      <FormInput<FormFields>
         id="dateOfBirth"
         type="date"
         name="dateOfBirth"
@@ -79,7 +78,7 @@ export default function EditStudentForm({
         defaultValue={currentStudent.studentDateOfBirth}
       />
 
-      <div>
+      <div className="mb-2">
         <label className="py-0 label">
           <span className="label-text">Teacher</span>
         </label>

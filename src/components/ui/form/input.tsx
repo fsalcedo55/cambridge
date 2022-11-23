@@ -89,62 +89,23 @@ export const Input: FC<InputProps> = forwardRef<HTMLInputElement, InputProps>(
         <label className="py-0 label">
           <span className="label-text">{label}</span>
         </label>
-        {type === "select" ? (
-          <select
-            id={id}
-            // ref={ref}
-            name={name}
-            // type={type}
-            aria-label={label}
-            // defaultValue={defaultValue}
-            className="w-full select select-bordered"
-            {...props}
-          >
-            <option disabled selected>
-              {defaultValue}
-            </option>
-            {arrayData?.map((el, idx) => (
-              <option key={idx}>{el.name}</option>
-            ))}
-          </select>
-        ) : (
-          <input
-            id={id}
-            ref={ref}
-            name={name}
-            type={type}
-            aria-label={label}
-            placeholder={placeholder}
-            defaultValue={defaultValue}
-            className="w-full input input-bordered"
-            {...props}
-          />
-        )}
-        <label className="pt-0 pb-1.5 label">
-          {errors ? (
-            <div className="h-0.5 label-text-alt text-error">{errors}</div>
-          ) : (
-            <div className="h-0.5"></div>
-          )}
-        </label>
 
-        {/* <div className="w-full">
-       <label className="label">
-         <span className="label-text">{label}</span>
-      <span className="label-text-alt">Alt label 1</span>
-     </label>
-    <input
-      // {...register(inputName, { required: required })}
-      type="text"
-      placeholder={labelPlaceholder}
-      className="w-full input input-bordered"
-      defaultValue={defaultValue}
-    />
-       <label className="label">
-         <span className="label-text-alt text-error">{error}</span>
-         <span className="label-text-alt">Alt label 3</span>
-       </label>
-    </div> */}
+        <input
+          id={id}
+          ref={ref}
+          name={name}
+          type={type}
+          aria-label={label}
+          placeholder={placeholder}
+          defaultValue={defaultValue}
+          className="w-full input input-bordered"
+          {...props}
+        />
+        <label className="pt-0 pb-1.5 label">
+          <div className="h-2 label-text-alt text-error">
+            {errors ? errors : ""}
+          </div>
+        </label>
       </div>
     )
   }

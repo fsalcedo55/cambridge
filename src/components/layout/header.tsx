@@ -59,7 +59,12 @@ export default function Header() {
                       className="btn btn-ghost btn-circle avatar"
                     >
                       <div className="w-10 rounded-full">
-                        <img src={session.user.image} />
+                        <Image
+                          src={session?.user?.image}
+                          alt="user-photo"
+                          width={40}
+                          height={40}
+                        />
                       </div>
                     </label>
                   )}
