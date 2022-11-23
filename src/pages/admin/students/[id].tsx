@@ -1,19 +1,20 @@
-import PageHeading from "@src/components/ui/pageHeading"
+import { useEffect, useRef, useState } from "react"
+import { getSession, useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import { useRef, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Tab } from "@headlessui/react"
+import { trpc } from "@src/utils/trpc"
+import PageHeading from "@src/components/ui/pageHeading"
+import EditLessonPlan from "@src/components/editLessonPlan"
 import Loading from "@ui/loading"
 import LoadingSkeleton from "@ui/loadingSkeleton"
-import { useSession } from "next-auth/react"
-import LessonPlan from "@components/lessonPlan"
 import Modal from "@ui/modal"
-import AddLessonPlan from "@components/addLessonPlan"
-import { trpc } from "@src/utils/trpc"
-import { HiOutlineFolderAdd } from "react-icons/hi"
-import Image from "next/image"
 import { Button } from "@ui/button"
-import EditLessonPlan from "@src/components/editLessonPlan"
+import LessonPlan from "@components/lessonPlan"
+import AddLessonPlan from "@components/addLessonPlan"
+import { HiOutlineFolderAdd } from "react-icons/hi"
+import AddLessonPlanCommentInput from "@components/addLessonPlanCommentInput"
 
 type Student = {
   studentFirstName: string
@@ -41,6 +42,16 @@ export default function AdminStudentPage() {
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
 
+  const currentSession = async () => {
+    const mySession = await getSession()
+    console.log("mySession: ", mySession)
+    return
+  }
+
+  useEffect(() => {
+    currentSession()
+  }, [])
+
   const handleAddLessonPlan = async (values: any) => {
     try {
       await addLessonPlan.mutateAsync({
@@ -52,9 +63,10 @@ export default function AdminStudentPage() {
     } catch (error) {
       console.log(error)
     }
-    console.log("values: ", values)
     setIsOpen(false)
   }
+
+  console.log("session: ", session)
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -83,7 +95,7 @@ export default function AdminStudentPage() {
     <div>
       {router.isReady ? (
         <div>
-          <Button intent="primary" onClick={() => setIsOpen(true)}>
+          <Button intent="primary" size="small" onClick={() => setIsOpen(true)}>
             + Add Lesson Plan
           </Button>
           <Modal
@@ -231,8 +243,14 @@ export default function AdminStudentPage() {
         <Modal
           isOpen={isOpenAddCommentModal}
           setIsOpen={setIsOpenAddCommentModal}
+          title="Post a comment"
           closeButton="Cancel"
-          description="Add comment..."
+          description={
+            <AddLessonPlanCommentInput
+              currentLessonPlan={currentLessonPlan.current}
+              closeModal={() => setIsOpenAddCommentModal(false)}
+            />
+          }
         />
         {/* Edit Modal */}
         <Modal

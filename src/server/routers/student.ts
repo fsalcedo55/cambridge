@@ -1,7 +1,6 @@
 import { router, publicProcedure } from "../trpc"
 import { z } from "zod"
 import { PrismaClient, Prisma } from "@prisma/client"
-import { Input } from "@src/components/ui/form/input"
 
 const prisma = new PrismaClient()
 

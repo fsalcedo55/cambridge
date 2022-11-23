@@ -80,9 +80,11 @@ model LessonPlan {
 }
 
 model LessonPlanComment {
-    id           String      @id @default(cuid())
-    LessonPlan   LessonPlan? @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
-    lessonPlanId String?
-    User         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-    userId       String?
+    id           String     @id @default(cuid())
+    content      String
+    // createdAt    DateTime
+    LessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
+    lessonPlanId String
+    User         User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+    userId       String
 }

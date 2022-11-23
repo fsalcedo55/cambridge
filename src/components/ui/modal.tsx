@@ -7,7 +7,7 @@ interface Props {
   loading?: boolean
   currentData?: any
   actionFunction?: any
-  title?: string
+  title: string
   description: any
   closeButton: string
   actionButton?: string
