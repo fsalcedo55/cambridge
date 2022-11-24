@@ -36,7 +36,7 @@ export default function EditLessonPlan({
     closeModal()
   })
 
-  console.log("ref currentlessonplan: ", currentLessonPlan)
+  console.log("ref currentlessonplan in edit: ", currentLessonPlan)
 
   return (
     <form onSubmit={onSubmit}>

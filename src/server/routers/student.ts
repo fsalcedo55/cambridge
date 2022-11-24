@@ -36,7 +36,20 @@ export const studentRouter = router({
           userId: true,
           teacher: true,
           id: true,
-          lessonPlans: true,
+          lessonPlans: {
+            select: {
+              id: true,
+              title: true,
+              date: true,
+              comments: {
+                select: {
+                  id: true,
+                  content: true,
+                  User: true,
+                },
+              },
+            },
+          },
         },
       })
     }),

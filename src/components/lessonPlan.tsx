@@ -10,6 +10,7 @@ interface Props {
   handleDeleteModal: () => void
   handleEditModal: () => void
   handleAddCommentModal: () => void
+  comments: any[]
 }
 
 export default function LessonPlan({
@@ -18,6 +19,7 @@ export default function LessonPlan({
   handleDeleteModal,
   handleEditModal,
   handleAddCommentModal,
+  comments,
 }: Props) {
   return (
     <div className="flex flex-col px-4 py-1 border rounded-lg shadow bg-base-100 border-base-300">
@@ -58,25 +60,31 @@ export default function LessonPlan({
       </div>
       <div className="h-2"></div>
       {/* Avatar and comment */}
-      <div className="flex justify-start w-full gap-4 mb-2">
-        <div className="avatar">
-          <div className="w-10 h-10 rounded-full">
-            <Image
-              src="https://placeimg.com/192/192/people"
-              alt="teacher-photo"
-              height={40}
-              width={40}
-            />
+      {comments &&
+        comments.map((comment) => (
+          <div
+            key={comment.id}
+            className="flex justify-start w-full gap-4 mb-2"
+          >
+            <div className="avatar">
+              <div className="w-10 h-10 rounded-full">
+                <Image
+                  src={comment.User.image}
+                  alt="teacher-photo"
+                  height={40}
+                  width={40}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col px-3 py-1 text-sm rounded-lg bg-base-200">
+              <div className="flex items-center gap-2">
+                <p className="font-bold">{comment.User.name}</p>
+                <div className="text-xs font-light opacity-60">Timestamp</div>
+              </div>
+              <p>{comment.content}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col px-3 py-1 text-sm rounded-lg bg-base-200">
-          <div className="flex items-center gap-2">
-            <p className="font-bold">Elizabeth Tejeda</p>
-            <div className="text-xs font-light opacity-60">Timestamp</div>
-          </div>
-          <p>Description of the class goes here</p>
-        </div>
-      </div>
+        ))}
     </div>
   )
 }

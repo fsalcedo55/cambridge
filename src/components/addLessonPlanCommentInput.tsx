@@ -10,13 +10,19 @@ export type FormFields = {
 interface Props {
   currentLessonPlan: any
   closeModal: () => void
+  userId: string | undefined
 }
 
 export default function AddLessonPlanCommentInput({
   currentLessonPlan,
   closeModal,
+  userId,
 }: Props) {
-  const addLessonPlanComment = trpc.lessonPlanComment.add.useMutation()
+  const addLessonPlanComment = trpc.lessonPlanComment.add.useMutation({
+    onMutate: () => {
+      console.log("Comment added")
+    },
+  })
 
   const {
     register,
@@ -30,7 +36,7 @@ export default function AddLessonPlanCommentInput({
         content: data.content,
         lessonPlanId: currentLessonPlan.id,
         //TODO: need to figure out how to get global user state to use current user ID
-        userId: currentLessonPlan.id,
+        userId: userId!,
       })
     } catch (error) {}
     closeModal()

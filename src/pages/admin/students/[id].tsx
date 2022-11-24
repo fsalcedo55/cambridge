@@ -15,6 +15,8 @@ import LessonPlan from "@components/lessonPlan"
 import AddLessonPlan from "@components/addLessonPlan"
 import { HiOutlineFolderAdd } from "react-icons/hi"
 import AddLessonPlanCommentInput from "@components/addLessonPlanCommentInput"
+import type { GetServerSidePropsContext } from "next"
+import { getAuthSession } from "@src/server/common/get-server-session"
 
 type Student = {
   studentFirstName: string
@@ -22,7 +24,15 @@ type Student = {
   userId: string
 }
 
-export default function AdminStudentPage() {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  return {
+    props: {
+      sessionSSR: await getAuthSession(ctx),
+    },
+  }
+}
+
+export default function AdminStudentPage({ sessionSSR }: any) {
   const { data: session } = useSession()
   const router = useRouter()
   const { id } = router.query
@@ -41,16 +51,7 @@ export default function AdminStudentPage() {
   )
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
-
-  const currentSession = async () => {
-    const mySession = await getSession()
-    console.log("mySession: ", mySession)
-    return
-  }
-
-  useEffect(() => {
-    currentSession()
-  }, [])
+  const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
 
   const handleAddLessonPlan = async (values: any) => {
     try {
@@ -65,8 +66,6 @@ export default function AdminStudentPage() {
     }
     setIsOpen(false)
   }
-
-  console.log("session: ", session)
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -87,7 +86,8 @@ export default function AdminStudentPage() {
     setIsOpenEditModal(true)
   }
 
-  const handleAddCommentModal = () => {
+  const handleAddCommentModal = async (lessonPlan: any) => {
+    currentLessonPlan.current = lessonPlan
     setIsOpenAddCommentModal(true)
   }
 
@@ -118,6 +118,8 @@ export default function AdminStudentPage() {
       )}
     </div>
   )
+
+  console.log(student.data)
 
   if (session?.role === "admin") {
     return (
@@ -226,8 +228,9 @@ export default function AdminStudentPage() {
                                 handleEditModal(lessonPlan)
                               }
                               handleAddCommentModal={() =>
-                                handleAddCommentModal()
+                                handleAddCommentModal(lessonPlan)
                               }
+                              comments={lessonPlan.comments}
                             />
                           </div>
                         ))}
@@ -249,6 +252,7 @@ export default function AdminStudentPage() {
             <AddLessonPlanCommentInput
               currentLessonPlan={currentLessonPlan.current}
               closeModal={() => setIsOpenAddCommentModal(false)}
+              userId={me.data?.id}
             />
           }
         />
