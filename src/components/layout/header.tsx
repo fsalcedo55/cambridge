@@ -3,16 +3,13 @@ import Loading from "../ui/loading"
 import Image from "next/image"
 import Link from "next/link"
 
-// The approach used in this component shows how to build a sign in and sign out
-// component that works on pages which support both client and server side
-// rendering, and avoids any flash incorrect content on initial page load.
 export default function Header() {
   const { data: session, status } = useSession()
   const loading = status === "loading"
 
   return (
     <div className="flex justify-between w-screen h-16 pr-16 shadow navbar bg-base-100">
-      <div className="flex justify-center w-64">
+      <div className="flex justify-center w-64 gap-2">
         <Link href="/">
           <Image
             src="/Spanish-For-Us-Logo-1080p (2).png"
@@ -21,6 +18,11 @@ export default function Header() {
             height={36}
           />
         </Link>
+        {session?.role === "admin" ? (
+          <div className="text-sm font-bold">Admin Portal</div>
+        ) : (
+          <div className="text-sm font-bold">Teacher Portal</div>
+        )}
       </div>
       <div>
         {!session && loading ? (
@@ -72,11 +74,19 @@ export default function Header() {
                     tabIndex={0}
                     className="p-2 mt-3 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
                   >
-                    <li>
-                      <Link href={`/admin/dashboard`}>
-                        <p>Dashboard</p>
-                      </Link>
-                    </li>
+                    {session?.role === "admin" ? (
+                      <li>
+                        <Link href={`/admin/dashboard`}>
+                          <p>Dashboard</p>
+                        </Link>
+                      </li>
+                    ) : (
+                      <li>
+                        <Link href={`/teacher/dashboard`}>
+                          <p>Dashboard</p>
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <a
                         href={`/api/auth/signout`}

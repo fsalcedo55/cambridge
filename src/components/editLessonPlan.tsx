@@ -66,6 +66,7 @@ export default function EditLessonPlan({
         intent="primary"
         size="medium"
         className="my-2"
+        // loading={true}
         loading={editLessonPlan.isLoading}
         loadingLabel="Saving..."
         fullWidth

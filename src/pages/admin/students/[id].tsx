@@ -33,6 +33,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 export default function AdminStudentPage({ sessionSSR }: any) {
+  console.log("sessionSSR", sessionSSR)
   const { data: session } = useSession()
   const router = useRouter()
   const { id } = router.query
@@ -52,6 +53,8 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
+
+  console.log("me", me.data)
 
   const handleAddLessonPlan = async (values: any) => {
     try {
@@ -214,26 +217,38 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                   </div>
 
                   <Tab.Panels>
-                    <Tab.Panel className="flex flex-col gap-4">
+                    <Tab.Panel className="flex flex-col gap-2">
                       {student.data?.lessonPlans &&
-                        student.data?.lessonPlans.map((lessonPlan) => (
-                          <div key={lessonPlan.id}>
-                            <LessonPlan
-                              title={lessonPlan.title}
-                              date={lessonPlan.date}
-                              handleDeleteModal={() =>
-                                handleDeleteModal(lessonPlan.id)
-                              }
-                              handleEditModal={() =>
-                                handleEditModal(lessonPlan)
-                              }
-                              handleAddCommentModal={() =>
-                                handleAddCommentModal(lessonPlan)
-                              }
-                              comments={lessonPlan.comments}
-                            />
-                          </div>
-                        ))}
+                        student.data?.lessonPlans
+                          .slice(0)
+                          .reverse()
+                          .map((lessonPlan) => (
+                            <div key={lessonPlan.id}>
+                              <LessonPlan
+                                title={lessonPlan.title}
+                                date={lessonPlan.date}
+                                handleDeleteModal={() =>
+                                  handleDeleteModal(lessonPlan.id)
+                                }
+                                handleEditModal={() =>
+                                  handleEditModal(lessonPlan)
+                                }
+                                handleAddCommentModal={() =>
+                                  handleAddCommentModal(lessonPlan)
+                                }
+                                comments={lessonPlan.comments}
+                                AddLessonPlanCommentInput={
+                                  <AddLessonPlanCommentInput
+                                    currentLessonPlan={lessonPlan}
+                                    closeModal={() =>
+                                      setIsOpenAddCommentModal(false)
+                                    }
+                                    user={me.data}
+                                  />
+                                }
+                              />
+                            </div>
+                          ))}
                     </Tab.Panel>
                     <Tab.Panel>Settings go here</Tab.Panel>
                   </Tab.Panels>
@@ -243,7 +258,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
           </div>
         )}
         {/* Add Comment Modal */}
-        <Modal
+        {/* <Modal
           isOpen={isOpenAddCommentModal}
           setIsOpen={setIsOpenAddCommentModal}
           title="Post a comment"
@@ -255,7 +270,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
               userId={me.data?.id}
             />
           }
-        />
+        /> */}
         {/* Edit Modal */}
         <Modal
           isOpen={isOpenEditModal}

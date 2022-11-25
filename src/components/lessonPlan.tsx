@@ -11,6 +11,7 @@ interface Props {
   handleEditModal: () => void
   handleAddCommentModal: () => void
   comments: any[]
+  AddLessonPlanCommentInput: any
 }
 
 export default function LessonPlan({
@@ -20,27 +21,19 @@ export default function LessonPlan({
   handleEditModal,
   handleAddCommentModal,
   comments,
+  AddLessonPlanCommentInput,
 }: Props) {
   return (
-    <div className="flex flex-col px-4 py-1 border rounded-lg shadow bg-base-100 border-base-300">
-      <div className="flex justify-between">
-        <div className="flex items-center gap-2">
+    <div className="flex flex-col border rounded-lg shadow border-base-300">
+      <div className="flex justify-between px-4 py-2">
+        <div className="flex items-center gap-2 ">
           <h1 className="text-xl font-semibold">{title}</h1>
           <div className="text-xs text-base-300">{date}</div>
         </div>
         <div className="flex text-base-content">
           <div
-            onClick={handleAddCommentModal}
-            className="flex items-center gap-0.5 hover:bg-base-200 rounded cursor-pointer p-2"
-          >
-            <div className="text-xl">
-              <TbMessage2 />
-            </div>
-            <div className="text-sm">Comment</div>
-          </div>
-          <div
             onClick={handleEditModal}
-            className="flex items-center gap-0.5 hover:bg-base-200 rounded cursor-pointer p-2"
+            className="flex items-center gap-0.5 hover:bg-accent text-base-300 hover:text-base-content rounded cursor-pointer p-2"
           >
             <div className="text-xl">
               <RiPencilLine />
@@ -49,7 +42,7 @@ export default function LessonPlan({
           </div>
           <div
             onClick={handleDeleteModal}
-            className="flex items-center gap-0.5 hover:bg-base-200 rounded cursor-pointer p-2"
+            className="flex items-center gap-0.5 hover:bg-accent text-base-300 hover:text-base-content rounded cursor-pointer p-2"
           >
             <div className="text-xl">
               <RiDeleteBinLine />
@@ -58,33 +51,47 @@ export default function LessonPlan({
           </div>
         </div>
       </div>
-      <div className="h-2"></div>
       {/* Avatar and comment */}
-      {comments &&
-        comments.map((comment) => (
-          <div
-            key={comment.id}
-            className="flex justify-start w-full gap-4 mb-2"
-          >
-            <div className="avatar">
-              <div className="w-10 h-10 rounded-full">
-                <Image
-                  src={comment.User.image}
-                  alt="teacher-photo"
-                  height={40}
-                  width={40}
-                />
+      <div className="px-2 pb-2 rounded-lg bg-base-100">
+        {comments &&
+          comments.map((comment) => (
+            <div key={comment.id}>
+              <div className="h-2"></div>
+              <div className="flex justify-start w-full gap-4 mb-2">
+                <div className="avatar">
+                  <div className="w-10 h-10 rounded-full">
+                    <Image
+                      src={comment.User.image}
+                      alt="teacher-photo"
+                      height={40}
+                      width={40}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col px-3 py-1 text-sm rounded-lg shadow bg-base-200">
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold">{comment.User.name}</p>
+                    <div className="text-xs font-light opacity-60">
+                      Timestamp
+                    </div>
+                  </div>
+                  <p>{comment.content}</p>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col px-3 py-1 text-sm rounded-lg bg-base-200">
-              <div className="flex items-center gap-2">
-                <p className="font-bold">{comment.User.name}</p>
-                <div className="text-xs font-light opacity-60">Timestamp</div>
-              </div>
-              <p>{comment.content}</p>
-            </div>
-          </div>
-        ))}
+          ))}
+
+        <div>{AddLessonPlanCommentInput}</div>
+        {/* <div
+        onClick={handleAddCommentModal}
+        className="flex items-center gap-0.5 hover:bg-base-200 rounded cursor-pointer p-2"
+      >
+        <div className="text-xl">
+          <TbMessage2 />
+        </div>
+        <div className="text-sm">Comment</div>
+      </div> */}
+      </div>
     </div>
   )
 }

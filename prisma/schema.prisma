@@ -81,7 +81,7 @@ model LessonPlan {
 
 model LessonPlanComment {
     id           String     @id @default(cuid())
-    content      String
+    content      String     @db.Text
     // createdAt    DateTime
     LessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
     lessonPlanId String

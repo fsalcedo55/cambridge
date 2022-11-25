@@ -24,24 +24,41 @@ export function Button({
   fullWidth,
 }: Props) {
   return (
-    <button
-      type={type}
-      className={clsx(`btn ${className}`, {
-        "bg-primary text-white border-0 hover:bg-primary-focus":
-          intent === "primary",
-        "btn-secondary": intent === "secondary",
-        "btn-error": intent === "danger",
-        "btn-outline bg-base-200 hover:bg-base-300 hover:text-base-content text-base-content border-0":
-          intent === "cancel",
-        "btn-disabled loading bg-base-300 text-base-content": loading,
-        "btn-sm": size === "small",
-        "btn-md": size === "medium",
-        "btn-lg": size === "large",
-        "min-w-full": fullWidth === true,
-      })}
-      onClick={onClick}
-    >
-      {loading ? loadingLabel : children}
-    </button>
+    <>
+      {loading ? (
+        <button
+          className={clsx(
+            `normal-case btn no-animation bg-base-200 loading text-base-content ${className}`,
+            {
+              "min-w-full": fullWidth === true,
+            }
+          )}
+        >
+          {loadingLabel}
+        </button>
+      ) : (
+        <button
+          type={type}
+          className={clsx(`btn no-animation normal-case ${className}`, {
+            "bg-primary text-white border-0 hover:bg-primary-focus":
+              intent === "primary",
+            "btn-secondary": intent === "secondary",
+            "btn-error": intent === "danger",
+            "btn-outline bg-base-200 hover:bg-base-300 hover:text-base-content text-base-content border-0":
+              intent === "cancel",
+            // "!btn-disabled loading !bg-base-300 text-base-content":
+            //   loading === true,
+            "btn-sm": size === "small",
+            "btn-md": size === "medium",
+            "btn-lg": size === "large",
+            "min-w-full": fullWidth === true,
+          })}
+          onClick={onClick}
+        >
+          {children}
+          {/* {loading ? loadingLabel : children} */}
+        </button>
+      )}
+    </>
   )
 }
