@@ -37,11 +37,13 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const { data: session } = useSession()
   const router = useRouter()
   const { id } = router.query
-  const [isLoading, setIsLoading] = useState(false)
+  const [showComments, setShowComments] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
+  const [lessonPlanClicked, setLessonPlanClicked] = useState<number>()
   const [isOpenAddCommentModal, setIsOpenAddCommentModal] = useState(false)
+  const lessonPlanRef = useRef<number>()
   const lessonId = useRef("")
   const currentLessonPlan = useRef({})
   const student = trpc.student.byId.useQuery(
@@ -104,7 +106,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
           <Modal
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            loading={isLoading}
             closeButton="Cancel"
             title="Add Lesson Plan"
             description={
@@ -122,7 +123,10 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     </div>
   )
 
-  console.log(student.data)
+  const handleShowComments = (idx: number) => {
+    lessonPlanRef.current = idx
+    // console.log("lessonPlanRef.current", lessonPlanRef.current)
+  }
 
   if (session?.role === "admin") {
     return (
@@ -222,7 +226,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                         student.data?.lessonPlans
                           .slice(0)
                           .reverse()
-                          .map((lessonPlan) => (
+                          .map((lessonPlan, idx) => (
                             <div key={lessonPlan.id}>
                               <LessonPlan
                                 title={lessonPlan.title}

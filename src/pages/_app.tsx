@@ -3,7 +3,6 @@ import "../styles/globals.css"
 import type { AppProps, AppType } from "next/app"
 import NextNProgress from "nextjs-progressbar"
 import type { Session } from "next-auth"
-// import type { Session } from "auth"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import {
   Hydrate,
@@ -12,6 +11,7 @@ import {
 } from "@tanstack/react-query"
 import Layout from "../components/layout/layout"
 import { trpc } from "../utils/trpc"
+import type { NextComponentType, NextPageContext } from "next"
 
 const queryClient = new QueryClient({
   // defaultOptions: {

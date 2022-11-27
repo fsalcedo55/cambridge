@@ -15,21 +15,21 @@ export default function Sidebar() {
     <div>
       <div className="fixed flex-none p-4 h-96 top-16 drawer-side">
         {/* <label htmlFor="my-drawer-2" className="drawer-overlay"></label> */}
-        <ul className="w-64 h-64 p-4 bg-gradient-to-t from-gray-200 via-gray-50 to-gray-200 rounded-xl menu text-base-content">
+        <ul className="w-64 h-64 p-4 bg-primary/10 rounded-xl menu text-base-content">
           {!session && loading && <Loading />}
           {session?.role == "admin" ? (
             <div className="font-bold text-md">
               <li>
                 <Link href="/admin/dashboard">
                   {router.pathname === "/admin/dashboard" ? (
-                    <a className="active bg-base-300 text-base-content">
+                    <a className="active bg-primary/10 text-primary-content">
                       <span>
                         <AiFillHome />
                       </span>
                       <span>Admin Dashboard</span>
                     </a>
                   ) : (
-                    <a>
+                    <a className="hover:bg-primary/25">
                       <span>
                         <AiFillHome />
                       </span>
@@ -41,14 +41,14 @@ export default function Sidebar() {
               <li>
                 <Link href="/admin/users">
                   {router.pathname === "/admin/users" ? (
-                    <a className="active bg-base-300 text-base-content">
+                    <a className="active bg-primary/10 text-primary-content">
                       <span>
                         <HiUsers />
                       </span>
                       <span>Users</span>
                     </a>
                   ) : (
-                    <a>
+                    <a className="hover:bg-primary/25">
                       <span>
                         <HiUsers />
                       </span>
@@ -60,14 +60,14 @@ export default function Sidebar() {
               <li>
                 <Link href="/admin/students">
                   {router.pathname.includes("/admin/students") ? (
-                    <a className="active bg-base-300 text-base-content">
+                    <a className="active bg-primary/10 text-primary-content">
                       <span>
                         <FaChild />
                       </span>
                       <span>Students</span>
                     </a>
                   ) : (
-                    <a>
+                    <a className="hover:bg-primary/25">
                       <span>
                         <FaChild />
                       </span>
@@ -78,22 +78,44 @@ export default function Sidebar() {
               </li>
             </div>
           ) : (
-            <div>
+            <div className="font-bold text-md">
               <li>
-                <a>
-                  <span>
-                    <AiFillHome />
-                  </span>
-                  <span>Teacher Dashboard</span>
-                </a>
+                <Link href="/teacher/dashboard">
+                  {router.pathname.includes("/teacher/dashboard") ? (
+                    <a className="active bg-primary/10 text-primary-content">
+                      <span>
+                        <AiFillHome />
+                      </span>
+                      <span>Teacher Dashboard</span>
+                    </a>
+                  ) : (
+                    <a className="hover:bg-primary/25">
+                      <span>
+                        <AiFillHome />
+                      </span>
+                      <span>Teacher Dashboard</span>
+                    </a>
+                  )}
+                </Link>
               </li>
               <li>
-                <a>
-                  <span>
-                    <FaChild />
-                  </span>
-                  <span>Students</span>
-                </a>
+                <Link href="/teacher/students">
+                  {router.pathname.includes("/teacher/students") ? (
+                    <a className="active bg-primary/10 text-primary-content">
+                      <span>
+                        <FaChild />
+                      </span>
+                      <span>Students</span>
+                    </a>
+                  ) : (
+                    <a className="hover:bg-primary/25">
+                      <span>
+                        <FaChild />
+                      </span>
+                      <span>Students</span>
+                    </a>
+                  )}
+                </Link>
               </li>
             </div>
           )}

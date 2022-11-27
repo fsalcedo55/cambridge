@@ -26,7 +26,7 @@ interface IRows {
 export default function Table({ rows, headers }: TableProps) {
   return (
     <div className="overflow-x-auto rounded-lg shadow">
-      <table className="table w-full table-zebra table-compact">
+      <table className="table w-full">
         {/* <!-- head --> */}
         <thead>
           <tr>
@@ -50,7 +50,7 @@ export default function Table({ rows, headers }: TableProps) {
                 ) : cell.icon ? (
                   <td
                     key={cellIdx}
-                    className="text-xl text-base-300 hover:text-primary"
+                    className="text-xl text-base-200 hover:text-primary"
                   >
                     {cell.content}
                   </td>

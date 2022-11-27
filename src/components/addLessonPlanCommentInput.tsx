@@ -67,7 +67,7 @@ export default function AddLessonPlanCommentInput({
                 {...register("content")}
                 type="text"
                 id="text"
-                className="block w-full p-3 border rounded-full pl-14 pr-28 text-base-content border-base-300 bg-base-200 focus:ring-primary focus:border-primary"
+                className="block w-full p-3 border rounded-full pl-14 pr-28 text-base-content border-base-300 bg-base-100 focus:ring-primary focus:border-primary"
                 placeholder="Add a comment..."
                 required
               />
