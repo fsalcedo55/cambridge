@@ -11,114 +11,59 @@ export default function Sidebar() {
   const router = useRouter()
   const loading = status === "loading"
 
+  const adminMenu = [
+    { icon: <AiFillHome />, name: "Admin Dashboard", href: "/admin/dashboard" },
+    { icon: <HiUsers />, name: "Users", href: "/admin/users" },
+    { icon: <FaChild />, name: "Students", href: "/admin/students" },
+  ]
+
+  const teacherMenu = [
+    {
+      icon: <AiFillHome />,
+      name: "Teacher Dashboard",
+      href: "/teacher/dashboard",
+    },
+    { icon: <FaChild />, name: "Students", href: "/teacher/students" },
+  ]
+
+  type Menu = {
+    icon: JSX.Element
+    name: string
+    href: string
+  }[]
+
+  const menuMap = (arr: Menu) => {
+    return arr.map((item: any, idx: number) => (
+      <li key={idx}>
+        <Link href={item.href}>
+          {router.pathname.includes(item.href) ? (
+            <a className="active bg-neutral-200 text-primary-content">
+              <span>{item.icon}</span>
+              <span>{item.name}</span>
+            </a>
+          ) : (
+            <a className="hover:bg-neutral-300">
+              <span>{item.icon}</span>
+              <span>{item.name}</span>
+            </a>
+          )}
+        </Link>
+      </li>
+    ))
+  }
+
   return (
     <div>
       <div className="fixed flex-none p-4 h-96 top-16 drawer-side">
-        {/* <label htmlFor="my-drawer-2" className="drawer-overlay"></label> */}
-        <ul className="w-64 h-64 p-4 bg-primary/10 rounded-xl menu text-base-content">
+        <ul className="w-64 h-64 p-4 bg-neutral-100 rounded-xl menu text-neutral-900">
           {!session && loading && <Loading />}
-          {session?.role == "admin" ? (
-            <div className="font-bold text-md">
-              <li>
-                <Link href="/admin/dashboard">
-                  {router.pathname === "/admin/dashboard" ? (
-                    <a className="active bg-primary/10 text-primary-content">
-                      <span>
-                        <AiFillHome />
-                      </span>
-                      <span>Admin Dashboard</span>
-                    </a>
-                  ) : (
-                    <a className="hover:bg-primary/25">
-                      <span>
-                        <AiFillHome />
-                      </span>
-                      <span>Admin Dashboard</span>
-                    </a>
-                  )}
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin/users">
-                  {router.pathname === "/admin/users" ? (
-                    <a className="active bg-primary/10 text-primary-content">
-                      <span>
-                        <HiUsers />
-                      </span>
-                      <span>Users</span>
-                    </a>
-                  ) : (
-                    <a className="hover:bg-primary/25">
-                      <span>
-                        <HiUsers />
-                      </span>
-                      <span>Users</span>
-                    </a>
-                  )}
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin/students">
-                  {router.pathname.includes("/admin/students") ? (
-                    <a className="active bg-primary/10 text-primary-content">
-                      <span>
-                        <FaChild />
-                      </span>
-                      <span>Students</span>
-                    </a>
-                  ) : (
-                    <a className="hover:bg-primary/25">
-                      <span>
-                        <FaChild />
-                      </span>
-                      <span>Students</span>
-                    </a>
-                  )}
-                </Link>
-              </li>
-            </div>
-          ) : (
-            <div className="font-bold text-md">
-              <li>
-                <Link href="/teacher/dashboard">
-                  {router.pathname.includes("/teacher/dashboard") ? (
-                    <a className="active bg-primary/10 text-primary-content">
-                      <span>
-                        <AiFillHome />
-                      </span>
-                      <span>Teacher Dashboard</span>
-                    </a>
-                  ) : (
-                    <a className="hover:bg-primary/25">
-                      <span>
-                        <AiFillHome />
-                      </span>
-                      <span>Teacher Dashboard</span>
-                    </a>
-                  )}
-                </Link>
-              </li>
-              <li>
-                <Link href="/teacher/students">
-                  {router.pathname.includes("/teacher/students") ? (
-                    <a className="active bg-primary/10 text-primary-content">
-                      <span>
-                        <FaChild />
-                      </span>
-                      <span>Students</span>
-                    </a>
-                  ) : (
-                    <a className="hover:bg-primary/25">
-                      <span>
-                        <FaChild />
-                      </span>
-                      <span>Students</span>
-                    </a>
-                  )}
-                </Link>
-              </li>
-            </div>
-          )}
+          <div className="font-bold text-md">
+            {session?.role == "admin" ? (
+              <>{menuMap(adminMenu)}</>
+            ) : (
+              <>{menuMap(teacherMenu)}</>
+            )}
+          </div>
         </ul>
       </div>
     </div>

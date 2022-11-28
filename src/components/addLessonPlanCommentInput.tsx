@@ -11,13 +11,13 @@ export type FormFields = {
 
 interface Props {
   currentLessonPlan: any
-  closeModal: () => void
+  // closeModal: () => void
   user: any
 }
 
 export default function AddLessonPlanCommentInput({
   currentLessonPlan,
-  closeModal,
+  // closeModal,
   user,
 }: Props) {
   const addLessonPlanComment = trpc.lessonPlanComment.add.useMutation({
@@ -42,7 +42,7 @@ export default function AddLessonPlanCommentInput({
         userId: user.id,
       })
     } catch (error) {}
-    closeModal()
+    // closeModal()
   })
 
   return (

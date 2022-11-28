@@ -40,11 +40,11 @@ export function Button({
         <button
           type={type}
           className={clsx(`btn no-animation normal-case ${className}`, {
-            "bg-primary text-white border-0 hover:bg-primary-focus":
+            "bg-primary-500 text-white border-0 hover:bg-primary-700":
               intent === "primary",
             "btn-secondary": intent === "secondary",
             "btn-error": intent === "danger",
-            "btn-outline bg-base-200 hover:bg-base-300 hover:text-base-content text-base-content border-0":
+            "btn-outline bg-neutral-100 hover:bg-neutral-200 hover:text-base-content text-base-content border-0":
               intent === "cancel",
             // "!btn-disabled loading !bg-base-300 text-base-content":
             //   loading === true,

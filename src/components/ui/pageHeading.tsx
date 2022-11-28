@@ -23,7 +23,7 @@ export default function PageHeading({
       ) : (
         <div>
           {userCard ? (
-            <div className="mb-2 text-2xl text-gray-900">
+            <div className="mb-2 text-2xl text-neutral-900">
               <div className="font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight">
                 {pageTitle}
               </div>
@@ -32,7 +32,7 @@ export default function PageHeading({
               </div>
             </div>
           ) : (
-            <div className="mb-6 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+            <div className="mb-6 text-2xl font-bold leading-7 text-neutral-900 sm:truncate sm:text-3xl sm:tracking-tight">
               {pageTitle}
             </div>
           )}

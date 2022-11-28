@@ -11,6 +11,7 @@ import Image from "next/image"
 import { trpc } from "src/utils/trpc"
 import EditStudentForm from "@src/components/editStudentForm"
 import LoadingSkeleton from "@src/components/ui/loadingSkeleton"
+import { Button } from "@ui/button"
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
@@ -140,12 +141,13 @@ export default function Students() {
         ) : (
           <div>
             <div className="flex justify-end my-2">
-              <button
-                className="btn btn-primary btn-sm"
+              <Button
+                size="small"
+                intent="primary"
                 onClick={() => setIsOpenAddModal(true)}
               >
                 + Add Student
-              </button>
+              </Button>
             </div>
             {/* Delete Modal */}
             <Modal

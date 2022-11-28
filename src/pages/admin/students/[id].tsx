@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react"
-import { getSession, useSession } from "next-auth/react"
+import { useRef, useState } from "react"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import Image from "next/image"
@@ -37,13 +37,9 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const { data: session } = useSession()
   const router = useRouter()
   const { id } = router.query
-  const [showComments, setShowComments] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
-  const [lessonPlanClicked, setLessonPlanClicked] = useState<number>()
-  const [isOpenAddCommentModal, setIsOpenAddCommentModal] = useState(false)
-  const lessonPlanRef = useRef<number>()
   const lessonId = useRef("")
   const currentLessonPlan = useRef({})
   const student = trpc.student.byId.useQuery(
@@ -55,8 +51,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
-
-  console.log("me", me.data)
 
   const handleAddLessonPlan = async (values: any) => {
     try {
@@ -93,7 +87,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
 
   const handleAddCommentModal = async (lessonPlan: any) => {
     currentLessonPlan.current = lessonPlan
-    setIsOpenAddCommentModal(true)
+    // setIsOpenAddCommentModal(true)
   }
 
   const addLessonPlanBtn = (
@@ -122,11 +116,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
       )}
     </div>
   )
-
-  const handleShowComments = (idx: number) => {
-    lessonPlanRef.current = idx
-    // console.log("lessonPlanRef.current", lessonPlanRef.current)
-  }
 
   if (session?.role === "admin") {
     return (
@@ -244,9 +233,9 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                                 AddLessonPlanCommentInput={
                                   <AddLessonPlanCommentInput
                                     currentLessonPlan={lessonPlan}
-                                    closeModal={() =>
-                                      setIsOpenAddCommentModal(false)
-                                    }
+                                    // closeModal={() =>
+                                    //   setIsOpenAddCommentModal(false)
+                                    // }
                                     user={me.data}
                                   />
                                 }
@@ -261,20 +250,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
             )}
           </div>
         )}
-        {/* Add Comment Modal */}
-        {/* <Modal
-          isOpen={isOpenAddCommentModal}
-          setIsOpen={setIsOpenAddCommentModal}
-          title="Post a comment"
-          closeButton="Cancel"
-          description={
-            <AddLessonPlanCommentInput
-              currentLessonPlan={currentLessonPlan.current}
-              closeModal={() => setIsOpenAddCommentModal(false)}
-              userId={me.data?.id}
-            />
-          }
-        /> */}
         {/* Edit Modal */}
         <Modal
           isOpen={isOpenEditModal}

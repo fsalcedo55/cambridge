@@ -4,7 +4,7 @@
 
 /* Apply basic global styles to the body: */
 body {
-	@apply  bg-gradient-to-t from-primary/5 to-white
+	@apply  bg-gradient-to-t from-neutral-50 to-white
 }
 
 /* Remove trailing margin from forms for some browsers: */
