@@ -43,19 +43,14 @@ export default function Table({ rows, headers }: TableProps) {
               {row.cells?.map((cell, cellIdx) =>
                 cell.href ? (
                   <Link href={cell.href} key={cellIdx}>
-                    <td className="font-bold link link-hover hover:text-primary">
+                    <td className="font-bold link link-hover hover:text-primary-500 text-neutral-700">
                       {cell.content}
                     </td>
                   </Link>
-                ) : cell.icon ? (
-                  <td
-                    key={cellIdx}
-                    className="text-xl text-base-200 hover:text-primary"
-                  >
+                ) : (
+                  <td key={cellIdx} className="text-neutral-700">
                     {cell.content}
                   </td>
-                ) : (
-                  <td key={cellIdx}>{cell.content}</td>
                 )
               )}
             </tr>

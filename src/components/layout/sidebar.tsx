@@ -1,10 +1,10 @@
 import Link from "next/link"
-import Loading from "../ui/loading"
 import { useSession } from "next-auth/react"
 import { AiFillHome } from "react-icons/ai"
 import { useRouter } from "next/router"
 import { HiUsers } from "react-icons/hi"
 import { FaChild } from "react-icons/fa"
+import LoadingSkeleton from "../ui/loadingSkeleton"
 
 export default function Sidebar() {
   const { data: session, status } = useSession()
@@ -37,12 +37,12 @@ export default function Sidebar() {
       <li key={idx}>
         <Link href={item.href}>
           {router.pathname.includes(item.href) ? (
-            <a className="active bg-neutral-200 text-primary-content">
+            <a className="active bg-primary-100 text-primary-900 hover:bg-primary-200">
               <span>{item.icon}</span>
               <span>{item.name}</span>
             </a>
           ) : (
-            <a className="hover:bg-neutral-300">
+            <a className="hover:bg-primary-200 text-primary-900">
               <span>{item.icon}</span>
               <span>{item.name}</span>
             </a>
@@ -55,15 +55,21 @@ export default function Sidebar() {
   return (
     <div>
       <div className="fixed flex-none p-4 h-96 top-16 drawer-side">
-        <ul className="w-64 h-64 p-4 bg-neutral-100 rounded-xl menu text-neutral-900">
-          {!session && loading && <Loading />}
-          <div className="font-bold text-md">
-            {session?.role == "admin" ? (
-              <>{menuMap(adminMenu)}</>
-            ) : (
-              <>{menuMap(teacherMenu)}</>
-            )}
-          </div>
+        <ul className="w-64 h-64 p-4 bg-white shadow rounded-xl menu text-primary-800">
+          {!session && loading ? (
+            <div className="flex flex-col gap-4">
+              <LoadingSkeleton />
+              <LoadingSkeleton />
+            </div>
+          ) : (
+            <div className="font-bold text-md">
+              {session?.role == "admin" ? (
+                <>{menuMap(adminMenu)}</>
+              ) : (
+                <>{menuMap(teacherMenu)}</>
+              )}
+            </div>
+          )}
         </ul>
       </div>
     </div>

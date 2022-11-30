@@ -28,7 +28,7 @@ export function Button({
       {loading ? (
         <button
           className={clsx(
-            `normal-case btn no-animation bg-base-200 loading text-base-content ${className}`,
+            `normal-case btn no-animation bg-neutral-100 loading text-neutral-900 text-base ${className}`,
             {
               "min-w-full": fullWidth === true,
             }
@@ -39,24 +39,25 @@ export function Button({
       ) : (
         <button
           type={type}
-          className={clsx(`btn no-animation normal-case ${className}`, {
-            "bg-primary-500 text-white border-0 hover:bg-primary-700":
-              intent === "primary",
-            "btn-secondary": intent === "secondary",
-            "btn-error": intent === "danger",
-            "btn-outline bg-neutral-100 hover:bg-neutral-200 hover:text-base-content text-base-content border-0":
-              intent === "cancel",
-            // "!btn-disabled loading !bg-base-300 text-base-content":
-            //   loading === true,
-            "btn-sm": size === "small",
-            "btn-md": size === "medium",
-            "btn-lg": size === "large",
-            "min-w-full": fullWidth === true,
-          })}
+          className={clsx(
+            `btn no-animation normal-case text-base font-semibold ${className}`,
+            {
+              "bg-primary-500 text-white border-0 hover:bg-primary-700":
+                intent === "primary",
+              "btn-secondary": intent === "secondary",
+              "bg-danger-100 text-danger-900 hover:bg-danger-200":
+                intent === "danger",
+              "btn-outline bg-neutral-100 hover:bg-neutral-200 text-neutral-900 hover:text-neutral-900 border-0":
+                intent === "cancel",
+              "btn-sm": size === "small",
+              "btn-md": size === "medium",
+              "btn-lg": size === "large",
+              "min-w-full": fullWidth === true,
+            }
+          )}
           onClick={onClick}
         >
           {children}
-          {/* {loading ? loadingLabel : children} */}
         </button>
       )}
     </>

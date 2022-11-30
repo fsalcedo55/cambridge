@@ -40,6 +40,9 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
+  const [isOpenDeleteCommentModal, setIsOpenDeleteCommentModal] =
+    useState(false)
+  const [commentId, setCommentId] = useState<string>()
   const lessonId = useRef("")
   const currentLessonPlan = useRef({})
   const student = trpc.student.byId.useQuery(
@@ -50,6 +53,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   )
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
+  const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
 
   const handleAddLessonPlan = async (values: any) => {
@@ -85,9 +89,21 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     setIsOpenEditModal(true)
   }
 
-  const handleAddCommentModal = async (lessonPlan: any) => {
-    currentLessonPlan.current = lessonPlan
-    // setIsOpenAddCommentModal(true)
+  const handleDeleteCommentModal = () => {
+    setIsOpenDeleteCommentModal(true)
+    console.log("firing?")
+  }
+
+  const deleteCommentEvent = async (commentId: string) => {
+    console.log("commentId inside delete comment: ", commentId)
+    try {
+      await deleteComment.mutateAsync({
+        id: commentId,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    setIsOpenDeleteCommentModal(false)
   }
 
   const addLessonPlanBtn = (
@@ -116,6 +132,8 @@ export default function AdminStudentPage({ sessionSSR }: any) {
       )}
     </div>
   )
+
+  console.log("commentID: ", commentId)
 
   if (session?.role === "admin") {
     return (
@@ -181,7 +199,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
         ) : (
           <div>
             {student.data?.lessonPlans.length == 0 ? (
-              <div className="flex flex-col items-center justify-center gap-6 shadow h-96 rounded-xl">
+              <div className="flex flex-col items-center justify-center gap-6 shadow bg-neutral-50 h-96 rounded-xl">
                 <div className="text-6xl text-base-300">
                   <HiOutlineFolderAdd />
                 </div>
@@ -226,10 +244,11 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                                 handleEditModal={() =>
                                   handleEditModal(lessonPlan)
                                 }
-                                handleAddCommentModal={() =>
-                                  handleAddCommentModal(lessonPlan)
+                                handleDeleteCommentModal={
+                                  handleDeleteCommentModal
                                 }
                                 comments={lessonPlan.comments}
+                                setCommentId={setCommentId}
                                 AddLessonPlanCommentInput={
                                   <AddLessonPlanCommentInput
                                     currentLessonPlan={lessonPlan}
@@ -239,6 +258,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                                     user={me.data}
                                   />
                                 }
+                                currentUserId={me.data?.id!}
                               />
                             </div>
                           ))}
@@ -263,7 +283,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
             />
           }
         />
-        {/* Delete Modal */}
+        {/* Delete Lesson Plan Modal */}
         <Modal
           isOpen={isOpenDeleteModal}
           setIsOpen={setIsOpenDeleteModal}
@@ -281,6 +301,28 @@ export default function AdminStudentPage({ sessionSSR }: any) {
             <div>
               <p className="mt-2">
                 Are you sure you want to delete this lesson plan?
+              </p>
+            </div>
+          }
+        />
+        {/* Delete Comment Modal */}
+        <Modal
+          isOpen={isOpenDeleteCommentModal}
+          setIsOpen={setIsOpenDeleteCommentModal}
+          loading={deleteComment.isLoading}
+          loadingLabel="Deleting Comment..."
+          btnIntent="danger"
+          currentData={commentId}
+          actionFunction={deleteCommentEvent}
+          closeButton="Cancel"
+          actionButton="Delete"
+          // actionButtonLoading="Deleting..."
+          // actionButtonStyle="btn btn-error"
+          title="Delete Comment"
+          description={
+            <div>
+              <p className="mt-2">
+                Are you sure you want to delete this comment?
               </p>
             </div>
           }

@@ -19,4 +19,15 @@ export const lessonPlanCommentRouter = router({
       })
       return comment
     }),
+  deleteById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const comment = await prisma.lessonPlanComment.delete({
+        where: { id: input.id },
+      })
+    }),
 })

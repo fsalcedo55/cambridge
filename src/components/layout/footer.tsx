@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export default function Footer() {
   return (
-    <footer className="items-center p-4 footer bg-primary text-base-100">
+    <footer className="items-center p-4 footer bg-primary-500 text-base-100">
       <div className="items-center grid-flow-col">
         <svg
           width="36"

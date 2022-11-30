@@ -2,6 +2,11 @@
 const defaultTheme = require("tailwindcss/defaultTheme")
 
 module.exports = {
+  variants: {
+    extend: {
+      display: ["group-hover"],
+    },
+  },
   daisyui: {
     themes: [
       {
