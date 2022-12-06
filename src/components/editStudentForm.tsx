@@ -9,6 +9,7 @@ export type FormFields = {
   lastName: string
   dateOfBirth: string
   teacher: string
+  status: string
 }
 
 interface Props {
@@ -36,6 +37,7 @@ export default function EditStudentForm({
         studentLastName: data.lastName as string,
         studentDateOfBirth: data.dateOfBirth as string,
         userId: data.teacher,
+        status: data.status,
         id: currentStudent.id as string,
       })
     } catch (error) {
@@ -94,6 +96,22 @@ export default function EditStudentForm({
               {teacher.name}
             </option>
           ))}
+        </select>
+      </div>
+
+      <div className="mb-2">
+        <label className="py-0 label">
+          <span className="label-text">Status</span>
+        </label>
+        <select
+          className="w-full select select-bordered"
+          {...register("status")}
+        >
+          <option disabled selected value={currentStudent.status}>
+            {currentStudent.status}
+          </option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
         </select>
       </div>
 

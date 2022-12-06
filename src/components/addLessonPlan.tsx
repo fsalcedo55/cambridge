@@ -4,6 +4,7 @@ import { Button } from "@ui/button"
 
 interface Values {
   title: string
+  slidesUrl: string
   date: string
 }
 
@@ -22,12 +23,14 @@ export default function AddLessonPlan({
     initialValues: {
       title: "",
       date: "",
+      slidesUrl: "",
     },
     validationSchema: Yup.object({
       title: Yup.string()
         .max(50, "Must be 50 characters or less")
         .required("Required"),
       date: Yup.string().required("Required"),
+      slidesUrl: Yup.string(),
     }),
     onSubmit: (values, actions) => {
       console.log(values, actions)
@@ -68,6 +71,23 @@ export default function AddLessonPlan({
             <div className="text-xs text-error">{formik.errors.date}</div>
           ) : null}
         </div>
+
+        <label>Link</label>
+        <input
+          id="slidesUrl"
+          name="slidesUrl"
+          type="text"
+          className="w-full max-w-md mb-1 input input-bordered"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.slidesUrl}
+        />
+        <div className="h-6">
+          {formik.touched.slidesUrl && formik.errors.slidesUrl ? (
+            <div className="text-xs text-error">{formik.errors.slidesUrl}</div>
+          ) : null}
+        </div>
+
         <Button
           type="submit"
           className="max-w-md my-2"

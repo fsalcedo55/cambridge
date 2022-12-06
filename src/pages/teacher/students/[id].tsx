@@ -25,6 +25,11 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [commentId, setCommentId] = useState<string>()
+
+  const [isOpenDeleteCommentModal, setIsOpenDeleteCommentModal] =
+    useState(false)
+
   const router = useRouter()
   const { id } = router.query
   const student = trpc.student.byId.useQuery(
@@ -36,6 +41,8 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
   const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
+  const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
+
   const lessonId = useRef("")
   const currentLessonPlan = useRef({})
 
@@ -47,6 +54,8 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
       current: true,
     },
   ]
+
+  console.log("student: ", student.data)
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -74,11 +83,27 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
         date: values.date,
         studentId: id as string,
         userId: student?.data?.teacher!.id as string,
+        slidesUrl: values.slidesUrl,
       })
     } catch (error) {
       console.log(error)
     }
     setIsOpen(false)
+  }
+
+  const handleDeleteCommentModal = () => {
+    setIsOpenDeleteCommentModal(true)
+  }
+
+  const deleteCommentEvent = async (commentId: string) => {
+    try {
+      await deleteComment.mutateAsync({
+        id: commentId,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    setIsOpenDeleteCommentModal(false)
   }
 
   const addLessonPlanBtn = (
@@ -112,7 +137,7 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
     <div>
       <PageHeadingWithBreadcrumb
         pages={pages}
-        pageTitle={student.data?.studentFirstName}
+        pageTitle={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
         loading={student.isLoading}
       />
       {student.isLoading ? (
@@ -132,7 +157,7 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
             </div>
           ) : (
             <div className="flex justify-center">
-              <div className="flex flex-col gap-3 w-[50rem]">
+              <div className="flex flex-col w-full">
                 <div className="flex justify-end my-2">{addLessonPlanBtn}</div>
                 {student.data?.lessonPlans &&
                   student.data.lessonPlans
@@ -143,11 +168,15 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
                         <LessonPlan
                           title={lessonPlan.title}
                           date={lessonPlan.date}
+                          slidesUrl={lessonPlan.slidesUrl}
+                          homeworkSent={lessonPlan.homeworkSent}
                           handleDeleteModal={() =>
                             handleDeleteModal(lessonPlan.id)
                           }
                           handleEditModal={() => handleEditModal(lessonPlan)}
+                          handleDeleteCommentModal={handleDeleteCommentModal}
                           comments={lessonPlan.comments}
+                          setCommentId={setCommentId}
                           AddLessonPlanCommentInput={
                             <AddLessonPlanCommentInput
                               currentLessonPlan={lessonPlan}
@@ -156,6 +185,7 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
                           }
                           currentUserId={me.data?.id!}
                         />
+                        <div className="my-6 divider"></div>
                       </div>
                     ))}
               </div>
@@ -194,6 +224,26 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
           <div>
             <p className="mt-2">
               Are you sure you want to delete this lesson plan?
+            </p>
+          </div>
+        }
+      />
+      {/* Delete Comment Modal */}
+      <Modal
+        isOpen={isOpenDeleteCommentModal}
+        setIsOpen={setIsOpenDeleteCommentModal}
+        loading={deleteComment.isLoading}
+        loadingLabel="Deleting Comment..."
+        btnIntent="danger"
+        currentData={commentId}
+        actionFunction={deleteCommentEvent}
+        closeButton="Cancel"
+        actionButton="Delete"
+        title="Delete Comment"
+        description={
+          <div>
+            <p className="mt-2">
+              Are you sure you want to delete this comment?
             </p>
           </div>
         }

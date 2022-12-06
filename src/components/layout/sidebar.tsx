@@ -18,11 +18,11 @@ export default function Sidebar() {
   ]
 
   const teacherMenu = [
-    {
-      icon: <AiFillHome />,
-      name: "Teacher Dashboard",
-      href: "/teacher/dashboard",
-    },
+    // {
+    //   icon: <AiFillHome />,
+    //   name: "Teacher Dashboard",
+    //   href: "/teacher/dashboard",
+    // },
     { icon: <FaChild />, name: "Students", href: "/teacher/students" },
   ]
 

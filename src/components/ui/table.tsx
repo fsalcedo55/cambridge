@@ -43,7 +43,7 @@ export default function Table({ rows, headers }: TableProps) {
               {row.cells?.map((cell, cellIdx) =>
                 cell.href ? (
                   <Link href={cell.href} key={cellIdx}>
-                    <td className="font-bold link link-hover hover:text-primary-500 text-neutral-700">
+                    <td className="font-bold link link-hover hover:text-primary-500 text-neutral-700 hover:bg-neutral-50">
                       {cell.content}
                     </td>
                   </Link>

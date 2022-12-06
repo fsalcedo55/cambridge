@@ -55,6 +55,7 @@ model Student {
     studentFirstName   String
     studentLastName    String
     studentDateOfBirth String
+    status             String
     teacher            User?        @relation(fields: [userId], references: [id])
     userId             String?
     lessonPlans        LessonPlan[]
@@ -69,20 +70,22 @@ model VerificationToken {
 }
 
 model LessonPlan {
-    id        String              @id @default(cuid())
-    title     String
-    date      String
-    Student   Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    studentId String
-    User      User                @relation(fields: [userId], references: [id], onDelete: Restrict)
-    userId    String
-    comments  LessonPlanComment[]
+    id           String              @id @default(cuid())
+    title        String
+    date         String
+    slidesUrl    String?
+    homeworkSent Boolean?            @default(false)
+    Student      Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    studentId    String
+    User         User                @relation(fields: [userId], references: [id], onDelete: Restrict)
+    userId       String
+    comments     LessonPlanComment[]
 }
 
 model LessonPlanComment {
     id           String     @id @default(cuid())
     content      String     @db.Text
-    // createdAt    DateTime
+    createdAt    DateTime   @default(now())
     LessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
     lessonPlanId String
     User         User       @relation(fields: [userId], references: [id], onDelete: Restrict)

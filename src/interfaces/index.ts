@@ -4,6 +4,7 @@ export interface Student {
   studentDateOfBirth: string
   userId: string
   id: string
+  status: string
   teacher: {
     id: string
     name: string

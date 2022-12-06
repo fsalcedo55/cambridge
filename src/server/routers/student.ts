@@ -12,11 +12,15 @@ const defaultStudentSelect = Prisma.validator<Prisma.StudentSelect>()({
   teacher: true,
   id: true,
   lessonPlans: true,
+  status: true,
 })
 
 export const studentRouter = router({
   getAll: publicProcedure.query(() => {
     return prisma.student.findMany({
+      orderBy: {
+        studentFirstName: "asc",
+      },
       select: defaultStudentSelect,
     })
   }),
@@ -35,17 +39,24 @@ export const studentRouter = router({
           studentDateOfBirth: true,
           userId: true,
           teacher: true,
+          status: true,
           id: true,
           lessonPlans: {
+            orderBy: {
+              date: "asc",
+            },
             select: {
               id: true,
               title: true,
               date: true,
+              slidesUrl: true,
+              homeworkSent: true,
               comments: {
                 select: {
                   id: true,
                   content: true,
                   User: true,
+                  createdAt: true,
                 },
               },
             },
@@ -63,6 +74,10 @@ export const studentRouter = router({
       const students = await prisma.student.findMany({
         where: {
           userId: input.id,
+          status: "Active",
+        },
+        orderBy: {
+          studentFirstName: "asc",
         },
       })
       return students
@@ -74,6 +89,7 @@ export const studentRouter = router({
         studentLastName: z.string(),
         studentDateOfBirth: z.string(),
         userId: z.string(),
+        status: z.string(),
       })
     )
     .mutation(async ({ input }) => {
@@ -101,6 +117,7 @@ export const studentRouter = router({
         studentDateOfBirth: z.string(),
         userId: z.string(),
         id: z.string(),
+        status: z.string(),
       })
     )
     .mutation(async ({ input }) => {

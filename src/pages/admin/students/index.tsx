@@ -12,17 +12,23 @@ import { trpc } from "src/utils/trpc"
 import EditStudentForm from "@src/components/editStudentForm"
 import LoadingSkeleton from "@src/components/ui/loadingSkeleton"
 import { Button } from "@ui/button"
+import dayjs from "dayjs"
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
   { id: "header2", label: "Name" },
   { id: "header3", label: "Age" },
   { id: "header4", label: "Teacher" },
-  { id: "header5", label: "Lesson Plans" },
+  { id: "header5", label: "Status" },
   { id: "header6", label: "Actions" },
 ]
 
 export default function Students() {
+  const dayjs = require("dayjs")
+  const relativeTime = require("dayjs/plugin/relativeTime")
+  dayjs.extend(relativeTime)
+
+  let dateNow = dayjs()
   const { data: session } = useSession()
   const router = useRouter()
   const students = trpc.student.getAll.useQuery()
@@ -42,6 +48,7 @@ export default function Students() {
         studentLastName: values.studentLastName,
         studentDateOfBirth: values.studentDateOfBirth,
         userId: values.teacher,
+        status: values.status,
       })
     } catch (error) {
       console.log("Error adding new student to the database.")
@@ -71,10 +78,32 @@ export default function Students() {
     cells: [
       { content: idx + 1 },
       {
-        content: `${student.studentFirstName} ${student.studentLastName}`,
+        content: (
+          <div>
+            <div className="text-lg">
+              {student.studentFirstName} {student.studentLastName}
+            </div>
+            <div className="text-sm font-light text-neutral-400">
+              {student.lessonPlans.length > 0 ? (
+                <div>
+                  <span className="font-bold">
+                    {student.lessonPlans.length}
+                  </span>{" "}
+                  lesson plans
+                </div>
+              ) : (
+                <div className="text-sm font-light text-neutral-200">
+                  0 lesson plans
+                </div>
+              )}{" "}
+            </div>
+          </div>
+        ),
         href: `/admin/students/${student.id}`,
       },
-      { content: `${student.studentDateOfBirth}` },
+      {
+        content: `${dayjs().from(dayjs(student.studentDateOfBirth), true)}`,
+      },
       {
         content: (
           <div className="flex items-center space-x-3">
@@ -98,14 +127,19 @@ export default function Students() {
           </div>
         ),
       },
+
       {
         content: (
           <div>
-            {student.lessonPlans.length > 0 ? (
-              <div className="font-bold">{student.lessonPlans.length}</div>
+            {student.status == "Active" ? (
+              <span className="inline-flex items-center rounded-full bg-accent-200 px-3 py-0.5 text-sm font-medium text-accent-900">
+                {student.status}
+              </span>
             ) : (
-              <div>-</div>
-            )}{" "}
+              <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800">
+                Inactive
+              </span>
+            )}
           </div>
         ),
       },

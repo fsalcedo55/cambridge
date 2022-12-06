@@ -17,14 +17,14 @@ export default function PageHeading({
     <>
       {loading ? (
         //todo: build loading skeleton correctly and implement it where necessary. make sure it's the same height as the title.
-        <h2 className="mb-6 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+        <h2 className="mb-6 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
           <LoadingSkeleton />
         </h2>
       ) : (
         <div>
           {userCard ? (
-            <div className="mb-2 text-2xl text-neutral-900">
-              <div className="font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight">
+            <div className="mb-2 text-xl text-neutral-900">
+              <div className="font-bold leading-7 sm:truncate sm:text-2xl sm:tracking-tight">
                 {pageTitle}
               </div>
               <div className="p-1 mt-2 border rounded-full max-w-fit">
@@ -32,7 +32,7 @@ export default function PageHeading({
               </div>
             </div>
           ) : (
-            <div className="mb-6 text-2xl font-bold leading-7 text-neutral-900 sm:truncate sm:text-3xl sm:tracking-tight">
+            <div className="mb-6 text-2xl font-bold leading-7 text-neutral-900 sm:truncate sm:text-2xl sm:tracking-tight">
               {pageTitle}
             </div>
           )}

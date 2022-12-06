@@ -33,7 +33,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 export default function AdminStudentPage({ sessionSSR }: any) {
-  console.log("sessionSSR", sessionSSR)
   const { data: session } = useSession()
   const router = useRouter()
   const { id } = router.query
@@ -63,6 +62,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
         date: values.date,
         studentId: id as string,
         userId: student?.data?.teacher!.id as string,
+        slidesUrl: values.slidesUrl,
       })
     } catch (error) {
       console.log(error)
@@ -91,11 +91,9 @@ export default function AdminStudentPage({ sessionSSR }: any) {
 
   const handleDeleteCommentModal = () => {
     setIsOpenDeleteCommentModal(true)
-    console.log("firing?")
   }
 
   const deleteCommentEvent = async (commentId: string) => {
-    console.log("commentId inside delete comment: ", commentId)
     try {
       await deleteComment.mutateAsync({
         id: commentId,
@@ -228,7 +226,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                   </div>
 
                   <Tab.Panels>
-                    <Tab.Panel className="flex flex-col gap-2">
+                    <Tab.Panel className="flex flex-col">
                       {student.data?.lessonPlans &&
                         student.data?.lessonPlans
                           .slice(0)
@@ -238,6 +236,8 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                               <LessonPlan
                                 title={lessonPlan.title}
                                 date={lessonPlan.date}
+                                slidesUrl={lessonPlan.slidesUrl}
+                                homeworkSent={lessonPlan.homeworkSent}
                                 handleDeleteModal={() =>
                                   handleDeleteModal(lessonPlan.id)
                                 }
@@ -252,14 +252,12 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                                 AddLessonPlanCommentInput={
                                   <AddLessonPlanCommentInput
                                     currentLessonPlan={lessonPlan}
-                                    // closeModal={() =>
-                                    //   setIsOpenAddCommentModal(false)
-                                    // }
                                     user={me.data}
                                   />
                                 }
                                 currentUserId={me.data?.id!}
                               />
+                              <div className="my-6 divider"></div>
                             </div>
                           ))}
                     </Tab.Panel>
@@ -316,8 +314,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
           actionFunction={deleteCommentEvent}
           closeButton="Cancel"
           actionButton="Delete"
-          // actionButtonLoading="Deleting..."
-          // actionButtonStyle="btn btn-error"
           title="Delete Comment"
           description={
             <div>

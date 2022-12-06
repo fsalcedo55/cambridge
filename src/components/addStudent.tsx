@@ -3,12 +3,14 @@ import { useState } from "react"
 import Loading from "./ui/loading"
 import * as Yup from "yup"
 import { Button } from "@ui/button"
+import dayjs from "dayjs"
 
 interface Values {
   studentFirstName: string
   studentLastName: string
   studentDateOfBirth: string
   teacher: any
+  status: string
 }
 
 interface Props {
@@ -33,6 +35,7 @@ export default function AddStudent({
       studentLastName: "",
       studentDateOfBirth: "",
       teacher: "",
+      status: "",
     },
     validationSchema: Yup.object({
       studentFirstName: Yup.string()
@@ -43,8 +46,10 @@ export default function AddStudent({
         .required("Required"),
       studentDateOfBirth: Yup.string().required("Required"),
       teacher: Yup.string().required("Required"),
+      status: Yup.string().required("Required"),
     }),
     onSubmit: (values, actions) => {
+      console.log("values", values)
       handleSubmit(values)
     },
   })
@@ -102,6 +107,7 @@ export default function AddStudent({
               className="w-full max-w-md mb-2 input input-bordered"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              // value={dayjs(formik.values.studentDateOfBirth).toISOString()}
               value={formik.values.studentDateOfBirth}
             />
             <div className="h-6">
@@ -123,7 +129,7 @@ export default function AddStudent({
               onBlur={formik.handleBlur}
               value={formik.values.teacher}
             >
-              <option value={defaultValueState}>Assign a Teacher</option>
+              <option value={defaultValueState}>Teacher</option>
               {teachers?.map((teacher) => (
                 <option value={teacher.id} key={teacher.id}>
                   {teacher.name}
@@ -135,6 +141,26 @@ export default function AddStudent({
                 <div className="text-xs text-error">
                   {formik.errors.teacher}
                 </div>
+              ) : null}
+            </div>
+
+            <label htmlFor="status">Status</label>
+
+            <select
+              name="status"
+              className="w-full max-w-md select select-bordered"
+              defaultValue={defaultValueState}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.status}
+            >
+              <option value={defaultValueState}></option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <div className="h-6">
+              {formik.touched.status && formik.errors.status ? (
+                <div className="text-xs text-error">{formik.errors.status}</div>
               ) : null}
             </div>
 
