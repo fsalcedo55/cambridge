@@ -43,7 +43,7 @@ export const studentRouter = router({
           id: true,
           lessonPlans: {
             orderBy: {
-              date: "asc",
+              date: "desc",
             },
             select: {
               id: true,

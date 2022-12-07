@@ -228,38 +228,35 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                   <Tab.Panels>
                     <Tab.Panel className="flex flex-col">
                       {student.data?.lessonPlans &&
-                        student.data?.lessonPlans
-                          .slice(0)
-                          .reverse()
-                          .map((lessonPlan, idx) => (
-                            <div key={lessonPlan.id}>
-                              <LessonPlan
-                                title={lessonPlan.title}
-                                date={lessonPlan.date}
-                                slidesUrl={lessonPlan.slidesUrl}
-                                homeworkSent={lessonPlan.homeworkSent}
-                                handleDeleteModal={() =>
-                                  handleDeleteModal(lessonPlan.id)
-                                }
-                                handleEditModal={() =>
-                                  handleEditModal(lessonPlan)
-                                }
-                                handleDeleteCommentModal={
-                                  handleDeleteCommentModal
-                                }
-                                comments={lessonPlan.comments}
-                                setCommentId={setCommentId}
-                                AddLessonPlanCommentInput={
-                                  <AddLessonPlanCommentInput
-                                    currentLessonPlan={lessonPlan}
-                                    user={me.data}
-                                  />
-                                }
-                                currentUserId={me.data?.id!}
-                              />
-                              <div className="my-6 divider"></div>
-                            </div>
-                          ))}
+                        student.data?.lessonPlans.map((lessonPlan, idx) => (
+                          <div key={lessonPlan.id}>
+                            <LessonPlan
+                              title={lessonPlan.title}
+                              date={lessonPlan.date}
+                              slidesUrl={lessonPlan.slidesUrl}
+                              homeworkSent={lessonPlan.homeworkSent}
+                              handleDeleteModal={() =>
+                                handleDeleteModal(lessonPlan.id)
+                              }
+                              handleEditModal={() =>
+                                handleEditModal(lessonPlan)
+                              }
+                              handleDeleteCommentModal={
+                                handleDeleteCommentModal
+                              }
+                              comments={lessonPlan.comments}
+                              setCommentId={setCommentId}
+                              AddLessonPlanCommentInput={
+                                <AddLessonPlanCommentInput
+                                  currentLessonPlan={lessonPlan}
+                                  user={me.data}
+                                />
+                              }
+                              currentUserId={me.data?.id!}
+                            />
+                            <div className="my-6 divider"></div>
+                          </div>
+                        ))}
                     </Tab.Panel>
                     <Tab.Panel>Settings go here</Tab.Panel>
                   </Tab.Panels>

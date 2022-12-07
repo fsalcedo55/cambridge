@@ -5,7 +5,7 @@ import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
 import { useState } from "react"
 
-function classNames(...classes: any) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
 }
 
@@ -27,9 +27,6 @@ export default function EditLessonPlan({
 }: Props) {
   const [hmwrkSent, sethmwrkSent] = useState(false)
   const editLessonPlan = trpc.lessonPlan.edit.useMutation()
-
-  console.log("homeworkSent: ", hmwrkSent)
-
   const {
     register,
     handleSubmit,
@@ -45,7 +42,9 @@ export default function EditLessonPlan({
         slidesUrl: data.slidesUrl,
         homeworkSent: hmwrkSent,
       })
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
     closeModal()
   })
 
@@ -91,7 +90,7 @@ export default function EditLessonPlan({
           checked={hmwrkSent}
           onChange={sethmwrkSent}
           className={classNames(
-            hmwrkSent ? "bg-accent-600" : "bg-neutral-200",
+            hmwrkSent ? "bg-accent-500" : "bg-neutral-200",
             "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           )}
         >

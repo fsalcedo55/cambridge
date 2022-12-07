@@ -4,14 +4,15 @@ import LessonPlan from "@src/components/lessonPlan"
 import AddLessonPlanCommentInput from "@src/components/addLessonPlanCommentInput"
 import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
-import { useEffect, useRef, useState } from "react"
-import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
-import { Button } from "@src/components/ui/button"
-import Modal from "@src/components/ui/modal"
+import { useRef, useState } from "react"
+import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
+import { Button } from "@ui/button"
+import Modal from "@ui/modal"
 import AddLessonPlan from "@src/components/addLessonPlan"
-import Loading from "@src/components/ui/loading"
+import Loading from "@ui/loading"
 import { HiOutlineFolderAdd } from "react-icons/hi"
 import EditLessonPlan from "@src/components/editLessonPlan"
+import ErrorBanner from "@src/components/ui/errors/errorBanner"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
@@ -54,8 +55,6 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
       current: true,
     },
   ]
-
-  console.log("student: ", student.data)
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -101,14 +100,16 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
         id: commentId,
       })
     } catch (error) {
-      console.log(error)
+      // console.log(error)
+      ;<div>
+        <ErrorBanner />
+      </div>
     }
     setIsOpenDeleteCommentModal(false)
   }
 
   const addLessonPlanBtn = (
     <div>
-      {/* {router.isReady ? ( */}
       <div>
         <Button intent="primary" size="small" onClick={() => setIsOpen(true)}>
           + Add Lesson Plan
@@ -127,9 +128,6 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
           }
         />
       </div>
-      {/* // ) : (
-      //   ""
-      // )} */}
     </div>
   )
 
@@ -160,34 +158,31 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
               <div className="flex flex-col w-full">
                 <div className="flex justify-end my-2">{addLessonPlanBtn}</div>
                 {student.data?.lessonPlans &&
-                  student.data.lessonPlans
-                    .slice(0)
-                    .reverse()
-                    .map((lessonPlan, idx) => (
-                      <div key={lessonPlan.id}>
-                        <LessonPlan
-                          title={lessonPlan.title}
-                          date={lessonPlan.date}
-                          slidesUrl={lessonPlan.slidesUrl}
-                          homeworkSent={lessonPlan.homeworkSent}
-                          handleDeleteModal={() =>
-                            handleDeleteModal(lessonPlan.id)
-                          }
-                          handleEditModal={() => handleEditModal(lessonPlan)}
-                          handleDeleteCommentModal={handleDeleteCommentModal}
-                          comments={lessonPlan.comments}
-                          setCommentId={setCommentId}
-                          AddLessonPlanCommentInput={
-                            <AddLessonPlanCommentInput
-                              currentLessonPlan={lessonPlan}
-                              user={me.data}
-                            />
-                          }
-                          currentUserId={me.data?.id!}
-                        />
-                        <div className="my-6 divider"></div>
-                      </div>
-                    ))}
+                  student.data.lessonPlans.map((lessonPlan, idx) => (
+                    <div key={lessonPlan.id}>
+                      <LessonPlan
+                        title={lessonPlan.title}
+                        date={lessonPlan.date}
+                        slidesUrl={lessonPlan.slidesUrl}
+                        homeworkSent={lessonPlan.homeworkSent}
+                        handleDeleteModal={() =>
+                          handleDeleteModal(lessonPlan.id)
+                        }
+                        handleEditModal={() => handleEditModal(lessonPlan)}
+                        handleDeleteCommentModal={handleDeleteCommentModal}
+                        comments={lessonPlan.comments}
+                        setCommentId={setCommentId}
+                        AddLessonPlanCommentInput={
+                          <AddLessonPlanCommentInput
+                            currentLessonPlan={lessonPlan}
+                            user={me.data}
+                          />
+                        }
+                        currentUserId={me.data?.id!}
+                      />
+                      <div className="my-6 divider"></div>
+                    </div>
+                  ))}
               </div>
             </div>
           )}
