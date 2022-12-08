@@ -13,6 +13,7 @@ import Loading from "@ui/loading"
 import { HiOutlineFolderAdd } from "react-icons/hi"
 import EditLessonPlan from "@src/components/editLessonPlan"
 import ErrorBanner from "@src/components/ui/errors/errorBanner"
+import { useSession } from "next-auth/react"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
@@ -23,6 +24,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 export default function TeacherStudentPage({ sessionSSR }: any) {
+  const { data: session } = useSession()
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)

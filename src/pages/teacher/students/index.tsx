@@ -6,6 +6,7 @@ import { getAuthSession } from "@src/server/common/get-server-session"
 import Loading from "@ui/loading"
 import { FiChevronRight } from "react-icons/fi"
 import dayjs from "dayjs"
+import { useSession } from "next-auth/react"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
@@ -20,6 +21,8 @@ const studentTableHeaders = [
 ]
 
 export default function Students({ sessionSSR }: any) {
+  const { data: session } = useSession()
+
   const dayjs = require("dayjs")
   const relativeTime = require("dayjs/plugin/relativeTime")
   dayjs.extend(relativeTime)
