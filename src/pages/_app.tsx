@@ -3,7 +3,7 @@ import "../styles/globals.css"
 import type { AppProps, AppType } from "next/app"
 import NextNProgress from "nextjs-progressbar"
 import type { Session } from "next-auth"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import {
   Hydrate,
   QueryClient,
@@ -45,7 +45,7 @@ const MyApp: AppType<{ session: Session }> = ({
         <Component {...pageProps} />
       )}
       {/* </Hydrate> */}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </SessionProvider>
     // </QueryClientProvider>
   )
