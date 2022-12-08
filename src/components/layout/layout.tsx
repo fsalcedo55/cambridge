@@ -19,26 +19,22 @@ export default function Layout({ children }: Props) {
         <Header />
       </header>
 
-      <div className="drawer drawer-mobile">
+      <div className="w-screen drawer drawer-mobile">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="flex flex-col items-center justify-center drawer-content">
           <div className="flex flex-col min-w-full min-h-screen">
-            <main className="flex-1 pt-4 pb-8 pr-16 mt-16 ml-80">
+            <main className="flex-1 pt-4 pb-8 mt-16 mr-20 ml-[26rem]">
               {children}
             </main>
-            <label
-              htmlFor="my-drawer-2"
-              className="btn btn-primary drawer-button lg:hidden"
-            >
-              Open sidebar
-            </label>
-            <div className="mt-4">
+            <div className="z-50 w-screen mt-4">
               <Footer />
             </div>
           </div>
         </div>
         {/* sidebar */}
-        <Sidebar />
+        <div className="fixed z-10 ml-20 h-80 ">
+          <Sidebar />
+        </div>
       </div>
     </div>
   )

@@ -54,7 +54,7 @@ export default function Sidebar() {
 
   return (
     <div>
-      <div className="fixed flex-none p-4 h-96 top-16 drawer-side">
+      <div className="fixed flex-none py-4 h-96 top-16 drawer-side">
         <ul className="w-64 h-64 p-4 bg-white shadow rounded-xl menu text-primary-800">
           {!session && loading ? (
             <div className="flex flex-col gap-4">
