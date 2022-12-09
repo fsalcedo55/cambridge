@@ -12,7 +12,7 @@ import { trpc } from "src/utils/trpc"
 import EditStudentForm from "@src/components/editStudentForm"
 import LoadingSkeleton from "@src/components/ui/loadingSkeleton"
 import { Button } from "@ui/button"
-import dayjs from "dayjs"
+import { getAge } from "@src/helpers/date"
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
@@ -24,11 +24,6 @@ const studentTableHeaders = [
 ]
 
 export default function Students() {
-  const dayjs = require("dayjs")
-  const relativeTime = require("dayjs/plugin/relativeTime")
-  dayjs.extend(relativeTime)
-
-  let dateNow = dayjs()
   const { data: session } = useSession()
   const router = useRouter()
   const students = trpc.student.getAll.useQuery()
@@ -102,7 +97,7 @@ export default function Students() {
         href: `/admin/students/${student.id}`,
       },
       {
-        content: `${dayjs().from(dayjs(student.studentDateOfBirth), true)}`,
+        content: `${getAge(student.studentDateOfBirth, true)}`,
       },
       {
         content: (

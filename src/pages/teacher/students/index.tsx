@@ -5,8 +5,8 @@ import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import Loading from "@ui/loading"
 import { FiChevronRight } from "react-icons/fi"
-import dayjs from "dayjs"
 import { useSession } from "next-auth/react"
+import { getAge } from "@src/helpers/date"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
@@ -22,10 +22,6 @@ const studentTableHeaders = [
 
 export default function Students({ sessionSSR }: any) {
   const { data: session } = useSession()
-
-  const dayjs = require("dayjs")
-  const relativeTime = require("dayjs/plugin/relativeTime")
-  dayjs.extend(relativeTime)
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
   const students = trpc.student.byTeacherId.useQuery({
     id: me.data?.id!,
@@ -42,7 +38,7 @@ export default function Students({ sessionSSR }: any) {
                 {student.studentFirstName} {student.studentLastName}
               </div>
               <div className="font-light">
-                {dayjs().from(dayjs(student.studentDateOfBirth), true)}
+                {getAge(student.studentDateOfBirth, true)}
               </div>
             </div>
             <div className="text-5xl">
