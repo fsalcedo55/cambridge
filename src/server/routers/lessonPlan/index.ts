@@ -16,9 +16,10 @@ export const lessonPlanRouter = router({
       z.object({
         title: z.string(),
         date: z.string(),
-        slidesUrl: z.string().optional(),
+        slidesUrl: z.string().optional().nullish(),
         studentId: z.string(),
         userId: z.string(),
+        homeworkSent: z.boolean(),
       })
     )
     .mutation(async ({ input }) => {

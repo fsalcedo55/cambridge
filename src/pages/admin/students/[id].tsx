@@ -17,6 +17,7 @@ import { HiOutlineFolderAdd } from "react-icons/hi"
 import AddLessonPlanCommentInput from "@components/addLessonPlanCommentInput"
 import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
+import { ILessonPlan } from "@src/interfaces/index"
 
 type Student = {
   studentFirstName: string
@@ -50,25 +51,25 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     },
     { enabled: router.isReady }
   )
-  const addLessonPlan = trpc.lessonPlan.add.useMutation()
+  // const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
   const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
 
-  const handleAddLessonPlan = async (values: any) => {
-    try {
-      await addLessonPlan.mutateAsync({
-        title: values.title,
-        date: values.date,
-        studentId: id as string,
-        userId: student?.data?.teacher!.id as string,
-        slidesUrl: values.slidesUrl,
-      })
-    } catch (error) {
-      console.log(error)
-    }
-    setIsOpen(false)
-  }
+  // const handleAddLessonPlan = async (values: ILessonPlan) => {
+  //   try {
+  //     await addLessonPlan.mutateAsync({
+  //       title: values.title,
+  //       date: values.date,
+  //       studentId: id as string,
+  //       userId: student?.data?.teacher!.id as string,
+  //       slidesUrl: values.slidesUrl,
+  //     })
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  //   setIsOpen(false)
+  // }
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -84,7 +85,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     setIsOpenDeleteModal(false)
   }
 
-  const handleEditModal = async (lessonPlan: any) => {
+  const handleEditModal = async (lessonPlan: ILessonPlan) => {
     currentLessonPlan.current = lessonPlan
     setIsOpenEditModal(true)
   }
@@ -118,9 +119,9 @@ export default function AdminStudentPage({ sessionSSR }: any) {
             title="Add Lesson Plan"
             description={
               <AddLessonPlan
-                handleSubmit={handleAddLessonPlan}
-                btnLoading={addLessonPlan.isLoading}
-                btnLabel="Adding Lesson Plan..."
+                studentId={student?.data?.id}
+                teacherId={student?.data?.teacher?.id}
+                closeModal={() => setIsOpen(false)}
               />
             }
           />
@@ -131,7 +132,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     </div>
   )
 
-  console.log("commentID: ", commentId)
+  console.log("student", student.data)
 
   if (session?.role === "admin") {
     return (

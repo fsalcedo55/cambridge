@@ -1,3 +1,9 @@
+export interface IUser {
+  id: string
+  name: string
+  email: string
+}
+
 export interface Student {
   studentFirstName: string
   studentLastName: string
@@ -13,4 +19,19 @@ export interface Student {
     image: string
     role: string
   }
+}
+
+export interface ILessonPlan {
+  id?: string
+  date: string
+  title: string
+  slidesUrl: string | null
+  homeworkSent: boolean | null
+}
+
+export interface ILessonPlanComment {
+  id: string
+  User: IUser
+  content: string
+  createdAt: Date
 }

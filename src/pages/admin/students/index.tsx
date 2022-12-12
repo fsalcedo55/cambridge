@@ -10,7 +10,6 @@ import { useRouter } from "next/router"
 import Image from "next/image"
 import { trpc } from "src/utils/trpc"
 import EditStudentForm from "@src/components/editStudentForm"
-import LoadingSkeleton from "@src/components/ui/loadingSkeleton"
 import { Button } from "@ui/button"
 import { getAge } from "@src/helpers/date"
 

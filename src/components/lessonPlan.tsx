@@ -48,15 +48,27 @@ export default function LessonPlan({
         <div className="flex gap-2">
           {slidesUrl && (
             <div className="h-full px-3 py-1 border-2 rounded-full cursor-pointer border-neutral-100 hover:text-accent-700 hover:bg-accent-200 text-neutral-500 hover:border-accent-700">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={slidesUrl}
-                className="flex items-center gap-2 text-sm"
-              >
-                <FaExternalLinkAlt />
-                <span>Slides</span>
-              </a>
+              {slidesUrl?.startsWith("http") ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={slidesUrl}
+                  className="flex items-center gap-2 text-sm"
+                >
+                  <FaExternalLinkAlt />
+                  <span>Slides</span>
+                </a>
+              ) : (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://${slidesUrl}`}
+                  className="flex items-center gap-2 text-sm"
+                >
+                  <FaExternalLinkAlt />
+                  <span>Slides</span>
+                </a>
+              )}
             </div>
           )}
 
