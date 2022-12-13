@@ -37,19 +37,19 @@ export default function LessonPlan({
 }: Props) {
   return (
     <div className="flex flex-col shadow-lg bg-gradient-to-t from-neutral-50 to-white rounded-xl">
-      <div className="flex items-center justify-between px-4 bg-white rounded-t-xl">
+      <div className="flex flex-col justify-between px-4 py-2 bg-white md:py-0 md:flex-row md:items-center rounded-t-xl">
         <div className="flex flex-col gap-1 py-2">
-          <div className="flex items-center gap-1 text-neutral-400">
-            <span className="text-md">
+          <div className="flex items-center gap-1 text-xs text-neutral-400 md:text-md">
+            <span>
               <ImCalendar />
             </span>
-            <span className="text-md">
-              {dayjs(date).format("ddd, MMM D, YYYY")}
-            </span>
+            <span>{dayjs(date).format("ddd, MMM D, YYYY")}</span>
           </div>
-          <h1 className="text-3xl font-bold text-primary-800">{title}</h1>
+          <h1 className="text-2xl font-bold md:text-3xl text-primary-800">
+            {title}
+          </h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex justify-end gap-2 md:flex-row">
           {slidesUrl && (
             <div className="h-full px-3 py-1 border-2 rounded-full cursor-pointer border-neutral-100 hover:text-accent-700 hover:bg-accent-200 text-neutral-500 hover:border-accent-700">
               {slidesUrl?.startsWith("http") ? (

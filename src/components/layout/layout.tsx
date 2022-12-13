@@ -45,20 +45,13 @@ import { Dialog, Menu, Transition } from "@headlessui/react"
 import {
   Bars3BottomLeftIcon,
   BellIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
-  InboxIcon,
-  UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline"
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import { AiFillHome } from "react-icons/ai"
 import { HiUsers } from "react-icons/hi"
 import { FaChild } from "react-icons/fa"
 import { useRouter } from "next/router"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import Footer from "./footer"
 import Link from "next/link"
@@ -77,11 +70,15 @@ const adminNavigation = [
   { name: "Users", href: "/admin/users", icon: HiUsers, current: false },
   { name: "Students", href: "/admin/students", icon: FaChild, current: false },
 ]
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+const teacherNavigation = [
+  {
+    name: "Students",
+    href: "/teacher/students",
+    icon: FaChild,
+    current: false,
+  },
 ]
+const userNavigation = [{ name: "Sign out", href: "/api/auth/signout" }]
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ")
@@ -103,7 +100,13 @@ export default function Example({ children }: Props) {
         <body class="h-full">
         ```
       */}
-      <div className="flex flex-col">
+
+      {/* //     <div className="relative">
+//       <header className="fixed top-0 z-50">
+//         <Header />
+//       </header> */}
+
+      <div className="relative">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -156,33 +159,28 @@ export default function Example({ children }: Props) {
                       </button>
                     </div>
                   </Transition.Child>
-                  <div className="flex items-center flex-shrink-0 px-4">
-                    <img
-                      className="w-auto h-8"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=primary&shade=300"
-                      alt="Your Company"
-                    />
-                  </div>
+
                   <div className="flex-1 h-0 mt-5 overflow-y-auto">
                     <nav className="px-2 space-y-1">
-                      {adminNavigation.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-primary-800 text-white"
-                              : "text-primary-100 hover:bg-primary-600",
-                            "group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                          )}
-                        >
-                          <item.icon
-                            className="flex-shrink-0 w-6 h-6 mr-4 text-primary-300"
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </a>
-                      ))}
+                      {session?.role === "admin" &&
+                        adminNavigation.map((item) => (
+                          <a
+                            key={item.name}
+                            href={item.href}
+                            className={classNames(
+                              item.current
+                                ? "bg-primary-800 text-white"
+                                : "text-primary-100 hover:bg-primary-600",
+                              "group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                            )}
+                          >
+                            <item.icon
+                              className="flex-shrink-0 w-6 h-6 mr-4 text-primary-300"
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </a>
+                        ))}
                     </nav>
                   </div>
                 </Dialog.Panel>
@@ -196,7 +194,7 @@ export default function Example({ children }: Props) {
 
         <div className="flex flex-col flex-1">
           {/* ======== Navbar ======== */}
-          <div className="sticky top-0 z-10 flex flex-shrink-0 h-16 bg-white shadow">
+          <div className="fixed top-0 z-10 flex flex-shrink-0 w-screen h-16 bg-white shadow">
             <button
               type="button"
               className="px-4 border-r text-neutral-500 border-neutral-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
@@ -256,6 +254,12 @@ export default function Example({ children }: Props) {
                             {({ active }) => (
                               <a
                                 href={item.href}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  signOut({
+                                    callbackUrl: process.env.NEXTAUTH_URL,
+                                  })
+                                }}
                                 className={classNames(
                                   active ? "bg-neutral-100" : "",
                                   "block px-4 py-2 text-sm text-neutral-700"
@@ -276,27 +280,47 @@ export default function Example({ children }: Props) {
           {/* ======== Static sidebar for desktop ======== */}
           <div className="z-50 hidden mt-24 md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex flex-col ml-8 rounded-xl bg-primary-500">
+            <div className="flex flex-col ml-8 rounded-xl bg-primary-300">
               <div className="flex flex-col flex-1 mt-5">
                 <nav className="flex-1 px-2 pb-4 space-y-1">
-                  {adminNavigation.map((item) => (
-                    <Link key={item.name} href={item.href}>
-                      <div
-                        className={classNames(
-                          router.pathname.includes(item.href)
-                            ? "bg-primary-800 text-white"
-                            : "text-primary-100 hover:bg-primary-600",
-                          "group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer"
-                        )}
-                      >
-                        <item.icon
-                          className="flex-shrink-0 w-6 h-6 mr-3 text-primary-300"
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </div>
-                    </Link>
-                  ))}
+                  {session?.role === "admin" &&
+                    adminNavigation.map((item) => (
+                      <Link key={item.name} href={item.href}>
+                        <div
+                          className={classNames(
+                            router.pathname.includes(item.href)
+                              ? "bg-primary-800 text-primary-50"
+                              : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
+                            "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                          )}
+                        >
+                          <item.icon
+                            className="mr-3 text-2xl"
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </div>
+                      </Link>
+                    ))}
+                  {session?.role === "teacher" &&
+                    teacherNavigation.map((item) => (
+                      <Link key={item.name} href={item.href}>
+                        <div
+                          className={classNames(
+                            router.pathname.includes(item.href)
+                              ? "bg-primary-800 text-primary-50"
+                              : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
+                            "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                          )}
+                        >
+                          <item.icon
+                            className="mr-3 text-2xl"
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </div>
+                      </Link>
+                    ))}
                 </nav>
               </div>
             </div>
@@ -306,7 +330,7 @@ export default function Example({ children }: Props) {
             <div className="py-6">
               <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
                 {/* ======== Replace with your content ======== */}
-                <div className="py-4">
+                <div className="py-4 mt-16">
                   {children}
                   {/* <div className="border-4 border-dashed rounded-lg border-neutral-200 h-96" /> */}
                 </div>
