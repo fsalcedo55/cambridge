@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { FormInput } from "./ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
+import { useSession } from "next-auth/react"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -34,6 +35,7 @@ export default function AddLessonPlan({
   teacherId,
   closeModal,
 }: Props) {
+  const { data: session } = useSession()
   const [hmwrkSent, setHmwrkSent] = useState(false)
   const {
     register,
@@ -86,29 +88,32 @@ export default function AddLessonPlan({
         register={register}
         errors={errors}
       />
-      <Switch.Group as="div" className="flex items-center mb-1">
-        <Switch.Label as="span" className="mr-3">
-          <span className="text-sm font-medium text-gray-900">
-            Homework Sent?
-          </span>
-        </Switch.Label>
-        <Switch
-          checked={hmwrkSent}
-          onChange={setHmwrkSent}
-          className={classNames(
-            hmwrkSent ? "bg-accent-500" : "bg-neutral-200",
-            "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          )}
-        >
-          <span
-            aria-hidden="true"
+
+      {session?.role === "admin" && (
+        <Switch.Group as="div" className="flex items-center mb-1">
+          <Switch.Label as="span" className="mr-3">
+            <span className="text-sm font-medium text-gray-900">
+              Homework Sent?
+            </span>
+          </Switch.Label>
+          <Switch
+            checked={hmwrkSent}
+            onChange={setHmwrkSent}
             className={classNames(
-              hmwrkSent ? "translate-x-5" : "translate-x-0",
-              "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+              hmwrkSent ? "bg-accent-500" : "bg-neutral-200",
+              "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             )}
-          />
-        </Switch>
-      </Switch.Group>
+          >
+            <span
+              aria-hidden="true"
+              className={classNames(
+                hmwrkSent ? "translate-x-5" : "translate-x-0",
+                "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+              )}
+            />
+          </Switch>
+        </Switch.Group>
+      )}
       <Button
         type="submit"
         intent="primary"
