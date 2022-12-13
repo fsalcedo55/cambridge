@@ -229,7 +229,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                             }
                             currentUserId={me.data?.id!}
                           />
-                          <div className="my-6 divider"></div>
+                          <div className="h-12"></div>
                         </div>
                       ))}
                   </Tab.Panel>

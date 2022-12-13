@@ -170,7 +170,7 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
                         }
                         currentUserId={me.data?.id!}
                       />
-                      <div className="my-6 divider"></div>
+                      <div className="h-12"></div>
                     </div>
                   ))}
               </div>

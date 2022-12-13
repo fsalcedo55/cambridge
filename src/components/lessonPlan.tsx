@@ -4,6 +4,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { AiOutlineCaretDown } from "react-icons/ai"
 import { TfiMoreAlt } from "react-icons/tfi"
 import { FaExternalLinkAlt } from "react-icons/fa"
+import { ImCalendar } from "react-icons/im"
 import { Fragment } from "react"
 import dayjs from "dayjs"
 
@@ -37,13 +38,16 @@ export default function LessonPlan({
   return (
     <div className="flex flex-col shadow-lg bg-gradient-to-t from-neutral-50 to-white rounded-xl">
       <div className="flex items-center justify-between px-4 bg-white rounded-t-xl">
-        <div className="flex items-center gap-2">
-          <h1 className="px-1 py-3 text-3xl font-bold text-primary-800">
-            {title}
-          </h1>
-          <div className="text-xs font-light text-neutral-400">
-            {dayjs(date).format("ddd, MMM D, YYYY")}
+        <div className="flex flex-col gap-1 py-2">
+          <div className="flex items-center gap-1 text-neutral-400">
+            <span className="text-md">
+              <ImCalendar />
+            </span>
+            <span className="text-md">
+              {dayjs(date).format("ddd, MMM D, YYYY")}
+            </span>
           </div>
+          <h1 className="text-3xl font-bold text-primary-800">{title}</h1>
         </div>
         <div className="flex gap-2">
           {slidesUrl && (
