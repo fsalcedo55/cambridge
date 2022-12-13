@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Apply basic global styles to the html: */
+/* html {
+	@apply h-full
+} */
+
 /* Apply basic global styles to the body: */
 body {
-	@apply  bg-gradient-to-b from-neutral-50 to-neutral-100
+	@apply  h-full bg-gradient-to-b from-neutral-50 to-neutral-100
 }
 
 /* Remove trailing margin from forms for some browsers: */

@@ -99,5 +99,9 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui"), require("@headlessui/tailwindcss")],
+  plugins: [
+    require("daisyui"),
+    require("@headlessui/tailwindcss"),
+    require("@tailwindcss/forms"),
+  ],
 }
