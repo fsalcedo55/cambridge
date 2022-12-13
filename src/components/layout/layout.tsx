@@ -61,6 +61,7 @@ import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Footer from "./footer"
+import Link from "next/link"
 
 interface Props {
   children: React.ReactNode
@@ -102,7 +103,7 @@ export default function Example({ children }: Props) {
         <body class="h-full">
         ```
       */}
-      <div>
+      <div className="flex flex-col">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -187,48 +188,14 @@ export default function Example({ children }: Props) {
                 </Dialog.Panel>
               </Transition.Child>
               <div className="flex-shrink-0 w-14" aria-hidden="true">
-                {/* Dummy element to force sidebar to shrink to fit close icon */}
+                {/* ======== Dummy element to force sidebar to shrink to fit close icon ======== */}
               </div>
             </div>
           </Dialog>
         </Transition.Root>
 
-        {/* Static sidebar for desktop */}
-        <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-primary-700">
-            <div className="flex items-center flex-shrink-0 px-4">
-              <img
-                className="w-auto h-8"
-                src="https://tailwindui.com/img/logos/mark.svg?color=primary&shade=300"
-                alt="Your Company"
-              />
-            </div>
-            <div className="flex flex-col flex-1 mt-5">
-              <nav className="flex-1 px-2 pb-4 space-y-1">
-                {adminNavigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-primary-800 text-white"
-                        : "text-primary-100 hover:bg-primary-600",
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                    )}
-                  >
-                    <item.icon
-                      className="flex-shrink-0 w-6 h-6 mr-3 text-primary-300"
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col flex-1 md:pl-64">
+        <div className="flex flex-col flex-1">
+          {/* ======== Navbar ======== */}
           <div className="sticky top-0 z-10 flex flex-shrink-0 h-16 bg-white shadow">
             <button
               type="button"
@@ -238,7 +205,18 @@ export default function Example({ children }: Props) {
               <span className="sr-only">Open sidebar</span>
               <Bars3BottomLeftIcon className="w-6 h-6" aria-hidden="true" />
             </button>
-            <div className="flex justify-end flex-1 px-4">
+
+            <div className="flex justify-between flex-1 px-4">
+              <div className="flex items-center flex-shrink-0 px-4">
+                <Link href="/">
+                  <Image
+                    src="/Spanish-For-Us-Logo-1080p (2).png"
+                    alt="logo"
+                    width={118}
+                    height={36}
+                  />
+                </Link>
+              </div>
               <div className="flex items-center ml-4 md:ml-6">
                 <button
                   type="button"
@@ -295,8 +273,36 @@ export default function Example({ children }: Props) {
               </div>
             </div>
           </div>
+          {/* ======== Static sidebar for desktop ======== */}
+          <div className="z-50 hidden mt-24 md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+            {/* Sidebar component, swap this element with another sidebar if you like */}
+            <div className="flex flex-col ml-8 rounded-xl bg-primary-500">
+              <div className="flex flex-col flex-1 mt-5">
+                <nav className="flex-1 px-2 pb-4 space-y-1">
+                  {adminNavigation.map((item) => (
+                    <Link key={item.name} href={item.href}>
+                      <div
+                        className={classNames(
+                          router.pathname.includes(item.href)
+                            ? "bg-primary-800 text-white"
+                            : "text-primary-100 hover:bg-primary-600",
+                          "group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer"
+                        )}
+                      >
+                        <item.icon
+                          className="flex-shrink-0 w-6 h-6 mr-3 text-primary-300"
+                          aria-hidden="true"
+                        />
+                        {item.name}
+                      </div>
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            </div>
+          </div>
 
-          <main className="z-0 min-h-screen">
+          <main className="z-0 min-h-screen md:pl-64">
             <div className="py-6">
               <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
                 {/* ======== Replace with your content ======== */}
