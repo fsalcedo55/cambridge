@@ -4,7 +4,7 @@ export interface IUser {
   email: string
 }
 
-export interface Student {
+export interface IStudent {
   studentFirstName: string
   studentLastName: string
   studentDateOfBirth: string

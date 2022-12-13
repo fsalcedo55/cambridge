@@ -4,12 +4,6 @@ import { Prisma, PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
-// const defaultLessonPlanSelect = Prisma.validator<Prisma.LessonPlanSelect>()({
-//     id: true,
-//     title: true,
-//     date: true,
-// })
-
 export const lessonPlanRouter = router({
   add: publicProcedure
     .input(

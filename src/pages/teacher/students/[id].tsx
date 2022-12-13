@@ -16,6 +16,10 @@ import ErrorBanner from "@src/components/ui/errors/errorBanner"
 import { useSession } from "next-auth/react"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getAuthSession(ctx)
+  if (!session || session.role != "teacher") {
+    return { redirect: { destination: "/", permanent: false } }
+  }
   return {
     props: {
       sessionSSR: await getAuthSession(ctx),
@@ -42,7 +46,6 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
     { enabled: router.isReady }
   )
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
-  const addLessonPlan = trpc.lessonPlan.add.useMutation()
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
   const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
 
@@ -77,21 +80,6 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
     setIsOpenEditModal(true)
   }
 
-  const handleAddLessonPlan = async (values: any) => {
-    try {
-      await addLessonPlan.mutateAsync({
-        title: values.title,
-        date: values.date,
-        studentId: id as string,
-        userId: student?.data?.teacher!.id as string,
-        slidesUrl: values.slidesUrl,
-      })
-    } catch (error) {
-      console.log(error)
-    }
-    setIsOpen(false)
-  }
-
   const handleDeleteCommentModal = () => {
     setIsOpenDeleteCommentModal(true)
   }
@@ -123,9 +111,9 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
           title="Add Lesson Plan"
           description={
             <AddLessonPlan
-              handleSubmit={handleAddLessonPlan}
-              btnLoading={addLessonPlan.isLoading}
-              btnLabel="Adding Lesson Plan..."
+              studentId={student?.data?.id}
+              teacherId={student?.data?.teacher?.id}
+              closeModal={() => setIsOpen(false)}
             />
           }
         />

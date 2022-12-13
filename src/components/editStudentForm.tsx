@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "@src/components/ui/form/form-input"
 import { Button } from "./ui/button"
 import { trpc } from "@src/utils/trpc"
-import { Student } from "@src/interfaces"
+import { IStudent } from "@src/interfaces"
 
 export type FormFields = {
   firstName: string
@@ -13,7 +13,7 @@ export type FormFields = {
 }
 
 interface Props {
-  currentStudent: Student
+  currentStudent: IStudent
   teachers?: any[]
   closeModal: () => void
 }

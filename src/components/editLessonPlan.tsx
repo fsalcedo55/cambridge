@@ -25,7 +25,7 @@ export default function EditLessonPlan({
   currentLessonPlan,
   closeModal,
 }: Props) {
-  const [hmwrkSent, sethmwrkSent] = useState(false)
+  const [hmwrkSent, sethmwrkSent] = useState(currentLessonPlan?.homeworkSent)
   const editLessonPlan = trpc.lessonPlan.edit.useMutation()
   const {
     register,

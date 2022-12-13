@@ -7,8 +7,13 @@ import Loading from "@ui/loading"
 import { FiChevronRight } from "react-icons/fi"
 import { useSession } from "next-auth/react"
 import { getAge } from "@src/helpers/date"
+import { protectPage } from "@src/services/teachers.services"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getAuthSession(ctx)
+  if (!session || session.role != "teacher") {
+    return { redirect: { destination: "/", permanent: false } }
+  }
   return {
     props: {
       sessionSSR: await getAuthSession(ctx),

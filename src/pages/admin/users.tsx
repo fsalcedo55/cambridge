@@ -10,6 +10,20 @@ import AccessDenied from "../../components/access-denied"
 import { useQuery } from "@tanstack/react-query"
 import { getAllUsers } from "../../services/user.services"
 import Table from "../../components/ui/table"
+import { GetServerSidePropsContext } from "next"
+import { getAuthSession } from "@src/server/common/get-server-session"
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getAuthSession(ctx)
+  if (!session || session.role != "admin") {
+    return { redirect: { destination: "/", permanent: false } }
+  }
+  return {
+    props: {
+      sessionSSR: await getAuthSession(ctx),
+    },
+  }
+}
 
 interface User {
   id: string

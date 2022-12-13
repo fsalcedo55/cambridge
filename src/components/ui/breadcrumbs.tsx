@@ -10,7 +10,7 @@ import { AiFillHome } from "react-icons/ai"
 
 type Page = {
   name: string
-  href: string
+  href?: string
   current: boolean
 }[]
 
@@ -28,10 +28,18 @@ export default function Breadcrumbs({ loading, pages }: Props) {
             <div className="flex items-center">
               {loading ? (
                 <LoadingSkeleton />
-              ) : (
+              ) : page.href ? (
                 <a
                   href={page.href}
                   className="text-sm font-bold text-neutral-500 hover:text-primary-500 hover:underline underline-offset-4"
+                  aria-current={page.current ? "page" : undefined}
+                >
+                  {page.name}
+                </a>
+              ) : (
+                <a
+                  href={page.href}
+                  className="text-sm font-bold cursor-default text-neutral-500"
                   aria-current={page.current ? "page" : undefined}
                 >
                   {page.name}

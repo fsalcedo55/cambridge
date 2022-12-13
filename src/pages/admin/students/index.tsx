@@ -12,6 +12,20 @@ import { trpc } from "src/utils/trpc"
 import EditStudentForm from "@src/components/editStudentForm"
 import { Button } from "@ui/button"
 import { getAge } from "@src/helpers/date"
+import { GetServerSidePropsContext } from "next"
+import { getAuthSession } from "@src/server/common/get-server-session"
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getAuthSession(ctx)
+  if (!session || session.role != "admin") {
+    return { redirect: { destination: "/", permanent: false } }
+  }
+  return {
+    props: {
+      sessionSSR: await getAuthSession(ctx),
+    },
+  }
+}
 
 const studentTableHeaders = [
   { id: "header1", label: "" },
