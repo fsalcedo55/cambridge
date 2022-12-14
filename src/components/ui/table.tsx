@@ -3,7 +3,7 @@ import Link from "next/link"
 interface TableProps {
   headers: {
     label: any
-    importance: number
+    importance?: number
   }[]
   rows?: IRows[]
 }
@@ -88,16 +88,22 @@ export default function Table({ rows, headers }: TableProps) {
                   >
                     {header.label}
                   </th>
+                ) : header.importance === 4 ? (
+                  <th
+                    key={idx}
+                    scope="col"
+                    className="hidden lg:table-cell py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 sm:pl-6"
+                  >
+                    {header.label}
+                  </th>
                 ) : (
-                  header.importance === 4 && (
-                    <th
-                      key={idx}
-                      scope="col"
-                      className="hidden lg:table-cell py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 sm:pl-6"
-                    >
-                      {header.label}
-                    </th>
-                  )
+                  <th
+                    key={idx}
+                    scope="col"
+                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 sm:pl-6"
+                  >
+                    {header.label}
+                  </th>
                 )
               )}
             </tr>
@@ -151,23 +157,36 @@ export default function Table({ rows, headers }: TableProps) {
                         <span>{cell.content}</span>
                       )}
                     </td>
+                  ) : cell.importance === 4 ? (
+                    <td
+                      key={cellIdx}
+                      className="hidden py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 lg:table-cell"
+                    >
+                      {cell.href ? (
+                        <Link href={cell.href}>
+                          <span className="cursor-pointer hover:underline hover:text-primary-500">
+                            {cell.content}
+                          </span>
+                        </Link>
+                      ) : (
+                        <span>{cell.content}</span>
+                      )}
+                    </td>
                   ) : (
-                    cell.importance === 4 && (
-                      <td
-                        key={cellIdx}
-                        className="hidden py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 lg:table-cell"
-                      >
-                        {cell.href ? (
-                          <Link href={cell.href}>
-                            <span className="cursor-pointer hover:underline hover:text-primary-500">
-                              {cell.content}
-                            </span>
-                          </Link>
-                        ) : (
-                          <span>{cell.content}</span>
-                        )}
-                      </td>
-                    )
+                    <td
+                      key={cellIdx}
+                      className="py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 "
+                    >
+                      {cell.href ? (
+                        <Link href={cell.href}>
+                          <span className="cursor-pointer hover:underline hover:text-primary-500">
+                            {cell.content}
+                          </span>
+                        </Link>
+                      ) : (
+                        <span>{cell.content}</span>
+                      )}
+                    </td>
                   )
                 )}
               </tr>
