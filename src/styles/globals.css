@@ -2,10 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Apply basic global styles to the html: */
-/* html {
-	@apply h-full
-} */
+
 
 /* Apply basic global styles to the body: */
 body {

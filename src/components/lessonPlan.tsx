@@ -39,7 +39,7 @@ export default function LessonPlan({
     <div className="flex flex-col shadow-lg bg-gradient-to-t from-neutral-50 to-white rounded-xl">
       <div className="flex flex-col justify-between px-4 py-2 bg-white md:py-0 md:flex-row md:items-center rounded-t-xl">
         <div className="flex flex-col gap-1 py-2">
-          <div className="flex items-center gap-1 text-xs text-neutral-400 md:text-lg">
+          <div className="flex items-center gap-1 text-sm text-neutral-400 md:text-md">
             <span>
               <ImCalendar />
             </span>
@@ -49,15 +49,15 @@ export default function LessonPlan({
             {title}
           </h1>
         </div>
-        <div className="flex justify-end gap-2 md:flex-row">
+        <div className="flex items-center justify-end gap-2 md:flex-row">
           {slidesUrl && (
-            <div className="h-full px-3 py-1 border-2 rounded-full cursor-pointer border-neutral-100 hover:text-accent-700 hover:bg-accent-200 text-neutral-500 hover:border-accent-700">
+            <div className="h-full px-2 md:px-3 py-0.5 border rounded-full cursor-pointer border-neutral-100 hover:bg-neutral-100 text-neutral-600 hover:border-accent-700">
               {slidesUrl?.startsWith("http") ? (
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
                   href={slidesUrl}
-                  className="flex items-center gap-2 text-sm"
+                  className="flex items-center gap-2 text-xs md:text-sm"
                 >
                   <FaExternalLinkAlt />
                   <span>Slides</span>
@@ -67,7 +67,7 @@ export default function LessonPlan({
                   target="_blank"
                   rel="noopener noreferrer"
                   href={`https://${slidesUrl}`}
-                  className="flex items-center gap-2 text-sm"
+                  className="flex items-center gap-2 text-xs md:text-sm"
                 >
                   <FaExternalLinkAlt />
                   <span>Slides</span>
@@ -77,7 +77,7 @@ export default function LessonPlan({
           )}
 
           {homeworkSent && (
-            <span className="inline-flex items-center rounded-full bg-accent-100 px-3 py-0.5 text-sm font-medium text-accent-800 gap-2">
+            <span className="inline-flex items-center rounded-full bg-accent-100 px-2 md:px-3 py-0.5 text-xs md:text-sm font-medium text-accent-800 gap-1 md:gap-2">
               <RiMailSendLine />
               Homework Sent
             </span>
@@ -171,9 +171,9 @@ export default function LessonPlan({
                       <div key={comment.id} className="flex gap-2">
                         <div>
                           <div className="h-2"></div>
-                          <div className="flex justify-start w-full gap-4 mb-2">
+                          <div className="flex justify-start w-full gap-2 mb-2 md:gap-4">
                             <div className="avatar">
-                              <div className="w-10 h-10 rounded-full">
+                              <div className="w-8 h-8 rounded-full md:w-10 md:h-10">
                                 <Image
                                   src={comment.User.image}
                                   alt="teacher-photo"
@@ -186,14 +186,19 @@ export default function LessonPlan({
                               as="div"
                               className="relative flex gap-1 group"
                             >
-                              <div className="flex flex-col px-3 py-1 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
+                              <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
                                 <div className="flex items-center gap-2">
                                   <p className="font-bold">
                                     {comment.User.name}
                                   </p>
-                                  <div className="text-xs font-thin opacity-50">
+                                  <div className="hidden text-xs font-thin opacity-50 md:block">
                                     {`${dayjs(comment.createdAt).format(
                                       "MMM D, YYYY h:mma"
+                                    )}`}
+                                  </div>
+                                  <div className="text-xs font-thin opacity-50 md:hidden">
+                                    {`${dayjs(comment.createdAt).format(
+                                      "MMM D, 'YY"
                                     )}`}
                                   </div>
                                 </div>

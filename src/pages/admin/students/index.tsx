@@ -28,12 +28,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const studentTableHeaders = [
-  { id: "header1", label: "" },
-  { id: "header2", label: "Name" },
-  { id: "header3", label: "Age" },
-  { id: "header4", label: "Teacher" },
-  { id: "header5", label: "Status" },
-  { id: "header6", label: "Actions" },
+  { label: "Name", importance: 1 },
+  { label: "Age", importance: 4 },
+  { label: "Teacher", importance: 1 },
+  { label: "Status", importance: 4 },
+  { label: "Actions", importance: 4 },
 ]
 
 export default function Students() {
@@ -84,14 +83,13 @@ export default function Students() {
   // Formatted rows for table cells
   const formattedRows = students.data?.map((student, idx: number) => ({
     cells: [
-      { content: idx + 1 },
       {
         content: (
           <div>
-            <div className="text-lg">
+            <div className="font-bold md:text-lg text-md">
               {student.studentFirstName} {student.studentLastName}
             </div>
-            <div className="text-sm font-light text-neutral-400">
+            <div className="text-xs font-light md:text-sm text-neutral-400">
               {student.lessonPlans.length > 0 ? (
                 <div>
                   <span className="font-bold">
@@ -108,9 +106,11 @@ export default function Students() {
           </div>
         ),
         href: `/admin/students/${student.id}`,
+        importance: 1,
       },
       {
         content: `${getAge(student.studentDateOfBirth, true)}`,
+        importance: 4,
       },
       {
         content: (
@@ -134,6 +134,7 @@ export default function Students() {
             </div>
           </div>
         ),
+        importance: 1,
       },
 
       {
@@ -150,6 +151,7 @@ export default function Students() {
             )}
           </div>
         ),
+        importance: 4,
       },
       {
         content: (
@@ -170,6 +172,7 @@ export default function Students() {
             </div>
           </div>
         ),
+        importance: 4,
       },
     ],
   }))
@@ -177,87 +180,93 @@ export default function Students() {
   if (session?.role === "admin") {
     return (
       <div>
-        <PageHeading pageTitle="Students" />
+        <div className="flex flex-col items-end justify-between md:flex-row">
+          <div>
+            <PageHeading pageTitle="Students" />
+            <p>
+              A list of all the students. Click on a name to add, edit or delete
+              lesson plans.
+            </p>
+          </div>
+          {students.isLoading ? (
+            <Loading />
+          ) : (
+            <div>
+              <div className="flex justify-end my-2">
+                <Button
+                  size="small"
+                  intent="primary"
+                  onClick={() => setIsOpenAddModal(true)}
+                >
+                  + Add Student
+                </Button>
+              </div>
+              {/* Delete Modal */}
+              <Modal
+                isOpen={isOpenDeleteModal}
+                setIsOpen={setIsOpenDeleteModal}
+                loading={deleteStudent.isLoading}
+                currentData={currentStudent}
+                actionFunction={handleDelete}
+                closeButton="Cancel"
+                actionButton="Delete"
+                actionButtonLoading="Deleting"
+                btnIntent="danger"
+                title={`Delete ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
+                loadingLabel="Deleting..."
+                description={
+                  <div>
+                    <p>This will permanently delete this student</p>
+                    <p className="mt-2 mb-3">
+                      Are you sure you want to delete this student? All of the
+                      data will be permanently removed. This action cannot be
+                      undone.
+                    </p>
+                  </div>
+                }
+              />
+
+              {/* Add Student Modal */}
+              <Modal
+                isOpen={isOpenAddModal}
+                setIsOpen={setIsOpenAddModal}
+                closeButton="Cancel"
+                title="Add Student"
+                description={
+                  <AddStudent
+                    teachers={teachers.data}
+                    handleSubmit={handleAddStudentModal}
+                    btnLabel="Adding Student..."
+                    btnLoading={addStudent.isLoading}
+                  />
+                }
+              />
+              {/* Edit Student Modal */}
+              <Modal
+                isOpen={isOpenEditModal}
+                setIsOpen={setIsOpenEditModal}
+                closeButton="Cancel"
+                title={`Edit ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
+                description={
+                  <EditStudentForm
+                    currentStudent={currentStudent}
+                    teachers={teachers.data}
+                    closeModal={() => setIsOpenEditModal(false)}
+                  />
+                }
+              />
+
+              <div className="overflow-x-auto"></div>
+            </div>
+          )}
+        </div>
         {students.isLoading ? (
           <Loading />
         ) : (
-          <div>
-            <div className="flex justify-end my-2">
-              <Button
-                size="small"
-                intent="primary"
-                onClick={() => setIsOpenAddModal(true)}
-              >
-                + Add Student
-              </Button>
-            </div>
-            {/* Delete Modal */}
-            <Modal
-              isOpen={isOpenDeleteModal}
-              setIsOpen={setIsOpenDeleteModal}
-              loading={deleteStudent.isLoading}
-              currentData={currentStudent}
-              actionFunction={handleDelete}
-              closeButton="Cancel"
-              actionButton="Delete"
-              actionButtonLoading="Deleting"
-              btnIntent="danger"
-              title={`Delete ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
-              loadingLabel="Deleting..."
-              description={
-                <div>
-                  <p>This will permanently delete this student</p>
-                  <p className="mt-2 mb-3">
-                    Are you sure you want to delete this student? All of the
-                    data will be permanently removed. This action cannot be
-                    undone.
-                  </p>
-                </div>
-              }
-            />
-
-            {/* Add Student Modal */}
-            <Modal
-              isOpen={isOpenAddModal}
-              setIsOpen={setIsOpenAddModal}
-              closeButton="Cancel"
-              title="Add Student"
-              description={
-                <AddStudent
-                  teachers={teachers.data}
-                  handleSubmit={handleAddStudentModal}
-                  btnLabel="Adding Student..."
-                  btnLoading={addStudent.isLoading}
-                />
-              }
-            />
-            {/* Edit Student Modal */}
-            <Modal
-              isOpen={isOpenEditModal}
-              setIsOpen={setIsOpenEditModal}
-              closeButton="Cancel"
-              title={`Edit ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
-              description={
-                <EditStudentForm
-                  currentStudent={currentStudent}
-                  teachers={teachers.data}
-                  closeModal={() => setIsOpenEditModal(false)}
-                />
-              }
-            />
-            {students.isLoading ? (
-              <Loading />
-            ) : (
-              <Table headers={studentTableHeaders} rows={formattedRows} />
-            )}
-
-            <div className="overflow-x-auto"></div>
-          </div>
+          <Table headers={studentTableHeaders} rows={formattedRows} />
         )}
       </div>
     )
-    // } else {
-    //   router.push("/")
   }
 }
 

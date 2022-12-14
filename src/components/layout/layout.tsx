@@ -1,45 +1,3 @@
-// import Header from "./header"
-// import Footer from "./footer"
-// import { useSession } from "next-auth/react"
-// import { useRouter } from "next/router"
-// import Sidebar from "./sidebar"
-
-// interface Props {
-//   children: React.ReactNode
-// }
-
-// export default function Layout({ children }: Props) {
-//   const router = useRouter()
-//   const { data: session, status } = useSession()
-//   const loading = status === "loading"
-
-//   return (
-//     <div className="relative">
-//       <header className="fixed top-0 z-50">
-//         <Header />
-//       </header>
-
-//       <div className="w-screen drawer drawer-mobile">
-//         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-//         <div className="flex flex-col items-center justify-center drawer-content">
-//           <div className="flex flex-col min-w-full min-h-screen">
-//             <main className="flex-1 pt-4 pb-8 mt-16 mr-20 ml-[26rem]">
-//               {children}
-//             </main>
-//             <div className="z-50 w-screen mt-4">
-//               <Footer />
-//             </div>
-//           </div>
-//         </div>
-//         {/* sidebar */}
-//         <div className="fixed z-10 ml-20 h-80 ">
-//           <Sidebar />
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
 import { Fragment, useState } from "react"
 import { Dialog, Menu, Transition } from "@headlessui/react"
 import {
@@ -92,20 +50,6 @@ export default function Example({ children }: Props) {
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-neutral-100">
-        <body class="h-full">
-        ```
-      */}
-
-      {/* //     <div className="relative">
-//       <header className="fixed top-0 z-50">
-//         <Header />
-//       </header> */}
-
       <div className="relative">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -164,6 +108,25 @@ export default function Example({ children }: Props) {
                     <nav className="px-2 space-y-1">
                       {session?.role === "admin" &&
                         adminNavigation.map((item) => (
+                          <a
+                            key={item.name}
+                            href={item.href}
+                            className={classNames(
+                              item.current
+                                ? "bg-primary-800 text-white"
+                                : "text-primary-100 hover:bg-primary-600",
+                              "group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                            )}
+                          >
+                            <item.icon
+                              className="flex-shrink-0 w-6 h-6 mr-4 text-primary-300"
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </a>
+                        ))}
+                      {session?.role === "teacher" &&
+                        teacherNavigation.map((item) => (
                           <a
                             key={item.name}
                             href={item.href}
@@ -280,7 +243,7 @@ export default function Example({ children }: Props) {
           {/* ======== Static sidebar for desktop ======== */}
           <div className="z-50 hidden mt-24 md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex flex-col ml-8 rounded-xl bg-primary-200">
+            <div className="flex flex-col ml-8 bg-white shadow rounded-xl">
               <div className="flex flex-col flex-1 mt-5">
                 <nav className="flex-1 px-2 pb-4 space-y-1">
                   {session?.role === "admin" &&
@@ -289,8 +252,8 @@ export default function Example({ children }: Props) {
                         <div
                           className={classNames(
                             router.pathname.includes(item.href)
-                              ? "bg-primary-800 text-primary-50"
-                              : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
+                              ? "bg-primary-600 text-primary-50"
+                              : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
                             "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
                           )}
                         >

@@ -39,14 +39,14 @@ export default function Students({ sessionSSR }: any) {
         content: (
           <div className="flex items-center justify-between px-4 rounded-lg">
             <div className="flex flex-col w-8 ml-4">
-              <div className="text-xl">
+              <div className="text-lg md:text-xl">
                 {student.studentFirstName} {student.studentLastName}
               </div>
-              <div className="font-light">
+              <div className="text-sm font-light md:text-md">
                 {getAge(student.studentDateOfBirth, true)}
               </div>
             </div>
-            <div className="text-5xl">
+            <div className="text-3xl md:text-5xl">
               <FiChevronRight />
             </div>
           </div>
