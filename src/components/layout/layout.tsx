@@ -280,7 +280,7 @@ export default function Example({ children }: Props) {
           {/* ======== Static sidebar for desktop ======== */}
           <div className="z-50 hidden mt-24 md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex flex-col ml-8 rounded-xl bg-primary-300">
+            <div className="flex flex-col ml-8 rounded-xl bg-primary-200">
               <div className="flex flex-col flex-1 mt-5">
                 <nav className="flex-1 px-2 pb-4 space-y-1">
                   {session?.role === "admin" &&

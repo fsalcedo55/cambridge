@@ -39,13 +39,13 @@ export default function LessonPlan({
     <div className="flex flex-col shadow-lg bg-gradient-to-t from-neutral-50 to-white rounded-xl">
       <div className="flex flex-col justify-between px-4 py-2 bg-white md:py-0 md:flex-row md:items-center rounded-t-xl">
         <div className="flex flex-col gap-1 py-2">
-          <div className="flex items-center gap-1 text-xs text-neutral-400 md:text-md">
+          <div className="flex items-center gap-1 text-xs text-neutral-400 md:text-lg">
             <span>
               <ImCalendar />
             </span>
             <span>{dayjs(date).format("ddd, MMM D, YYYY")}</span>
           </div>
-          <h1 className="text-2xl font-bold md:text-3xl text-primary-800">
+          <h1 className="text-2xl font-bold md:text-2xl text-primary-800">
             {title}
           </h1>
         </div>
