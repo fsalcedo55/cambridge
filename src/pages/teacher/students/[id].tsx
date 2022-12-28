@@ -117,7 +117,7 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
               actorId={student?.data?.teacher?.email!}
               recipientId="spanishforuskids@gmail.com"
               studentName={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
-              actionUrl={student?.data?.id}
+              actionUrl={`/admin/students/${student?.data?.id}`}
             />
           }
         />

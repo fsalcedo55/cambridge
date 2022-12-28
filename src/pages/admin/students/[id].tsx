@@ -114,7 +114,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                 actorId={session?.user?.email!}
                 recipientId={student?.data?.teacher?.email!}
                 studentName={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
-                actionUrl={student?.data?.id}
+                actionUrl={`/teacher/students/${student?.data?.id}`}
               />
             }
           />
