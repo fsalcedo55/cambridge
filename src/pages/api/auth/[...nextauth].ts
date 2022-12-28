@@ -2,6 +2,8 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "../../../../lib/prismadb"
+import { Knock } from "@knocklabs/node"
+const knock = new Knock(process.env.KNOCK_API_KEY)
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -21,6 +23,13 @@ export const authOptions: NextAuthOptions = {
     buttonText: "#0175BC",
   },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      await knock.users.identify(user.email!, {
+        name: user.name!,
+        email: user.email!,
+      })
+      return true
+    },
     async session({ session, token, user }) {
       if (user.email == process.env.ADMIN_EMAILS) {
         session.role = "admin"

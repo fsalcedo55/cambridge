@@ -110,7 +110,7 @@ export default function Table({ rows, headers }: TableProps) {
           </thead>
           <tbody className="bg-white divide-y overflow-x divide-neutral-100">
             {rows?.map((row, idx) => (
-              <tr key={idx} className="hover:bg-neutral-50">
+              <tr key={idx}>
                 {row.cells?.map((cell, cellIdx) =>
                   cell.importance === 1 ? (
                     <td

@@ -20,6 +20,7 @@ export const lessonPlanRouter = router({
       const lessonPlan = await prisma.lessonPlan.create({
         data: input,
       })
+
       return lessonPlan
     }),
   edit: publicProcedure

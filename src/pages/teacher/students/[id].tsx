@@ -114,6 +114,10 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
               studentId={student?.data?.id}
               teacherId={student?.data?.teacher?.id}
               closeModal={() => setIsOpen(false)}
+              actorId={student?.data?.teacher?.email!}
+              recipientId="spanishforuskids@gmail.com"
+              studentName={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
+              actionUrl={student?.data?.id}
             />
           }
         />

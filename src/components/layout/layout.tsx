@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react"
+import { Fragment, useRef, useState } from "react"
 import { Dialog, Menu, Transition } from "@headlessui/react"
 import {
   Bars3BottomLeftIcon,
@@ -13,9 +13,31 @@ import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import Footer from "./footer"
 import Link from "next/link"
+import {
+  KnockFeedProvider,
+  NotificationIconButton,
+  NotificationFeedPopover,
+} from "@knocklabs/react-notification-feed"
+import "@knocklabs/react-notification-feed/dist/index.css"
+import { trpc } from "@src/utils/trpc"
+import { getAuthSession } from "@src/server/common/get-server-session"
+import { GetServerSidePropsContext } from "next"
+
+// export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+//   const session = await getAuthSession(ctx)
+//   if (!session || session.role != "teacher") {
+//     return { redirect: { destination: "/", permanent: false } }
+//   }
+//   return {
+//     props: {
+//       sessionSSR: await getAuthSession(ctx),
+//     },
+//   }
+// }
 
 interface Props {
   children: React.ReactNode
+  // sessionSSR: any
 }
 
 const adminNavigation = [
@@ -43,10 +65,13 @@ function classNames(...classes: any[]) {
 }
 
 export default function Example({ children }: Props) {
+  const [isVisible, setIsVisible] = useState(false)
+  const notifButtonRef = useRef(null)
   const router = useRouter()
   const { data: session, status } = useSession()
   const loading = status === "loading"
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
   return (
     <>
@@ -184,7 +209,26 @@ export default function Example({ children }: Props) {
                   className="p-1 bg-white rounded-full text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>
-                  <BellIcon className="w-6 h-6" aria-hidden="true" />
+                  {/* <BellIcon className="w-6 h-6" aria-hidden="true" /> */}
+                  {session?.user?.email && (
+                    <KnockFeedProvider
+                      apiKey="pk_test_DMA6v49_7mTVOVIp2pK5xeJFNOiluVN4aIl4W7g7H-I"
+                      feedId="5fe0ad69-0264-4656-b860-9e64a36a5636"
+                      userId={session?.user?.email}
+                    >
+                      <>
+                        <NotificationIconButton
+                          ref={notifButtonRef}
+                          onClick={(e) => setIsVisible(!isVisible)}
+                        />
+                        <NotificationFeedPopover
+                          buttonRef={notifButtonRef}
+                          isVisible={isVisible}
+                          onClose={() => setIsVisible(false)}
+                        />
+                      </>
+                    </KnockFeedProvider>
+                  )}
                 </button>
 
                 {/* ======== Profile dropdown ======== */}

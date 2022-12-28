@@ -4,9 +4,9 @@ generator client {
 }
 
 datasource db {
-    provider             = "mysql"
-    url                  = env("DATABASE_URL")
-    referentialIntegrity = "prisma"
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 model Account {
@@ -26,6 +26,7 @@ model Account {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -34,20 +35,23 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
-    id                 String              @id @default(cuid())
-    name               String?
-    email              String?             @unique
-    emailVerified      DateTime?
-    image              String?
-    role               String?
-    accounts           Account[]
-    sessions           Session[]
-    students           Student[]
-    lessonPlans        LessonPlan[]
-    lessonPlanComments LessonPlanComment[]
+    id                      String                   @id @default(cuid())
+    name                    String?
+    email                   String?                  @unique
+    emailVerified           DateTime?
+    image                   String?
+    role                    String?
+    accounts                Account[]
+    sessions                Session[]
+    students                Student[]
+    lessonPlans             LessonPlan[]
+    lessonPlanComments      LessonPlanComment[]
+    lessonPlanNotifications LessonPlanNotification[]
 }
 
 model Student {
@@ -59,6 +63,8 @@ model Student {
     teacher            User?        @relation(fields: [userId], references: [id])
     userId             String?
     lessonPlans        LessonPlan[]
+
+    @@index([userId])
 }
 
 model VerificationToken {
@@ -70,16 +76,20 @@ model VerificationToken {
 }
 
 model LessonPlan {
-    id           String              @id @default(cuid())
-    title        String
-    date         String
-    slidesUrl    String?
-    homeworkSent Boolean?            @default(false)
-    Student      Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    studentId    String
-    User         User                @relation(fields: [userId], references: [id], onDelete: Restrict)
-    userId       String
-    comments     LessonPlanComment[]
+    id                     String                  @id @default(cuid())
+    title                  String
+    date                   String
+    slidesUrl              String?
+    homeworkSent           Boolean?                @default(false)
+    Student                Student                 @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    studentId              String
+    User                   User                    @relation(fields: [userId], references: [id], onDelete: Restrict)
+    userId                 String
+    comments               LessonPlanComment[]
+    LessonPlanNotification LessonPlanNotification?
+
+    @@index([studentId])
+    @@index([userId])
 }
 
 model LessonPlanComment {
@@ -90,4 +100,18 @@ model LessonPlanComment {
     lessonPlanId String
     User         User       @relation(fields: [userId], references: [id], onDelete: Restrict)
     userId       String
+
+    @@index([lessonPlanId])
+    @@index([userId])
+}
+
+model LessonPlanNotification {
+    id           String     @id @default(cuid())
+    User         User?      @relation(fields: [userId], references: [id])
+    userId       String?
+    LessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id])
+    lessonPlanId String     @unique
+    read         Boolean
+
+    @@index([userId])
 }

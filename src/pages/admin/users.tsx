@@ -12,6 +12,10 @@ import { getAllUsers } from "../../services/user.services"
 import Table from "../../components/ui/table"
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
+import { trpc } from "@src/utils/trpc"
+import EditUser from "@src/components/admin/users/editUser"
+import { IUser } from "@src/interfaces"
+import { capFirstLetter } from "@src/helpers/string"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -27,11 +31,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 interface User {
   id: string
-  name: string
-  email: string
-  emailVerified: null
-  image: string
-  role: string
+  name: string | null
+  email: string | null
+  image: string | null
+  role: string | null
 }
 
 const userTableHeaders = [
@@ -39,21 +42,24 @@ const userTableHeaders = [
   { id: "header2", label: "Name" },
   { id: "header3", label: "Email" },
   { id: "header4", label: "Role" },
+  { id: "header5", label: "Actions" },
 ]
 
 export default function Users() {
-  const { data: users, isLoading } = useQuery(["users"], getAllUsers)
-
+  const usersTRPC = trpc.user.getAll.useQuery()
+  // const { data: users, isLoading } = useQuery(["users"], getAllUsers)
   const { data: session } = useSession()
+  const [currentUser, setCurrentUser] = useState<IUser>()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
 
-  if (session?.role != "admin") {
-    return <AccessDenied />
+  const handleEditModal = (user: IUser) => {
+    setIsOpen(true)
+    setCurrentUser(user)
   }
 
-  //Formatted rows for table cells
-  const formattedRows = users?.map((user: User, idx: number) => ({
+  // Formatted rows for table cells
+  const formattedRows = usersTRPC.data?.map((user: IUser, idx: number) => ({
     cells: [
       { content: idx + 1 },
       {
@@ -62,7 +68,7 @@ export default function Users() {
             <div className="avatar">
               <div className="w-6 rounded-full">
                 <Image
-                  src={user.image}
+                  src={user.image!}
                   width={24}
                   height={24}
                   alt={"teacher"}
@@ -70,20 +76,44 @@ export default function Users() {
               </div>
             </div>
             <div>
-              <div>{user.name}</div>
+              <div>{user.name!}</div>
             </div>
           </div>
         ),
       },
-      { content: user.email },
-      { content: user.role },
+      { content: user.email! },
+      { content: user.role ? capFirstLetter(user.role) : "None" },
+      {
+        content: (
+          <div>
+            <a
+              onClick={() => handleEditModal(user)}
+              className="text-sm font-bold cursor-pointer text-neutral-500 hover:text-primary-500 hover:underline underline-offset-4"
+            >
+              Edit
+            </a>
+            <Modal
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              closeButton="Cancel"
+              title={`Edit ${currentUser?.name}`}
+              description={
+                <EditUser
+                  closeModal={() => setIsOpen(false)}
+                  user={currentUser}
+                />
+              }
+            />
+          </div>
+        ),
+      },
     ],
   }))
 
   return (
     <div>
       <PageHeading pageTitle="Users" />
-      {isLoading ? (
+      {usersTRPC.isLoading ? (
         <Loading />
       ) : (
         <div>

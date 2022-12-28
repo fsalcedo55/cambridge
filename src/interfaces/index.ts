@@ -1,7 +1,9 @@
 export interface IUser {
   id: string
-  name: string
-  email: string
+  name: string | null
+  email: string | null
+  image: string | null
+  role: string | null
 }
 
 export interface IStudent {

@@ -111,6 +111,10 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                 studentId={student?.data?.id}
                 teacherId={student?.data?.teacher?.id}
                 closeModal={() => setIsOpen(false)}
+                actorId={session?.user?.email!}
+                recipientId={student?.data?.teacher?.email!}
+                studentName={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
+                actionUrl={student?.data?.id}
               />
             }
           />

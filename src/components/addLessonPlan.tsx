@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "./ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
 import { useSession } from "next-auth/react"
+import { notify } from "@src/lib/knockApi"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -28,12 +29,20 @@ interface Props {
   studentId: string | undefined
   teacherId: string | undefined
   closeModal: () => void
+  actorId: string
+  recipientId: string
+  studentName: string | undefined
+  actionUrl: string | undefined
 }
 
 export default function AddLessonPlan({
   studentId,
   teacherId,
   closeModal,
+  actorId,
+  recipientId,
+  studentName,
+  actionUrl,
 }: Props) {
   const { data: session } = useSession()
   const [hmwrkSent, setHmwrkSent] = useState(false)
@@ -53,6 +62,13 @@ export default function AddLessonPlan({
         userId: teacherId as string,
         slidesUrl: data.slidesUrl,
         homeworkSent: hmwrkSent,
+      })
+      await notify({
+        recipientId,
+        actorId,
+        studentName,
+        lessonName: data.title,
+        actionUrl,
       })
     } catch (error) {
       console.log(error)
