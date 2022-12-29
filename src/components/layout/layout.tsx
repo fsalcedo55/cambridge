@@ -212,7 +212,7 @@ export default function Example({ children }: Props) {
                   {/* <BellIcon className="w-6 h-6" aria-hidden="true" /> */}
                   {session?.user?.email && (
                     <KnockFeedProvider
-                      apiKey="pk_test_DMA6v49_7mTVOVIp2pK5xeJFNOiluVN4aIl4W7g7H-I"
+                      apiKey={process.env.KNOCK_PUBLIC_API_KEY!}
                       feedId="5fe0ad69-0264-4656-b860-9e64a36a5636"
                       userId={session?.user?.email}
                     >

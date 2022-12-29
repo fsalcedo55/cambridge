@@ -16,9 +16,9 @@ const headers = { "Content-Type": "application/json" }
 //   }
 // }
 
-export async function notify(params: any) {
+export async function notifyNewLessonPlan(params: any) {
   try {
-    const resp = await fetch("/api/notify", {
+    const resp = await fetch("/api/notifyNewLessonPlan", {
       method: "POST",
       body: JSON.stringify(params),
       headers,

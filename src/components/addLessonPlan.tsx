@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "./ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
 import { useSession } from "next-auth/react"
-import { notify } from "@src/lib/knockApi"
+import { notifyNewLessonPlan } from "@src/lib/knockApi"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -63,7 +63,7 @@ export default function AddLessonPlan({
         slidesUrl: data.slidesUrl,
         homeworkSent: hmwrkSent,
       })
-      await notify({
+      await notifyNewLessonPlan({
         recipientId,
         actorId,
         studentName,
