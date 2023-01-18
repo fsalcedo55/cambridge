@@ -69,6 +69,7 @@ export default function Example({ children }: Props) {
   const notifButtonRef = useRef(null)
   const router = useRouter()
   const { data: session, status } = useSession()
+  const { data } = useSession()
   const loading = status === "loading"
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })

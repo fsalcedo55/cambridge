@@ -23,6 +23,13 @@ export const authOptions: NextAuthOptions = {
     buttonText: "#0175BC",
   },
   callbacks: {
+    async jwt({ token, account, profile }) {
+      // Persist the OAuth access_token and or the user id to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token
+      }
+      return token
+    },
     async signIn({ user, account, profile, email, credentials }) {
       await knock.users.identify(user.email!, {
         name: user.name!,
@@ -36,6 +43,7 @@ export const authOptions: NextAuthOptions = {
       } else {
         session.role = "teacher"
       }
+      // session.accessToken = token.accessToken
       return session
     },
   },

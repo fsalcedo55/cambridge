@@ -43,7 +43,6 @@ export default function EditStudentForm({
     } catch (error) {
       console.log("Error editing student", error)
     }
-    console.log("data: ", data)
     closeModal()
   })
 

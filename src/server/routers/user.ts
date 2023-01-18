@@ -19,6 +19,7 @@ export const userRouter = router({
           image: true,
           id: true,
         },
+        
       })
     }),
   getAll: publicProcedure.query(() => {
@@ -29,6 +30,9 @@ export const userRouter = router({
         role: true,
         image: true,
         id: true,
+      },
+      orderBy: {
+          role: "asc"
       },
     })
   }),
