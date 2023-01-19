@@ -7,7 +7,10 @@ import {
 } from "@heroicons/react/24/outline"
 import { AiFillHome } from "react-icons/ai"
 import { HiUsers } from "react-icons/hi"
-import { FaChild } from "react-icons/fa"
+import { FaChild, FaGoogleDrive } from "react-icons/fa"
+import {TbExternalLink} from 'react-icons/tb'
+import {DiGoogleDrive} from 'react-icons/di'
+
 import { useRouter } from "next/router"
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
@@ -22,6 +25,9 @@ import "@knocklabs/react-notification-feed/dist/index.css"
 import { trpc } from "@src/utils/trpc"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { GetServerSidePropsContext } from "next"
+import { BsCalendar3, BsFillCameraVideoFill } from "react-icons/bs"
+import { BiGame } from "react-icons/bi"
+import { RiGameFill } from "react-icons/ri"
 
 // export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 //   const session = await getAuthSession(ctx)
@@ -57,6 +63,34 @@ const teacherNavigation = [
     icon: FaChild,
     current: false,
   },
+  {
+    name: "Calendar",
+    href: "https://calendar.google.com/",
+    icon: BsCalendar3,
+    current: false,
+    external: true
+  },
+  {
+    name: "Google Drive",
+    href: "https://drive.google.com/",
+    icon: FaGoogleDrive,
+    current: false,
+    external: true
+  },
+  {
+    name: "Games",
+    href: "https://sites.google.com/view/spanishforusgames/home",
+    icon: RiGameFill,
+    current: false,
+    external: true
+  },
+  {
+    name: "Zoom",
+    href: "https://zoom.us/",
+    icon: BsFillCameraVideoFill,
+    current: false,
+    external: true
+  },
 ]
 const userNavigation = [{ name: "Sign out", href: "/api/auth/signout" }]
 
@@ -73,6 +107,7 @@ export default function Example({ children }: Props) {
   const loading = status === "loading"
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
+
 
   return (
     <>
@@ -152,7 +187,8 @@ export default function Example({ children }: Props) {
                           </a>
                         ))}
                       {session?.role === "teacher" &&
-                        teacherNavigation.map((item) => (
+                        teacherNavigation.map((item) => 
+                          
                           <a
                             key={item.name}
                             href={item.href}
@@ -167,9 +203,9 @@ export default function Example({ children }: Props) {
                               className="flex-shrink-0 w-6 h-6 mr-4 text-primary-300"
                               aria-hidden="true"
                             />
-                            {item.name}
+                            {item.name} aaa
                           </a>
-                        ))}
+                        )}
                     </nav>
                   </div>
                 </Dialog.Panel>
@@ -312,22 +348,44 @@ export default function Example({ children }: Props) {
                     ))}
                   {session?.role === "teacher" &&
                     teacherNavigation.map((item) => (
-                      <Link key={item.name} href={item.href}>
-                        <div
-                          className={classNames(
-                            router.pathname.includes(item.href)
-                              ? "bg-primary-800 text-primary-50"
-                              : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
-                            "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
-                          )}
-                        >
-                          <item.icon
-                            className="mr-3 text-2xl"
-                            aria-hidden="true"
-                          />
-                          {item.name}
+                      item.external ? <a key={item.name} href={item.href} rel="noopener noreferrer" target="_blank">
+                      <div
+                        className={classNames(
+                          router.pathname.includes(item.href)
+                            ? "bg-primary-800 text-primary-50"
+                            : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                        )}
+                      >
+                        <item.icon
+                          className="mr-3 text-2xl"
+                          aria-hidden="true"
+                        />
+                        <div className="flex items-center gap-2">
+
+                        {item.name}
+                        <span className="opacity-50">
+                        <TbExternalLink/>
+                        </span>
                         </div>
-                      </Link>
+                      </div>
+                    </a> : <Link key={item.name} href={item.href}>
+                      <div
+                        className={classNames(
+                          router.pathname.includes(item.href)
+                            ? "bg-primary-800 text-primary-50"
+                            : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                        )}
+                      >
+                        <item.icon
+                          className="mr-3 text-2xl"
+                          aria-hidden="true"
+                        />
+                        {item.name}
+                      </div>
+                    </Link>
+                      
                     ))}
                 </nav>
               </div>
