@@ -55,6 +55,34 @@ const adminNavigation = [
   },
   { name: "Users", href: "/admin/users", icon: HiUsers, current: false },
   { name: "Students", href: "/admin/students", icon: FaChild, current: false },
+  {
+    name: "Calendar",
+    href: "https://calendar.google.com/",
+    icon: IoCalendar,
+    current: false,
+    external: true
+  },
+  {
+    name: "Google Drive",
+    href: "https://drive.google.com/",
+    icon: FaGoogleDrive,
+    current: false,
+    external: true
+  },
+  {
+    name: "Games",
+    href: "https://sites.google.com/view/spanishforusgames/home",
+    icon: RiGameFill,
+    current: false,
+    external: true
+  },
+  {
+    name: "Zoom",
+    href: "https://zoom.us/signin#/login",
+    icon: BsFillCameraVideoFill,
+    current: false,
+    external: true
+  },
 ]
 const teacherNavigation = [
   {
@@ -335,22 +363,47 @@ export default function Example({ children }: Props) {
                 <nav className="flex-1 px-2 pb-4 space-y-1">
                   {session?.role === "admin" &&
                     adminNavigation.map((item) => (
-                      <Link key={item.name} href={item.href}>
-                        <div
-                          className={classNames(
-                            router.pathname.includes(item.href)
-                              ? "bg-primary-600 text-primary-50"
-                              : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                            "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
-                          )}
-                        >
-                          <item.icon
-                            className="mr-3 text-2xl"
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </div>
-                      </Link>
+                      item.external ? <a key={item.name} href={item.href}
+                      
+                      rel="noopener noreferrer" target="_blank"
+                      >
+                      <div
+                        className={classNames(
+                          router.pathname.includes(item.href)
+                            ? "bg-primary-600 text-primary-50"
+                            : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                        )}
+                      >
+                        <item.icon
+                          className="mr-3 text-2xl"
+                          aria-hidden="true"
+                        />
+                        <div className="flex items-center gap-2">
+
+{item.name}
+<span className="opacity-50">
+<TbExternalLink/>
+</span>
+</div>
+                      </div>
+                    </a> : <Link key={item.name} href={item.href}>
+                      <div
+                        className={classNames(
+                          router.pathname.includes(item.href)
+                            ? "bg-primary-600 text-primary-50"
+                            : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                        )}
+                      >
+                        <item.icon
+                          className="mr-3 text-2xl"
+                          aria-hidden="true"
+                        />
+                        {item.name}
+                      </div>
+                    </Link>
+                      
                     ))}
                   {session?.role === "teacher" &&
                     teacherNavigation.map((item) => (
