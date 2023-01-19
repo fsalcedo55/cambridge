@@ -9,7 +9,7 @@ import { AiFillHome } from "react-icons/ai"
 import { HiUsers } from "react-icons/hi"
 import { FaChild, FaGoogleDrive } from "react-icons/fa"
 import {TbExternalLink} from 'react-icons/tb'
-import {DiGoogleDrive} from 'react-icons/di'
+import {IoCalendar} from 'react-icons/io5'
 
 import { useRouter } from "next/router"
 import { signOut, useSession } from "next-auth/react"
@@ -66,7 +66,7 @@ const teacherNavigation = [
   {
     name: "Calendar",
     href: "https://calendar.google.com/",
-    icon: BsCalendar3,
+    icon: IoCalendar,
     current: false,
     external: true
   },
