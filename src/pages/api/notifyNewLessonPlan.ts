@@ -1,7 +1,7 @@
 import { Knock } from "@knocklabs/node"
 import type { NextApiRequest, NextApiResponse } from "next"
 
-const knockClient = new Knock(process.env.KNOCK_SECRET_API_KEY)
+const knockClient = new Knock(process.env.KNOCK_API_KEY)
 
 const KNOCK_WORKFLOW = "new-lesson-plan"
 

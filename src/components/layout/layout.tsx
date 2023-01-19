@@ -108,6 +108,8 @@ export default function Example({ children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
+  console.log("apikey: ", process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
+
 
   return (
     <>
@@ -229,7 +231,7 @@ export default function Example({ children }: Props) {
               <Bars3BottomLeftIcon className="w-6 h-6" aria-hidden="true" />
             </button>
 
-            <div className="flex justify-between flex-1 px-4">
+            <div className="flex justify-between flex-1 px-8">
               <div className="flex items-center flex-shrink-0 px-4">
                 <Link href="/">
                   <Image
@@ -249,8 +251,8 @@ export default function Example({ children }: Props) {
                   {/* <BellIcon className="w-6 h-6" aria-hidden="true" /> */}
                   {session?.user?.email && (
                     <KnockFeedProvider
-                      apiKey={process.env.KNOCK_PUBLIC_API_KEY!}
-                      feedId="5fe0ad69-0264-4656-b860-9e64a36a5636"
+                      apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!}
+                      feedId="5fe0ad69-0264-4656-b860-9e64a36a5636" 
                       userId={session?.user?.email}
                     >
                       <>
