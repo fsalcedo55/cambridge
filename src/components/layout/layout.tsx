@@ -86,7 +86,7 @@ const teacherNavigation = [
   },
   {
     name: "Zoom",
-    href: "https://zoom.us/",
+    href: "https://zoom.us/signin#/login",
     icon: BsFillCameraVideoFill,
     current: false,
     external: true
