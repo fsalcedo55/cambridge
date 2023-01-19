@@ -10,6 +10,7 @@ declare module "next-auth" {
    */
   interface Session {
     role?: string | null
+    knockToken: any
   }
 }
 
@@ -17,5 +18,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     /** The user's role. */
     userRole?: "admin"
+    knockToken?: string | null
   }
 }

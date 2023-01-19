@@ -2,7 +2,6 @@ import { Fragment, useRef, useState } from "react"
 import { Dialog, Menu, Transition } from "@headlessui/react"
 import {
   Bars3BottomLeftIcon,
-  BellIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline"
 import { AiFillHome } from "react-icons/ai"
@@ -22,12 +21,13 @@ import {
   NotificationFeedPopover,
 } from "@knocklabs/react-notification-feed"
 import "@knocklabs/react-notification-feed/dist/index.css"
-import { trpc } from "@src/utils/trpc"
-import { getAuthSession } from "@src/server/common/get-server-session"
-import { GetServerSidePropsContext } from "next"
-import { BsCalendar3, BsFillCameraVideoFill } from "react-icons/bs"
-import { BiGame } from "react-icons/bi"
+import { BsFillCameraVideoFill } from "react-icons/bs"
 import { RiGameFill } from "react-icons/ri"
+import Knock from "@knocklabs/client";
+
+const knockClient = new Knock(process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!);
+
+
 
 // export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 //   const session = await getAuthSession(ctx)
@@ -109,6 +109,9 @@ export default function Example({ children }: Props) {
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
   console.log("apikey: ", process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
+
+  // Tell Knock to use the users id and the token for the user
+// knockClient.authenticate(session?.user?.email!, session?.knockToken);
 
 
   return (
@@ -254,6 +257,7 @@ export default function Example({ children }: Props) {
                       apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!}
                       feedId="5fe0ad69-0264-4656-b860-9e64a36a5636" 
                       userId={session?.user?.email}
+                      userToken={session?.knockToken}
                     >
                       <>
                         <NotificationIconButton
