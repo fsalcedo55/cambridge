@@ -5,10 +5,12 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline"
 import { AiFillHome } from "react-icons/ai"
-import { HiUsers } from "react-icons/hi"
+import { HiTemplate, HiUsers } from "react-icons/hi"
 import { FaChild, FaGoogleDrive } from "react-icons/fa"
 import {TbExternalLink} from 'react-icons/tb'
 import {IoCalendar} from 'react-icons/io5'
+import {SiGmail} from 'react-icons/si'
+import {GrTemplate} from 'react-icons/gr'
 
 import { useRouter } from "next/router"
 import { signOut, useSession } from "next-auth/react"
@@ -66,6 +68,20 @@ const adminNavigation = [
     name: "Google Drive",
     href: "https://drive.google.com/",
     icon: FaGoogleDrive,
+    current: false,
+    external: true
+  },
+  {
+    name: "Gmail",
+    href: "https://mail.google.com/",
+    icon: SiGmail,
+    current: false,
+    external: true
+  },
+  {
+    name: "Templates",
+    href: "https://drive.google.com/drive/folders/1L7PEmtkf-sqckMCR3Yin03J_RIyrhmB_",
+    icon: HiTemplate,
     current: false,
     external: true
   },
@@ -372,7 +388,7 @@ export default function Example({ children }: Props) {
                           router.pathname.includes(item.href)
                             ? "bg-primary-600 text-primary-50"
                             : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
                         )}
                       >
                         <item.icon
@@ -380,12 +396,11 @@ export default function Example({ children }: Props) {
                           aria-hidden="true"
                         />
                         <div className="flex items-center gap-2">
-
-{item.name}
-<span className="opacity-50">
-<TbExternalLink/>
-</span>
-</div>
+                          {item.name}
+                          <span className="opacity-50">
+                          <TbExternalLink/>
+                          </span>
+                          </div>
                       </div>
                     </a> : <Link key={item.name} href={item.href}>
                       <div
@@ -393,7 +408,7 @@ export default function Example({ children }: Props) {
                           router.pathname.includes(item.href)
                             ? "bg-primary-600 text-primary-50"
                             : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
                         )}
                       >
                         <item.icon
@@ -413,7 +428,7 @@ export default function Example({ children }: Props) {
                           router.pathname.includes(item.href)
                             ? "bg-primary-800 text-primary-50"
                             : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
                         )}
                       >
                         <item.icon
@@ -434,7 +449,7 @@ export default function Example({ children }: Props) {
                           router.pathname.includes(item.href)
                             ? "bg-primary-800 text-primary-50"
                             : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-md cursor-pointer"
+                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
                         )}
                       >
                         <item.icon

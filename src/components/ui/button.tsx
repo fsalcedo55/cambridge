@@ -28,7 +28,7 @@ export function Button({
       {loading ? (
         <button
           className={clsx(
-            `normal-case btn no-animation bg-neutral-100 loading text-neutral-900 text-base ${className}`,
+            `normal-case btn no-animation bg-neutral-100 loading text-neutral-900 text-base rounded-full ${className}`,
             {
               "min-w-full": fullWidth === true,
             }
@@ -40,7 +40,7 @@ export function Button({
         <button
           type={type}
           className={clsx(
-            `btn no-animation normal-case text-base font-semibold ${className}`,
+            `btn no-animation normal-case text-base font-semibold rounded-full ${className}`,
             {
               "bg-primary-500 text-white border-0 hover:bg-primary-700":
                 intent === "primary",

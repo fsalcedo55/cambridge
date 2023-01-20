@@ -45,22 +45,22 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token, user }) {
   // console.log('jwtkey: ', process.env.KNOCK_SIGNING_KEY),
 
-  //     session.knockToken({
-  //       knockToken: jwt.sign(
-  //         {
-  //           // The user that you're signing the token for
-  //           sub: user.email,
-  //           // When the token was issued
-  //           iat: currentTime,
-  //           // Expiry timestamp
-  //           exp: currentTime + 60 * 60, // 1 hour from now
-  //         },
-  //         process.env.KNOCK_SIGNING_KEY!,
-  //         {
-  //           algorithm: "RS256",
-  //         },
-  //       )
-  //     })
+      // session.knockToken({
+      //   knockToken: jwt.sign(
+      //     {
+      //       // The user that you're signing the token for
+      //       sub: user.email,
+      //       // When the token was issued
+      //       iat: currentTime,
+      //       // Expiry timestamp
+      //       exp: currentTime + 60 * 60, // 1 hour from now
+      //     },
+      //     process.env.KNOCK_SIGNING_KEY!,
+      //     {
+      //       algorithm: "RS256",
+      //     },
+      //   )
+      // })
       
       if (user.email == process.env.ADMIN_EMAILS) {
         session.role = "admin"
