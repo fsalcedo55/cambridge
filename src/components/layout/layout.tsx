@@ -155,7 +155,7 @@ export default function Example({ children }: Props) {
 
 
   // Tell Knock to use the users id and the token for the user
-knockClient.authenticate(session?.user?.email!, session?.knockToken);
+// knockClient.authenticate(session?.user?.email!, session?.knockToken);
 
 
   return (
@@ -296,7 +296,7 @@ knockClient.authenticate(session?.user?.email!, session?.knockToken);
                 >
                   <span className="sr-only">View notifications</span>
                   {/* <BellIcon className="w-6 h-6" aria-hidden="true" /> */}
-                  {session?.user?.email && (
+                  {/* {session?.user?.email && (
                     <KnockFeedProvider
                       apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!}
                       feedId="5fe0ad69-0264-4656-b860-9e64a36a5636" 
@@ -315,7 +315,7 @@ knockClient.authenticate(session?.user?.email!, session?.knockToken);
                         />
                       </>
                     </KnockFeedProvider>
-                  )}
+                  )} */}
                 </button>
 
                 {/* ======== Profile dropdown ======== */}
