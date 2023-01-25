@@ -152,10 +152,10 @@ export default function Example({ children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
-  console.log("apikey: ", process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
+
 
   // Tell Knock to use the users id and the token for the user
-// knockClient.authenticate(session?.user?.email!, session?.knockToken);
+knockClient.authenticate(session?.user?.email!, session?.knockToken);
 
 
   return (
@@ -377,18 +377,20 @@ export default function Example({ children }: Props) {
             <div className="flex flex-col ml-8 bg-white shadow rounded-xl">
               <div className="flex flex-col flex-1 mt-5">
                 <nav className="flex-1 px-2 pb-4 space-y-1">
+                  
                   {session?.role === "admin" &&
                     adminNavigation.map((item) => (
                       item.external ? <a key={item.name} href={item.href}
                       
                       rel="noopener noreferrer" target="_blank"
                       >
+                        
                       <div
                         className={classNames(
                           router.pathname.includes(item.href)
                             ? "bg-primary-600 text-primary-50"
                             : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
+                          "group flex items-center px-2 py-2 text-md font-medium rounded-full cursor-pointer"
                         )}
                       >
                         <item.icon
