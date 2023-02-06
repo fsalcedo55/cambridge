@@ -40,18 +40,17 @@ model Session {
 }
 
 model User {
-    id                      String                   @id @default(cuid())
-    name                    String?
-    email                   String?                  @unique
-    emailVerified           DateTime?
-    image                   String?
-    role                    String?
-    accounts                Account[]
-    sessions                Session[]
-    students                Student[]
-    lessonPlans             LessonPlan[]
-    lessonPlanComments      LessonPlanComment[]
-    lessonPlanNotifications LessonPlanNotification[]
+    id                 String              @id @default(cuid())
+    name               String?
+    email              String?             @unique
+    emailVerified      DateTime?
+    image              String?
+    role               String?
+    accounts           Account[]
+    sessions           Session[]
+    students           Student[]
+    lessonPlans        LessonPlan[]
+    lessonPlanComments LessonPlanComment[]
 }
 
 model Student {
@@ -63,6 +62,7 @@ model Student {
     teacher            User?        @relation(fields: [userId], references: [id])
     userId             String?
     lessonPlans        LessonPlan[]
+    Lesson             Lesson[]
 
     @@index([userId])
 }
@@ -76,17 +76,16 @@ model VerificationToken {
 }
 
 model LessonPlan {
-    id                     String                  @id @default(cuid())
-    title                  String
-    date                   String
-    slidesUrl              String?
-    homeworkSent           Boolean?                @default(false)
-    Student                Student                 @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    studentId              String
-    User                   User                    @relation(fields: [userId], references: [id], onDelete: Restrict)
-    userId                 String
-    comments               LessonPlanComment[]
-    LessonPlanNotification LessonPlanNotification?
+    id           String              @id @default(cuid())
+    title        String
+    date         String
+    slidesUrl    String?
+    homeworkSent Boolean?            @default(false)
+    Student      Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    studentId    String
+    User         User                @relation(fields: [userId], references: [id], onDelete: Restrict)
+    userId       String
+    comments     LessonPlanComment[]
 
     @@index([studentId])
     @@index([userId])
@@ -105,13 +104,34 @@ model LessonPlanComment {
     @@index([userId])
 }
 
-model LessonPlanNotification {
-    id           String     @id @default(cuid())
-    User         User?      @relation(fields: [userId], references: [id])
-    userId       String?
-    LessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id])
-    lessonPlanId String     @unique
-    read         Boolean
+model Lesson {
+    id        String   @id @default(cuid())
+    title     String
+    published Boolean  @default(false)
+    Student   Student? @relation(fields: [studentId], references: [id])
+    studentId String?
+    Unit      Unit?    @relation(fields: [unitId], references: [id])
+    unitId    String?
 
-    @@index([userId])
+    @@index([studentId])
+    @@index([unitId])
+}
+
+model Unit {
+    id        String   @id @default(cuid())
+    title     String
+    published Boolean  @default(false)
+    Lesson    Lesson[]
+    Level     Level?   @relation(fields: [levelId], references: [id])
+    levelId   String?
+
+    @@index([levelId])
+}
+
+model Level {
+    id        String  @id @default(cuid())
+    title     String
+    number    Int
+    published Boolean @default(false)
+    Unit      Unit[]
 }

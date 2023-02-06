@@ -28,13 +28,6 @@ export const authOptions: NextAuthOptions = {
     buttonText: "#0175BC",
   },
   callbacks: {
-    async jwt({ token, account, profile }) {
-      // Persist the OAuth access_token and or the user id to the token right after signin
-      if (account) {
-        token.knockToken = "randomstring"
-      }
-      return token
-    },
     async signIn({ user, account, profile, email, credentials }) {
       await knock.users.identify(user.email!, {
         name: user.name!,
@@ -44,41 +37,40 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     async session({ session, token, user }) {
-        // // ....We decode the JSON here and grab the key.
-        // if (process.env.KNOCK_SIGNING_KEY) {
-        //   const signingKey = JSON.parse(process.env.KNOCK_SIGNING_KEY).key
+        // ....We decode the JSON here and grab the key.
+        if (process.env.KNOCK_SIGNING_KEY) {
+          const signingKey = JSON.parse(process.env.KNOCK_SIGNING_KEY).key
           
-        //   // JWT NumericDates specified in seconds:
-        //   const currentTime = Math.floor(Date.now() / 1000)
+          // JWT NumericDates specified in seconds:
+          const currentTime = Math.floor(Date.now() / 1000)
           
-        //   // session.knockToken = JSON.stringify({
-        //     //   token: 'hello'
-        //     // })
+          // session.knockToken = JSON.stringify({
+          //     token: 'hello'
+          //   })
             
-        //     session.knockToken = {
-        //       knockToken: jwt.sign(
-        //         {
-        //           // The user that you're signing the token for
-        //           sub: user.email,
-        //           // When the token was issued
-        //           iat: currentTime,
-        //           // Expiry timestamp
-        //           exp: currentTime + 60 * 60, // 1 hour from now
-        //         },
-        //         signingKey,
-        //         {
-        //           algorithm: "RS256",
-        //         },
-        //         )
-        //       }
-        //     }
+            session.knockToken = {
+              knockToken: jwt.sign(
+                {
+                  // The user that you're signing the token for
+                  sub: user.email,
+                  // When the token was issued
+                  iat: currentTime,
+                  // Expiry timestamp
+                  exp: currentTime + 60 * 60, // 1 hour from now
+                },
+                signingKey,
+                {
+                  algorithm: "RS256",
+                },
+                )
+              }
+            }
       
       if (user.email == process.env.ADMIN_EMAILS) {
         session.role = "admin"
       } else {
         session.role = "teacher"
       }
-      // session.accessToken = token.accessToken
       return session
     },
   },

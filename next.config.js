@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["lh3.googleusercontent.com", "placeimg.com"],
+    domains: ["lh3.googleusercontent.com", "placeimg.com", "images.unsplash.com"],
   },
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,

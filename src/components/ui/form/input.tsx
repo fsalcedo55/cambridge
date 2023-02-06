@@ -1,6 +1,6 @@
 import React, { FC, forwardRef } from "react"
 
-export type InputType = "text" | "email" | "date" | "select"
+export type InputType = "text" | "email" | "date" | "select" | "number"
 
 export type InputProps = {
   id: string

@@ -19,6 +19,8 @@ import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { ILessonPlan } from "@src/interfaces/index"
 import Breadcrumbs from "@src/components/ui/breadcrumbs"
+import { SiBookstack } from "react-icons/si"
+import AddLevel from "@src/components/admin/lessons/AddLevel"
 
 type Student = {
   studentFirstName: string
@@ -125,6 +127,27 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     </div>
   )
 
+  const addLevelBtn = (
+    <div>
+      {router.isReady ? (
+        <div>
+          <Button intent="primary" size="small" onClick={() => setIsOpen(true)}>
+            + Add Level
+          </Button>
+          <Modal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            closeButton="Cancel"
+            title="Add Level"
+            description={<AddLevel closeModal={() => setIsOpen(false)} />}
+          />
+        </div>
+      ) : (
+        ""
+      )}
+    </div>
+  )
+
   const pages = [
     { name: "Students", href: "/admin/students", current: false },
     {
@@ -132,6 +155,141 @@ export default function AdminStudentPage({ sessionSSR }: any) {
       current: true,
     },
   ]
+
+  const directory: any = {
+    Beginner: [
+      {
+        id: 1,
+        name: "Basics",
+        description: "Unit 1",
+        imageUrl:
+          "https://images.unsplash.com/photo-1634128221889-82ed6efebfc3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+      },
+      {
+        id: 2,
+        name: "Mi Casa y Mi Familia",
+        description: "Unit 2",
+        imageUrl:
+          "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2178&q=80",
+      },
+      {
+        id: 3,
+        name: "Mis Emociones",
+        description: "Unit 3",
+        imageUrl:
+          "https://images.unsplash.com/photo-1524503033411-c9566986fc8f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+      },
+      {
+        id: 4,
+        name: "Mi Cuerpo Y Mi Ropa",
+        description: "Unit 4",
+        imageUrl:
+          "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+      },
+      {
+        id: 5,
+        name: "Animales de la Granja",
+        description: "Unit 5",
+        imageUrl:
+          "https://images.unsplash.com/photo-1484557985045-edf25e08da73?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1673&q=80",
+      },
+      {
+        id: 6,
+        name: "La Comida",
+        description: "Unit 6",
+        imageUrl:
+          "https://images.unsplash.com/photo-1467224298296-81a33a3f3022?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1713&q=80",
+      },
+      {
+        id: 7,
+        name: "Medios de Transporte y La Ciudad",
+        description: "Unit 7",
+        imageUrl:
+          "https://images.unsplash.com/photo-1564515113542-6e10f334cef4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
+      },
+      {
+        id: 8,
+        name: "Animales Salvajes",
+        description: "Unit 8",
+        imageUrl:
+          "https://images.unsplash.com/photo-1509973301519-9ca52aa49658?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+      },
+      {
+        id: 9,
+        name: "Ayudantes de la Comunidad",
+        description: "Unit 9",
+        imageUrl:
+          "https://images.unsplash.com/photo-1606613817011-84d20b0959ca?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
+      },
+      {
+        id: 10,
+        name: "Conceptos Especiales",
+        description: "Unit 10",
+        imageUrl:
+          "https://images.unsplash.com/photo-1485546246426-74dc88dec4d9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1769&q=80",
+      },
+      {
+        id: 11,
+        name: "El Clima",
+        description: "Unit 11",
+        imageUrl:
+          "https://images.unsplash.com/photo-1553984840-ec965a23cddd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2232&q=80",
+      },
+      {
+        id: 12,
+        name: "Que Podemos Hacer?",
+        description: "Unit 12",
+        imageUrl:
+          "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80",
+      },
+      {
+        id: 13,
+        name: "Animales Marinos",
+        description: "Unit 12",
+        imageUrl:
+          "https://images.unsplash.com/photo-1473849436913-eded203618b6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1729&q=80",
+      },
+    ],
+    Intermediate: [
+      {
+        id: 14,
+        name: "Mi Cuerpo Y Mi Ropa",
+        description: "Unit 4",
+        imageUrl:
+          "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+      },
+      {
+        id: 15,
+        name: "Animales de la Granja",
+        description: "Unit 5",
+        imageUrl:
+          "https://images.unsplash.com/photo-1484557985045-edf25e08da73?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1673&q=80",
+      },
+      {
+        id: 16,
+        name: "La Comida",
+        description: "Unit 6",
+        imageUrl:
+          "https://images.unsplash.com/photo-1467224298296-81a33a3f3022?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1713&q=80",
+      },
+    ],
+    Advanced: [
+      {
+        id: 17,
+        name: "Que Podemos Hacer?",
+        description: "Unit 12",
+        imageUrl:
+          "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80",
+      },
+      {
+        id: 18,
+        name: "Animales Marinos",
+        description: "Unit 12",
+        imageUrl:
+          "https://images.unsplash.com/photo-1473849436913-eded203618b6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1729&q=80",
+      },
+    ],
+  }
 
   return (
     <div>
@@ -195,21 +353,20 @@ export default function AdminStudentPage({ sessionSSR }: any) {
               <Tab.Group>
                 <div className="flex items-center justify-between">
                   <Tab.List className="tabs">
-                    <Tab className="pl-0 pr-8 mb-4 tab tab-lg tab-bordered ui-selected:tab-active ui-selected:font-semibold">
+                    <Tab className="pl-0 pr-8 tab tab-md tab-bordered ui-selected:tab-active ui-selected:font-semibold">
                       Lesson Plans
                     </Tab>
-                    <Tab className="pl-0 pr-8 mb-4 tab tab-lg tab-bordered ui-selected:tab-active ui-selected:font-semibold">
-                      Settings
+                    <Tab className="pl-0 pr-8 tab tab-md tab-bordered ui-selected:tab-active ui-selected:font-semibold">
+                      Lessons
                     </Tab>
                   </Tab.List>
-
-                  <div className="flex justify-end my-2">
-                    {addLessonPlanBtn}
-                  </div>
                 </div>
 
                 <Tab.Panels>
                   <Tab.Panel className="flex flex-col">
+                    <div className="flex justify-start my-3">
+                      {addLessonPlanBtn}
+                    </div>
                     {student.data?.lessonPlans &&
                       student.data?.lessonPlans.map((lessonPlan, idx) => (
                         <div key={lessonPlan.id}>
@@ -237,7 +394,68 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                         </div>
                       ))}
                   </Tab.Panel>
-                  <Tab.Panel>Settings go here</Tab.Panel>
+                  <Tab.Panel>
+                    <div className="flex justify-start my-3">{addLevelBtn}</div>
+                    <nav
+                      className="h-full mt-3 overflow-y-auto"
+                      aria-label="Directory"
+                    >
+                      {Object.keys(directory).map((letter) => (
+                        <div key={letter} className="relative">
+                          <div className="sticky top-0 z-10 px-6 py-1 text-sm font-medium border-t border-b text-neutral-500 border-neutral-200 bg-primary-50">
+                            <h3 className="text-xl font-bold text-primary-800">
+                              {letter}
+                            </h3>
+                          </div>
+                          <ul
+                            role="list"
+                            className="relative z-0 divide-y divide-neutral-200"
+                          >
+                            {directory[letter].map((person: any) => (
+                              <li
+                                key={person.id}
+                                className="bg-white hover:bg-neutral-50"
+                              >
+                                <a href="#">
+                                  <div className="flex items-center justify-between ">
+                                    <div className="relative flex items-center px-6 py-2 space-x-3 ">
+                                      <div className="flex-shrink-0">
+                                        <Image
+                                          height={120}
+                                          width={175}
+                                          src={person.imageUrl}
+                                          alt=""
+                                          className="rounded-lg"
+                                        />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-2xl font-bold md:text-2xl text-primary-800">
+                                          {person.name}
+                                        </p>
+                                        <p className="font-bold truncate text-neutral-500">
+                                          {person.description}
+                                        </p>
+                                        <div className="flex items-center gap-1 text-sm truncate text-neutral-500">
+                                          <SiBookstack />
+                                          <span>12 Lessons</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="flex flex-col px-8">
+                                      <span className="text-xs text-neutral-300">
+                                        Completed
+                                      </span>
+                                      <span className="text-3xl">56%</span>
+                                    </div>
+                                  </div>
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </nav>
+                  </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
             </div>
