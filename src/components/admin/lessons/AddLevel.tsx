@@ -23,22 +23,24 @@ export default function AddLevel({ closeModal }: Props) {
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
-  const addLevel = trpc.level.add.useMutation()
+  //   const addLevel = trpc.level.add.useMutation()
 
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      await addLevel.mutateAsync({
-        title: data.title,
-        number: Number(data.number),
-      })
-    } catch (error) {
-      console.log(error)
-    }
-    closeModal()
-  })
+  //   const onSubmit = handleSubmit(async (data) => {
+  //     try {
+  //       await addLevel.mutateAsync({
+  //         title: data.title,
+  //         number: Number(data.number),
+  //       })
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //     closeModal()
+  //   })
 
   return (
-    <form onSubmit={onSubmit}>
+    <form
+    // onSubmit={onSubmit}
+    >
       <FormInput
         id="title"
         type="text"
@@ -64,7 +66,7 @@ export default function AddLevel({ closeModal }: Props) {
         size="medium"
         className="my-2"
         loadingLabel="Adding..."
-        loading={addLevel.isLoading}
+        // loading={addLevel.isLoading}
         fullWidth
       >
         Add
