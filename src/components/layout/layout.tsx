@@ -1,16 +1,13 @@
 import { Fragment, useRef, useState } from "react"
 import { Dialog, Menu, Transition } from "@headlessui/react"
-import {
-  Bars3BottomLeftIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline"
+import { Bars3BottomLeftIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { AiFillHome } from "react-icons/ai"
 import { HiTemplate, HiUsers } from "react-icons/hi"
 import { FaChild, FaGoogleDrive } from "react-icons/fa"
-import {TbExternalLink} from 'react-icons/tb'
-import {IoCalendar} from 'react-icons/io5'
-import {SiGmail} from 'react-icons/si'
-import {GrTemplate} from 'react-icons/gr'
+import { TbExternalLink } from "react-icons/tb"
+import { IoCalendar } from "react-icons/io5"
+import { SiGmail } from "react-icons/si"
+import { GrTemplate } from "react-icons/gr"
 
 import { useRouter } from "next/router"
 import { signOut, useSession } from "next-auth/react"
@@ -25,11 +22,9 @@ import {
 import "@knocklabs/react-notification-feed/dist/index.css"
 import { BsFillCameraVideoFill } from "react-icons/bs"
 import { RiGameFill } from "react-icons/ri"
-import Knock from "@knocklabs/client";
+import Knock from "@knocklabs/client"
 
-const knockClient = new Knock(process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!);
-
-
+const knockClient = new Knock(process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
 
 // export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 //   const session = await getAuthSession(ctx)
@@ -62,42 +57,42 @@ const adminNavigation = [
     href: "https://calendar.google.com/",
     icon: IoCalendar,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Google Drive",
     href: "https://drive.google.com/",
     icon: FaGoogleDrive,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Gmail",
     href: "https://mail.google.com/",
     icon: SiGmail,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Templates",
     href: "https://drive.google.com/drive/folders/1L7PEmtkf-sqckMCR3Yin03J_RIyrhmB_",
     icon: HiTemplate,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Games",
     href: "https://sites.google.com/view/spanishforusgames/home",
     icon: RiGameFill,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Zoom",
     href: "https://zoom.us/signin#/login",
     icon: BsFillCameraVideoFill,
     current: false,
-    external: true
+    external: true,
   },
 ]
 const teacherNavigation = [
@@ -112,28 +107,28 @@ const teacherNavigation = [
     href: "https://calendar.google.com/",
     icon: IoCalendar,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Google Drive",
     href: "https://drive.google.com/",
     icon: FaGoogleDrive,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Games",
     href: "https://sites.google.com/view/spanishforusgames/home",
     icon: RiGameFill,
     current: false,
-    external: true
+    external: true,
   },
   {
     name: "Zoom",
     href: "https://zoom.us/signin#/login",
     icon: BsFillCameraVideoFill,
     current: false,
-    external: true
+    external: true,
   },
 ]
 const userNavigation = [{ name: "Sign out", href: "/api/auth/signout" }]
@@ -152,13 +147,10 @@ export default function Example({ children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
-
-
   // Tell Knock to use the users id and the token for the user
-knockClient.authenticate(session?.user?.email!, session?.knockToken);
+  knockClient.authenticate(session?.user?.email!, session?.knockToken)
 
-console.log("knocktokenwww: ", session?.knockToken.knockToken);
-
+  console.log("knocktokenwww: ", session?.knockToken.knockToken)
 
   return (
     <>
@@ -238,8 +230,7 @@ console.log("knocktokenwww: ", session?.knockToken.knockToken);
                           </a>
                         ))}
                       {session?.role === "teacher" &&
-                        teacherNavigation.map((item) => 
-                          
+                        teacherNavigation.map((item) => (
                           <a
                             key={item.name}
                             href={item.href}
@@ -256,7 +247,7 @@ console.log("knocktokenwww: ", session?.knockToken.knockToken);
                             />
                             {item.name} aaa
                           </a>
-                        )}
+                        ))}
                     </nav>
                   </div>
                 </Dialog.Panel>
@@ -301,9 +292,9 @@ console.log("knocktokenwww: ", session?.knockToken.knockToken);
                   {session?.user?.email && session?.knockToken.knockToken && (
                     <KnockFeedProvider
                       apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!}
-                      feedId="5fe0ad69-0264-4656-b860-9e64a36a5636" 
+                      feedId="5fe0ad69-0264-4656-b860-9e64a36a5636"
                       userId={session?.user?.email}
-                      // userToken={session?.knockToken.knockToken}
+                      userToken={session?.knockToken.knockToken}
                     >
                       <>
                         <NotificationIconButton
@@ -379,92 +370,102 @@ console.log("knocktokenwww: ", session?.knockToken.knockToken);
             <div className="flex flex-col ml-8 bg-white shadow rounded-xl">
               <div className="flex flex-col flex-1 mt-5">
                 <nav className="flex-1 px-2 pb-4 space-y-1">
-                  
                   {session?.role === "admin" &&
-                    adminNavigation.map((item) => (
-                      item.external ? <a key={item.name} href={item.href}
-                      
-                      rel="noopener noreferrer" target="_blank"
-                      >
-                        
-                      <div
-                        className={classNames(
-                          router.pathname.includes(item.href)
-                            ? "bg-primary-600 text-primary-50"
-                            : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                          "group flex items-center px-2 py-2 text-md font-medium rounded-full cursor-pointer"
-                        )}
-                      >
-                        <item.icon
-                          className="mr-3 text-2xl"
-                          aria-hidden="true"
-                        />
-                        <div className="flex items-center gap-2">
-                          {item.name}
-                          <span className="opacity-50">
-                          <TbExternalLink/>
-                          </span>
+                    adminNavigation.map((item) =>
+                      item.external ? (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <div
+                            className={classNames(
+                              router.pathname.includes(item.href)
+                                ? "bg-primary-600 text-primary-50"
+                                : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
+                              "group flex items-center px-2 py-2 text-md font-medium rounded-full cursor-pointer"
+                            )}
+                          >
+                            <item.icon
+                              className="mr-3 text-2xl"
+                              aria-hidden="true"
+                            />
+                            <div className="flex items-center gap-2">
+                              {item.name}
+                              <span className="opacity-50">
+                                <TbExternalLink />
+                              </span>
+                            </div>
                           </div>
-                      </div>
-                    </a> : <Link key={item.name} href={item.href}>
-                      <div
-                        className={classNames(
-                          router.pathname.includes(item.href)
-                            ? "bg-primary-600 text-primary-50"
-                            : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
-                        )}
-                      >
-                        <item.icon
-                          className="mr-3 text-2xl"
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </div>
-                    </Link>
-                      
-                    ))}
+                        </a>
+                      ) : (
+                        <Link key={item.name} href={item.href}>
+                          <div
+                            className={classNames(
+                              router.pathname.includes(item.href)
+                                ? "bg-primary-600 text-primary-50"
+                                : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
+                              "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
+                            )}
+                          >
+                            <item.icon
+                              className="mr-3 text-2xl"
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </div>
+                        </Link>
+                      )
+                    )}
                   {session?.role === "teacher" &&
-                    teacherNavigation.map((item) => (
-                      item.external ? <a key={item.name} href={item.href} rel="noopener noreferrer" target="_blank">
-                      <div
-                        className={classNames(
-                          router.pathname.includes(item.href)
-                            ? "bg-primary-800 text-primary-50"
-                            : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
-                        )}
-                      >
-                        <item.icon
-                          className="mr-3 text-2xl"
-                          aria-hidden="true"
-                        />
-                        <div className="flex items-center gap-2">
-
-                        {item.name}
-                        <span className="opacity-50">
-                        <TbExternalLink/>
-                        </span>
-                        </div>
-                      </div>
-                    </a> : <Link key={item.name} href={item.href}>
-                      <div
-                        className={classNames(
-                          router.pathname.includes(item.href)
-                            ? "bg-primary-800 text-primary-50"
-                            : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
-                          "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
-                        )}
-                      >
-                        <item.icon
-                          className="mr-3 text-2xl"
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </div>
-                    </Link>
-                      
-                    ))}
+                    teacherNavigation.map((item) =>
+                      item.external ? (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <div
+                            className={classNames(
+                              router.pathname.includes(item.href)
+                                ? "bg-primary-800 text-primary-50"
+                                : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
+                              "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
+                            )}
+                          >
+                            <item.icon
+                              className="mr-3 text-2xl"
+                              aria-hidden="true"
+                            />
+                            <div className="flex items-center gap-2">
+                              {item.name}
+                              <span className="opacity-50">
+                                <TbExternalLink />
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <Link key={item.name} href={item.href}>
+                          <div
+                            className={classNames(
+                              router.pathname.includes(item.href)
+                                ? "bg-primary-800 text-primary-50"
+                                : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
+                              "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
+                            )}
+                          >
+                            <item.icon
+                              className="mr-3 text-2xl"
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </div>
+                        </Link>
+                      )
+                    )}
                 </nav>
               </div>
             </div>
