@@ -294,7 +294,7 @@ export default function Example({ children }: Props) {
                       apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!}
                       feedId="5fe0ad69-0264-4656-b860-9e64a36a5636"
                       userId={session?.user?.email}
-                      userToken={session?.knockToken.knockToken}
+                      // userToken={session?.knockToken.knockToken}
                     >
                       <>
                         <NotificationIconButton
