@@ -150,7 +150,7 @@ export default function Example({ children }: Props) {
   // Tell Knock to use the users id and the token for the user
   // knockClient.authenticate(session?.user?.email!, session?.knockToken)
 
-  console.log("knocktokenwww: ", session?.knockToken.knockToken)
+  // console.log("knocktokenwww: ", session?.knockToken.knockToken)
 
   return (
     <>
