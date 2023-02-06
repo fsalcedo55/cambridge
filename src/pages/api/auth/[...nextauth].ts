@@ -4,11 +4,8 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "../../../../lib/prismadb"
 import { Knock } from "@knocklabs/node"
 const knock = new Knock(process.env.KNOCK_API_KEY)
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken")
 // import jwt from "jsonwebtoken"
-
-
-
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -33,39 +30,36 @@ export const authOptions: NextAuthOptions = {
         name: user.name!,
         email: user.email!,
       })
-      
+
       return true
     },
     async session({ session, token, user }) {
-        // ....We decode the JSON here and grab the key.
-        if (process.env.KNOCK_SIGNING_KEY) {
-          const signingKey = JSON.parse(process.env.KNOCK_SIGNING_KEY).key
-          
-          // JWT NumericDates specified in seconds:
-          const currentTime = Math.floor(Date.now() / 1000)
-          
-          // session.knockToken = JSON.stringify({
-          //     token: 'hello'
-          //   })
-            
-            session.knockToken = {
-              knockToken: jwt.sign(
-                {
-                  // The user that you're signing the token for
-                  sub: user.email,
-                  // When the token was issued
-                  iat: currentTime,
-                  // Expiry timestamp
-                  exp: currentTime + 60 * 60, // 1 hour from now
-                },
-                signingKey,
-                {
-                  algorithm: "RS256",
-                },
-                )
-              }
-            }
-      
+      // ....We decode the JSON here and grab the key.
+      if (process.env.KNOCK_SIGNING_KEY) {
+        // const signingKey = JSON.parse(process.env.KNOCK_SIGNING_KEY).key
+        // JWT NumericDates specified in seconds:
+        // const currentTime = Math.floor(Date.now() / 1000)
+        // session.knockToken = JSON.stringify({
+        //     token: 'hello'
+        //   })
+        // session.knockToken = {
+        //   knockToken: jwt.sign(
+        //     {
+        //       // The user that you're signing the token for
+        //       sub: user.email,
+        //       // When the token was issued
+        //       iat: currentTime,
+        //       // Expiry timestamp
+        //       exp: currentTime + 60 * 60, // 1 hour from now
+        //     },
+        //     signingKey,
+        //     {
+        //       algorithm: "RS256",
+        //     },
+        //     )
+        //   }
+      }
+
       if (user.email == process.env.ADMIN_EMAILS) {
         session.role = "admin"
       } else {

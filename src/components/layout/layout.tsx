@@ -24,7 +24,7 @@ import { BsFillCameraVideoFill } from "react-icons/bs"
 import { RiGameFill } from "react-icons/ri"
 import Knock from "@knocklabs/client"
 
-const knockClient = new Knock(process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
+// const knockClient = new Knock(process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
 
 // export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 //   const session = await getAuthSession(ctx)
@@ -148,7 +148,7 @@ export default function Example({ children }: Props) {
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
   // Tell Knock to use the users id and the token for the user
-  knockClient.authenticate(session?.user?.email!, session?.knockToken)
+  // knockClient.authenticate(session?.user?.email!, session?.knockToken)
 
   console.log("knocktokenwww: ", session?.knockToken.knockToken)
 
