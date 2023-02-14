@@ -166,8 +166,11 @@ export default function Curriculum() {
                   role="list"
                   className="relative z-0 divide-y divide-neutral-200"
                 >
-                  {level.Unit.map((unit: any) => (
-                    <li key={unit.id} className="bg-white hover:bg-neutral-50">
+                  {level.Unit.map((currentUnit: any) => (
+                    <li
+                      key={currentUnit.id}
+                      className="bg-white hover:bg-neutral-50"
+                    >
                       {/* <a href="#"> */}
                       <Disclosure>
                         <Disclosure.Button
@@ -179,17 +182,17 @@ export default function Curriculum() {
                               <Image
                                 height={120}
                                 width={175}
-                                src={unit.photoUrl}
+                                src={currentUnit.photoUrl}
                                 alt=""
                                 className="rounded-lg"
                               />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-2xl font-bold md:text-2xl text-primary-800">
-                                {unit.title}
+                                {currentUnit.title}
                               </p>
                               <p className="font-bold truncate text-neutral-500">
-                                Unit {unit.number}
+                                Unit {currentUnit.number}
                               </p>
                               <div className="flex items-center gap-1 text-sm truncate text-neutral-500">
                                 <SiBookstack />
