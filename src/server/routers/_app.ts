@@ -4,7 +4,8 @@ import { teacherRouter } from "./teacher"
 import { lessonPlanRouter } from "./lessonPlan/index"
 import { lessonPlanCommentRouter } from "./lessonPlan/lessonPlanComment"
 import { userRouter } from "./user"
-// import { levelRouter } from "./lessons/level"
+import { levelRouter } from "./lessons/level"
+import { unitRouter } from "./lessons/unit"
 
 export const appRouter = router({
   student: studentRouter,
@@ -12,7 +13,8 @@ export const appRouter = router({
   lessonPlan: lessonPlanRouter,
   lessonPlanComment: lessonPlanCommentRouter,
   user: userRouter,
-  // level: levelRouter,
+  level: levelRouter,
+  unit: unitRouter,
 })
 
 export type AppRouter = typeof appRouter

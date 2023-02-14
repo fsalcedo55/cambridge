@@ -2,7 +2,7 @@ import { Fragment, useRef, useState } from "react"
 import { Dialog, Menu, Transition } from "@headlessui/react"
 import { Bars3BottomLeftIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { AiFillHome } from "react-icons/ai"
-import { HiTemplate, HiUsers } from "react-icons/hi"
+import { HiOutlineCollection, HiTemplate, HiUsers } from "react-icons/hi"
 import { FaChild, FaGoogleDrive } from "react-icons/fa"
 import { TbExternalLink } from "react-icons/tb"
 import { IoCalendar } from "react-icons/io5"
@@ -52,6 +52,12 @@ const adminNavigation = [
   },
   { name: "Users", href: "/admin/users", icon: HiUsers, current: false },
   { name: "Students", href: "/admin/students", icon: FaChild, current: false },
+  {
+    name: "Curriculum",
+    href: "/admin/curriculum",
+    icon: HiOutlineCollection,
+    current: false,
+  },
   {
     name: "Calendar",
     href: "https://calendar.google.com/",

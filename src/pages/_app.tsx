@@ -22,7 +22,7 @@ const MyApp: AppType<{ session: Session }> = ({
 }: CustomAppProps) => {
   return (
     <SessionProvider session={session}>
-      <NextNProgress />
+      <NextNProgress height={7} />
       {Component.auth ? (
         <Layout>
           <Component {...pageProps} />

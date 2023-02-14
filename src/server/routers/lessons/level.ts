@@ -19,6 +19,28 @@ export const levelRouter = router({
       return level
     }),
   getAll: publicProcedure.query(() => {
-    return prisma.level.findMany({})
+    return prisma.level.findMany({
+      orderBy: {
+        number: "asc",
+      },
+      select: {
+        id: true,
+        title: true,
+        published: true,
+        number: true,
+        Unit: {
+          orderBy: {
+            number: "asc",
+          },
+        },
+      },
+    })
   }),
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      const level = await prisma.level.delete({
+        where: input,
+      })
+    }),
 })

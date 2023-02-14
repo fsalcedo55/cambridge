@@ -1,6 +1,7 @@
 import LoadingSkeleton from "@ui/loadingSkeleton"
 import { BiChevronRight } from "react-icons/bi"
 import { AiFillHome } from "react-icons/ai"
+import Link from "next/link"
 
 // Pages array example
 // const pages = [
@@ -29,21 +30,22 @@ export default function Breadcrumbs({ loading, pages }: Props) {
               {loading ? (
                 <LoadingSkeleton />
               ) : page.href ? (
-                <a
-                  href={page.href}
-                  className="text-sm font-bold text-neutral-500 hover:text-primary-500 hover:underline underline-offset-4"
+                <Link
+                  as="div"
+                  href={page?.href}
                   aria-current={page.current ? "page" : undefined}
                 >
-                  {page.name}
-                </a>
+                  <div className="text-sm font-bold cursor-pointer text-neutral-500 hover:text-primary-500 hover:underline underline-offset-4">
+                    {page.name}
+                  </div>
+                </Link>
               ) : (
-                <a
-                  href={page.href}
+                <div
                   className="text-sm font-bold cursor-default text-neutral-500"
                   aria-current={page.current ? "page" : undefined}
                 >
                   {page.name}
-                </a>
+                </div>
               )}
               {pages.length - 1 != idx && (
                 <BiChevronRight

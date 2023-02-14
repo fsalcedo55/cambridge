@@ -120,10 +120,12 @@ model Lesson {
 model Unit {
     id        String   @id @default(cuid())
     title     String
+    number    Int
+    photoUrl  String
     published Boolean  @default(false)
     Lesson    Lesson[]
-    Level     Level?   @relation(fields: [levelId], references: [id])
-    levelId   String?
+    Level     Level    @relation(fields: [levelId], references: [id])
+    levelId   String
 
     @@index([levelId])
 }
