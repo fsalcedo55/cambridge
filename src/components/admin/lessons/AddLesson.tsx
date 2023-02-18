@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
 import { useEffect, useState } from "react"
+import { ErrorMessage } from "@hookform/error-message"
+import { FormErrorMessage } from "@src/components/ui/form/formErrorMessage"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -24,6 +26,7 @@ interface Props {
 export default function AddLesson({ closeModal, levelsArray }: Props) {
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
@@ -49,7 +52,9 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
     closeModal()
   })
 
-  const selectLevel = register("levelId", { required: true })
+  const selectLevel = register("levelId", {
+    required: "You must enter a level.",
+  })
 
   return (
     <form onSubmit={onSubmit}>
@@ -72,6 +77,13 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
             </option>
           ))}
         </select>
+        <ErrorMessage
+          errors={errors}
+          name="levelId"
+          render={({ message }) => (
+            <div className="h-2 label-text-alt text-error">{message}</div>
+          )}
+        />
       </div>
 
       {levelIdState && (
@@ -82,7 +94,7 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
           <select
             className="w-full select select-bordered"
             {...register("unitId", {
-              required: "Must choose a unit.",
+              required: "You must select a unit.",
             })}
           >
             <option disabled selected value="" />
@@ -92,6 +104,13 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
               </option>
             ))}
           </select>
+          <ErrorMessage
+            errors={errors}
+            name="unitId"
+            render={({ message }) => (
+              <div className="h-2 label-text-alt text-error">{message}</div>
+            )}
+          />
         </div>
       )}
 
