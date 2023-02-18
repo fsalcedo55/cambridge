@@ -49,11 +49,6 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
     closeModal()
   })
 
-  //   useEffect(() => {
-  console.log("units: ", unitByLevelId.data)
-  console.log("levelid: ", levelIdState)
-  //   }, [levelIdState])
-
   const selectLevel = register("levelId", { required: true })
 
   return (
@@ -65,11 +60,9 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
         <select
           className="w-full select select-bordered"
           {...selectLevel}
-          //   {...register("levelId")}
           onChange={(e) => {
             selectLevel.onChange(e)
             setLevelIdState(e.target.value)
-            console.log("e: ", e.target.value)
           }}
         >
           <option disabled selected value="" />
@@ -88,7 +81,9 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
           </label>
           <select
             className="w-full select select-bordered"
-            {...register("unitId")}
+            {...register("unitId", {
+              required: "Must choose a unit.",
+            })}
           >
             <option disabled selected value="" />
             {unitByLevelId.data?.map((unit: any) => (

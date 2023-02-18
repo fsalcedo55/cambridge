@@ -112,8 +112,8 @@ model Lesson {
     published Boolean  @default(false)
     Student   Student? @relation(fields: [studentId], references: [id])
     studentId String?
-    Unit      Unit?    @relation(fields: [unitId], references: [id])
-    unitId    String?
+    Unit      Unit     @relation(fields: [unitId], references: [id])
+    unitId    String
 
     @@index([studentId])
     @@index([unitId])
