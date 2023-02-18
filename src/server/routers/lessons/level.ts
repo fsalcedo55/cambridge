@@ -32,6 +32,22 @@ export const levelRouter = router({
           orderBy: {
             number: "asc",
           },
+          select: {
+            photoUrl: true,
+            title: true,
+            number: true,
+            id: true,
+            Lesson: {
+              orderBy: {
+                number: "asc",
+              },
+              select: {
+                title: true,
+                id: true,
+                photoUrl: true,
+              },
+            },
+          },
         },
       },
     })
@@ -42,5 +58,23 @@ export const levelRouter = router({
       const level = await prisma.level.delete({
         where: input,
       })
+    }),
+  edit: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        number: z.number(),
+        published: z.boolean(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const level = await prisma.level.update({
+        where: {
+          id: input.id,
+        },
+        data: input,
+      })
+      return level
     }),
 })

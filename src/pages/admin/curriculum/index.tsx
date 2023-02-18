@@ -1,4 +1,4 @@
-import { Disclosure, Menu, Transition } from "@headlessui/react"
+import { Disclosure } from "@headlessui/react"
 import AddLevel from "@src/components/admin/lessons/AddLevel"
 import AddUnit from "@src/components/admin/lessons/AddUnit"
 import Layout from "@src/components/layout/layout"
@@ -6,28 +6,32 @@ import { Button } from "@src/components/ui/button"
 import Modal from "@src/components/ui/modal"
 import PageHeading from "@src/components/ui/pageHeading"
 import { trpc } from "@src/utils/trpc"
-import { Fragment, useState } from "react"
-import {
-  RiCheckboxBlankCircleLine,
-  RiCheckboxCircleFill,
-  RiDeleteBinLine,
-  RiPencilLine,
-} from "react-icons/ri"
+import { useState } from "react"
+import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
 import { SiBookstack } from "react-icons/si"
-import { TfiMoreAlt } from "react-icons/tfi"
 import Image from "next/image"
-import { BookmarkIcon } from "@heroicons/react/24/outline"
-import { BsCheck, BsCheckLg, BsXLg } from "react-icons/bs"
-import { MdUnpublished } from "react-icons/md"
+import { BsCheckLg } from "react-icons/bs"
+import { MdError, MdUnpublished } from "react-icons/md"
+import AddLessonPlan from "@src/components/addLessonPlan"
+import AddLesson from "@src/components/admin/lessons/AddLesson"
+import Link from "next/link"
+import EditLevel from "@src/components/admin/lessons/EditLevel"
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)
-  const [isOpenUnitBtn, setIsOpenUnitBtn] = useState(false)
-  const [isOpenDeleteLevelModal, setIsOpenDeleteLevelModal] = useState(false)
   const [isOpenEditLevelModal, setIsOpenEditLevelModal] = useState(false)
+  const [isOpenUnitBtn, setIsOpenUnitBtn] = useState(false)
+  const [isOpenLessonBtn, setIsOpenLessonBtn] = useState(false)
+  const [isOpenDeleteLevelModal, setIsOpenDeleteLevelModal] = useState(false)
+  const [isOpenDeleteUnitModal, setIsOpenDeleteUnitModal] = useState(false)
+  const [isOpenDisabledDeleteLevelModal, setIsOpenDisabledDeleteLevelModal] =
+    useState(false)
   const [levelId, setLevelId] = useState<string>()
+  const [currentLevel, setCurrentLevel] = useState()
+  const [unitId, setUnitId] = useState<string>()
   const levels = trpc.level.getAll.useQuery()
   const deleteLevel = trpc.level.delete.useMutation()
+  const deleteUnit = trpc.unit.deleteById.useMutation()
 
   const handleDeleteLevelModal = async (levelId: string) => {
     setIsOpenDeleteLevelModal(true)
@@ -44,6 +48,28 @@ export default function Curriculum() {
     }
     setIsOpenDeleteLevelModal(false)
     setLevelId("")
+  }
+
+  const handleDeleteUnitModal = async (unitId: string) => {
+    setIsOpenDeleteUnitModal(true)
+    setUnitId(unitId)
+  }
+
+  const deleteUnitEvent = async () => {
+    try {
+      await deleteUnit.mutateAsync({
+        id: unitId!,
+      })
+    } catch (error) {
+      console.log("Error deleting unit.", error)
+    }
+    setIsOpenDeleteUnitModal(false)
+    setUnitId("")
+  }
+
+  const handleEditLevelModal = (level: any) => {
+    setIsOpenEditLevelModal(true)
+    setCurrentLevel(level)
   }
 
   const addLevelBtn = (
@@ -89,30 +115,39 @@ export default function Curriculum() {
     </div>
   )
 
-  const people = [
-    {
-      name: "Partes del Cuerpo",
-      completed: true,
-      imageUrl:
-        "https://images.unsplash.com/photo-1529155656340-c2c1cccb3dd1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1725&q=80",
-    },
-    {
-      name: "Ropa de Invierno",
-      completed: false,
-      imageUrl:
-        "https://images.unsplash.com/photo-1613299469142-fa7d42740685?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1756&q=80",
-    },
-  ]
+  const addLessonBtn = (
+    <div>
+      <Button
+        intent="primary"
+        size="small"
+        onClick={() => setIsOpenLessonBtn(true)}
+      >
+        + Add Lesson
+      </Button>
+      <Modal
+        isOpen={isOpenLessonBtn}
+        setIsOpen={setIsOpenLessonBtn}
+        closeButton="Cancel"
+        title="Add Lesson"
+        description={
+          <AddLesson
+            closeModal={() => setIsOpenLessonBtn(false)}
+            levelsArray={levels.data}
+          />
+        }
+      />
+    </div>
+  )
 
   return (
     <Layout>
-      <div>
+      <div className="flex items-center justify-between">
         <PageHeading pageTitle="Curriculum" />
+        <div className="flex justify-start gap-3 my-3">
+          {addLevelBtn} {addUnitBtn} {addLessonBtn}
+        </div>
       </div>
       <div className="z-50">
-        <div className="flex justify-start gap-3 my-3">
-          {addLevelBtn} {addUnitBtn}
-        </div>
         <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
           {levels &&
             levels?.data?.map((level) => (
@@ -139,9 +174,9 @@ export default function Curriculum() {
                   </div>
                   <span className="inline-flex rounded-md shadow-sm isolate">
                     <button
-                      //   onClick={handleEditModal}
+                      onClick={() => handleEditLevelModal(level)}
                       type="button"
-                      className="relative inline-flex items-center px-4 py-2 text-sm font-medium bg-white border text-neutral-700 border-neutral-300 rounded-l-md hover:bg-neutral-50 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                      className="relative inline-flex items-center px-4 py-2 text-sm font-medium bg-white border rounded-l-full text-neutral-700 border-neutral-300 hover:bg-neutral-50 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                     >
                       <RiPencilLine
                         className="w-5 h-5 mr-2 -ml-1 text-neutral-400"
@@ -149,17 +184,33 @@ export default function Curriculum() {
                       />
                       Edit
                     </button>
-                    <button
-                      onClick={() => handleDeleteLevelModal(level.id)}
-                      type="button"
-                      className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white border text-neutral-700 border-neutral-300 rounded-r-md hover:bg-neutral-50 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                    >
-                      <RiDeleteBinLine
-                        className="w-5 h-5 mr-2 -ml-1 text-neutral-400"
-                        aria-hidden="true"
-                      />
-                      Delete
-                    </button>
+                    {level.Unit.length > 0 ? (
+                      <button
+                        title="Cannot delete if there are units in this level."
+                        // disabled
+                        onClick={() => setIsOpenDisabledDeleteLevelModal(true)}
+                        type="button"
+                        className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white border rounded-r-full hover:cursor-not-allowed text-neutral-700 border-neutral-300 focus:z-10 focus:border-danger-500 focus:outline-none focus:ring-1 focus:ring-danger-500"
+                      >
+                        <RiDeleteBinLine
+                          className="w-5 h-5 mr-2 -ml-1 text-neutral-400"
+                          aria-hidden="true"
+                        />
+                        Delete
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleDeleteLevelModal(level.id)}
+                        type="button"
+                        className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white border rounded-r-full text-neutral-700 border-neutral-300 hover:bg-neutral-50 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                      >
+                        <RiDeleteBinLine
+                          className="w-5 h-5 mr-2 -ml-1 text-neutral-400"
+                          aria-hidden="true"
+                        />
+                        Delete
+                      </button>
+                    )}
                   </span>
                 </div>
                 <ul
@@ -171,11 +222,10 @@ export default function Curriculum() {
                       key={currentUnit.id}
                       className="bg-white hover:bg-neutral-50"
                     >
-                      {/* <a href="#"> */}
                       <Disclosure>
                         <Disclosure.Button
                           as="div"
-                          className="flex items-center justify-between cursor-pointer"
+                          className="flex items-center justify-between pr-6 cursor-pointer"
                         >
                           <div className="relative flex items-center px-6 py-2 space-x-3 ">
                             <div className="flex-shrink-0">
@@ -188,7 +238,10 @@ export default function Curriculum() {
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-2xl font-bold md:text-2xl text-primary-800">
+                              <p
+                                onClick={() => console.log(currentUnit.id)}
+                                className="text-2xl font-bold md:text-2xl text-primary-800"
+                              >
                                 {currentUnit.title}
                               </p>
                               <p className="font-bold truncate text-neutral-500">
@@ -196,16 +249,44 @@ export default function Curriculum() {
                               </p>
                               <div className="flex items-center gap-1 text-sm truncate text-neutral-500">
                                 <SiBookstack />
-                                <span>12 Lessons</span>
+                                <span>{currentUnit.Lesson.length} Lessons</span>
                               </div>
                             </div>
                           </div>
+                          <span className="inline-flex rounded-md isolate">
+                            <button
+                              //   onClick={handleEditModal}
+                              type="button"
+                              className="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full text-neutral-700 hover:bg-neutral-100 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            >
+                              <RiPencilLine
+                                className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
+                                aria-hidden="true"
+                              />
+                              Edit
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                handleDeleteUnitModal(currentUnit.id)
+                              }
+                              type="button"
+                              className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium rounded-full text-neutral-700 hover:bg-neutral-100 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            >
+                              <RiDeleteBinLine
+                                className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
+                                aria-hidden="true"
+                              />
+                              Delete
+                            </button>
+                          </span>
                         </Disclosure.Button>
                         <Disclosure.Panel className="px-6 py-3 shadow-inner bg-gradient-to-l from-neutral-200 to-neutral-100 text-neutral-500">
                           <div className="flex flex-col gap-3">
-                            {people.map((person) => (
-                              <div
-                                key={person.name}
+                            {currentUnit?.Lesson?.map((lesson: any) => (
+                              <Link
+                                href={`/admin/curriculum/${lesson.id}`}
+                                key={lesson.name}
                                 className="flex justify-between"
                               >
                                 <div className="relative flex items-center min-w-full p-3 space-x-3 bg-white border-2 border-white rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-accent-400 hover:shadow-lg">
@@ -214,7 +295,7 @@ export default function Curriculum() {
                                       height={80}
                                       width={125}
                                       className="rounded"
-                                      src={person.imageUrl}
+                                      src={lesson.photoUrl}
                                       alt=""
                                     />
                                   </div>
@@ -225,21 +306,12 @@ export default function Curriculum() {
                                         aria-hidden="true"
                                       />
                                       <p className="text-lg font-bold text-neutral-900">
-                                        {person.name}
+                                        {lesson.title}
                                       </p>
                                     </a>
                                   </div>
-                                  {person.completed ? (
-                                    <div className="p-3 text-4xl text-green-500">
-                                      <RiCheckboxCircleFill />
-                                    </div>
-                                  ) : (
-                                    <div className="p-3 text-4xl text-neutral-500">
-                                      <RiCheckboxBlankCircleLine />
-                                    </div>
-                                  )}
                                 </div>
-                              </div>
+                              </Link>
                             ))}
                           </div>
                         </Disclosure.Panel>
@@ -269,19 +341,59 @@ export default function Curriculum() {
         }
         closeButton="Cancel"
       />
+      {/* Disabled Delete Level Modal */}
+      <Modal
+        isOpen={isOpenDisabledDeleteLevelModal}
+        setIsOpen={setIsOpenDisabledDeleteLevelModal}
+        title={
+          <div className="flex items-center gap-2">
+            <span className="text-danger-500">
+              <MdError />
+            </span>
+            Cannot Delete Level
+          </div>
+        }
+        description={
+          <div>
+            <p className="mt-2">
+              You must delete all units or move them to another level before you
+              can delete this level.
+            </p>
+          </div>
+        }
+        closeButton="Okay"
+      />
       {/* Edit Level Modal */}
       <Modal
         isOpen={isOpenEditLevelModal}
         setIsOpen={setIsOpenEditLevelModal}
         actionFunction={deleteLevelEvent}
-        loading={deleteLevel.isLoading}
+        // loading={deleteLevel.isLoading}
+        // btnIntent="primary"
+        // actionButton="Update"
+        // loadingLabel="Updating Level..."
+        title="Edit Level"
+        description={
+          <EditLevel
+            currentLevel={currentLevel}
+            closeModal={() => setIsOpenEditLevelModal(false)}
+          />
+        }
+        closeButton="Cancel"
+      />
+      {/* Delete Level Modal */}
+      <Modal
+        isOpen={isOpenDeleteUnitModal}
+        setIsOpen={setIsOpenDeleteUnitModal}
+        actionFunction={deleteUnitEvent}
+        loading={deleteUnit.isLoading}
         btnIntent="danger"
         actionButton="Delete"
-        loadingLabel="Deleting Level..."
-        title="Delete Level"
+        loadingLabel="Deleting Unit..."
+        title="Delete Unit"
         description={
           <div>
-            <p className="mt-2">Are you sure you want to delete this level?</p>
+            <p className="mt-2">Are you sure you want to delete this unit?</p>
           </div>
         }
         closeButton="Cancel"

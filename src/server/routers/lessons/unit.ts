@@ -20,4 +20,28 @@ export const unitRouter = router({
       })
       return unit
     }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        levelId: z.string(),
+      })
+    )
+    .query(({ input }) => {
+      return prisma.unit.findMany({
+        where: {
+          levelId: input.levelId,
+        },
+      })
+    }),
+  deleteById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const unit = await prisma.unit.delete({
+        where: { id: input.id },
+      })
+    }),
 })

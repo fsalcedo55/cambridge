@@ -7,7 +7,7 @@ interface Props {
   loading?: boolean
   currentData?: any
   actionFunction?: any
-  title: string
+  title: any
   description: any
   closeButton: string
   actionButton?: string
@@ -58,10 +58,10 @@ export default function Modal({
               >
                 {title}
               </Dialog.Title>
-              <Dialog.Description className="mt-2" as="div">
+              <Dialog.Description className="mt-4" as="div">
                 {description}
               </Dialog.Description>
-              <div className="flex flex-col gap-2 mt-1">
+              <div className="flex flex-col gap-2 mt-4">
                 {actionButton && (
                   <Button
                     onClick={() => actionFunction(currentData)}

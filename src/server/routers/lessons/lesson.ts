@@ -10,14 +10,14 @@ export const lessonRouter = router({
       z.object({
         title: z.string(),
         number: z.number(),
-        levelId: z.string(),
+        unitId: z.string(),
         photoUrl: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      const unit = await prisma.lesson.create({
+      const lesson = await prisma.lesson.create({
         data: input,
       })
-      return unit
+      return lesson
     }),
 })
