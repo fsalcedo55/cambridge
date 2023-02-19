@@ -37,6 +37,13 @@ export const levelRouter = router({
             title: true,
             number: true,
             id: true,
+            published: true,
+            Level: {
+              select: {
+                title: true,
+                id: true,
+              },
+            },
             Lesson: {
               orderBy: {
                 number: "asc",
@@ -45,6 +52,7 @@ export const levelRouter = router({
                 title: true,
                 id: true,
                 photoUrl: true,
+                number: true,
               },
             },
           },

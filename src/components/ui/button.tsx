@@ -44,7 +44,8 @@ export function Button({
             {
               "bg-primary-500 text-white border-0 hover:bg-primary-700":
                 intent === "primary",
-              "btn-secondary": intent === "secondary",
+              "bg-white text-neutral-700 border-2 border-neutral-700 hover:border-neutral-700 hover:bg-neutral-50":
+                intent === "secondary",
               "bg-danger-100 text-danger-900 hover:bg-danger-200":
                 intent === "danger",
               "btn-outline bg-neutral-100 hover:bg-neutral-200 text-neutral-900 hover:text-neutral-900 border-0":

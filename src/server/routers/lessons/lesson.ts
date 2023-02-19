@@ -20,4 +20,22 @@ export const lessonRouter = router({
       })
       return lesson
     }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const lesson = await prisma.lesson.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          title: true,
+          id: true,
+        },
+      })
+      return lesson
+    }),
 })

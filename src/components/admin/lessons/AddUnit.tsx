@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
 import { useEffect } from "react"
+import { ErrorMessage } from "@hookform/error-message"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -50,17 +51,25 @@ export default function AddUnit({ closeModal, levelsArray }: Props) {
         </label>
         <select
           className="w-full select select-bordered"
-          {...register("levelId")}
+          {...register("levelId", {
+            required: "You must enter a level.",
+          })}
         >
           <option disabled selected value="" />
-          {/* {currentStudent.teacher.name}
-          </option> */}
+
           {levelsArray?.map((level: any) => (
             <option value={level.id} key={level.id}>
               {level.title}
             </option>
           ))}
         </select>
+        <ErrorMessage
+          errors={errors}
+          name="levelId"
+          render={({ message }) => (
+            <div className="h-2 label-text-alt text-error">{message}</div>
+          )}
+        />
       </div>
 
       <FormInput

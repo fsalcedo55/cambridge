@@ -44,4 +44,22 @@ export const unitRouter = router({
         where: { id: input.id },
       })
     }),
+  edit: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        photoUrl: z.string(),
+        number: z.number(),
+        published: z.boolean(),
+        levelId: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const unit = await prisma.unit.update({
+        where: { id: input.id },
+        data: input,
+      })
+      return unit
+    }),
 })

@@ -16,10 +16,12 @@ import AddLessonPlan from "@src/components/addLessonPlan"
 import AddLesson from "@src/components/admin/lessons/AddLesson"
 import Link from "next/link"
 import EditLevel from "@src/components/admin/lessons/EditLevel"
+import EditUnit from "@src/components/admin/lessons/EditUnit"
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)
   const [isOpenEditLevelModal, setIsOpenEditLevelModal] = useState(false)
+  const [isOpenEditUnitModal, setIsOpenEditUnitModal] = useState(false)
   const [isOpenUnitBtn, setIsOpenUnitBtn] = useState(false)
   const [isOpenLessonBtn, setIsOpenLessonBtn] = useState(false)
   const [isOpenDeleteLevelModal, setIsOpenDeleteLevelModal] = useState(false)
@@ -28,6 +30,7 @@ export default function Curriculum() {
     useState(false)
   const [levelId, setLevelId] = useState<string>()
   const [currentLevel, setCurrentLevel] = useState()
+  const [currentUnit, setCurrentUnit] = useState()
   const [unitId, setUnitId] = useState<string>()
   const levels = trpc.level.getAll.useQuery()
   const deleteLevel = trpc.level.delete.useMutation()
@@ -70,6 +73,11 @@ export default function Curriculum() {
   const handleEditLevelModal = (level: any) => {
     setIsOpenEditLevelModal(true)
     setCurrentLevel(level)
+  }
+
+  const handleEditUnitModal = (unit: any) => {
+    setIsOpenEditUnitModal(true)
+    setCurrentUnit(unit)
   }
 
   const addLevelBtn = (
@@ -154,11 +162,8 @@ export default function Curriculum() {
               <div key={level.id} className="relative">
                 <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-1 text-sm font-medium border-t border-b text-neutral-500 border-neutral-200 bg-primary-50">
                   <div className="flex gap-2">
-                    <span className="inline-flex items-center px-2 text-sm font-medium rounded-md bg-primary-800 text-primary-100">
-                      {level.number}
-                    </span>
                     <h3 className="text-xl font-bold text-primary-800">
-                      {level.title}
+                      {level.number}. {level.title}
                     </h3>
                     {level.published ? (
                       <span className="inline-flex items-center rounded-full bg-accent-100 px-3 py-0.5 text-sm font-medium text-accent-800 border border-accent-900 gap-2">
@@ -168,7 +173,7 @@ export default function Curriculum() {
                     ) : (
                       <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800 border border-neutral-900 gap-1">
                         <MdUnpublished />
-                        Unpublished
+                        Draft
                       </span>
                     )}
                   </div>
@@ -253,17 +258,19 @@ export default function Curriculum() {
                               </div>
                             </div>
                           </div>
-                          <span className="inline-flex rounded-md isolate">
+                        </Disclosure.Button>
+                        <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-200 to-neutral-100 text-neutral-500">
+                          <span className="flex justify-end gap-3 pb-3 rounded-md isolate">
                             <button
-                              //   onClick={handleEditModal}
+                              onClick={() => handleEditUnitModal(currentUnit)}
                               type="button"
-                              className="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full text-neutral-700 hover:bg-neutral-100 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                              className="relative inline-flex items-center px-4 py-2 text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                             >
                               <RiPencilLine
                                 className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
                                 aria-hidden="true"
                               />
-                              Edit
+                              Edit Unit
                             </button>
 
                             <button
@@ -271,17 +278,15 @@ export default function Curriculum() {
                                 handleDeleteUnitModal(currentUnit.id)
                               }
                               type="button"
-                              className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium rounded-full text-neutral-700 hover:bg-neutral-100 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                              className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                             >
                               <RiDeleteBinLine
                                 className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
                                 aria-hidden="true"
                               />
-                              Delete
+                              Delete Unit
                             </button>
                           </span>
-                        </Disclosure.Button>
-                        <Disclosure.Panel className="px-6 py-3 shadow-inner bg-gradient-to-l from-neutral-200 to-neutral-100 text-neutral-500">
                           <div className="flex flex-col gap-3">
                             {currentUnit?.Lesson?.map((lesson: any) => (
                               <Link
@@ -306,7 +311,7 @@ export default function Curriculum() {
                                         aria-hidden="true"
                                       />
                                       <p className="text-lg font-bold text-neutral-900">
-                                        {lesson.title}
+                                        Lesson {lesson.number}: {lesson.title}
                                       </p>
                                     </a>
                                   </div>
@@ -381,7 +386,22 @@ export default function Curriculum() {
         }
         closeButton="Cancel"
       />
-      {/* Delete Level Modal */}
+      {/* Edit Unit Modal */}
+      <Modal
+        isOpen={isOpenEditUnitModal}
+        setIsOpen={setIsOpenEditUnitModal}
+        actionFunction={deleteLevelEvent}
+        title="Edit Unit"
+        description={
+          <EditUnit
+            levels={levels?.data}
+            currentUnit={currentUnit}
+            closeModal={() => setIsOpenEditUnitModal(false)}
+          />
+        }
+        closeButton="Cancel"
+      />
+      {/* Delete Unit Modal */}
       <Modal
         isOpen={isOpenDeleteUnitModal}
         setIsOpen={setIsOpenDeleteUnitModal}

@@ -25,7 +25,7 @@ export default function Breadcrumbs({ loading, pages }: Props) {
     <nav className="flex" aria-label="Breadcrumb">
       <ol role="list" className="flex items-center">
         {pages.map((page: any, idx: number) => (
-          <li key={page.name}>
+          <li key={page.idx}>
             <div className="flex items-center">
               {loading ? (
                 <LoadingSkeleton />
