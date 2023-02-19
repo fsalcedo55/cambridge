@@ -3,7 +3,6 @@ import { Button } from "@src/components/ui/button"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
 import { trpc } from "@src/utils/trpc"
 import { useRouter } from "next/router"
-import ReactGoogleSlides from "react-google-slides"
 import { BiLinkAlt } from "react-icons/bi"
 import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
 
