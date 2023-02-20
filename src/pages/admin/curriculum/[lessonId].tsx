@@ -40,7 +40,7 @@ export default function LessonPage({ lessonTitle }: Props) {
   const pages = [
     { name: "Curriculum", href: "/admin/curriculum/", current: false },
     {
-      name: `Level ${lesson.data?.Unit.Level.number}: ${lesson.data?.Unit.Level.title} / Unit ${lesson.data?.Unit?.number}: ${lesson.data?.Unit?.title} / Lesson ${lesson.data?.number}: ${lesson.data?.title}`,
+      name: `Level ${lesson.data?.Unit?.Level?.number}: ${lesson.data?.Unit?.Level?.title} / Unit ${lesson.data?.Unit?.number}: ${lesson.data?.Unit?.title} / Lesson ${lesson.data?.number}: ${lesson.data?.title}`,
       href: `/admin/curriculum/${lesson.data?.id}`,
       current: true,
     },
