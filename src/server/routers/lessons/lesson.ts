@@ -34,8 +34,34 @@ export const lessonRouter = router({
         select: {
           title: true,
           id: true,
+          number: true,
+          Unit: {
+            select: {
+              title: true,
+              number: true,
+              Level: {
+                select: {
+                  title: true,
+                  number: true,
+                },
+              },
+            },
+          },
         },
       })
       return lesson
+    }),
+  delete: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const lesson = await prisma.lesson.delete({
+        where: {
+          id: input.id,
+        },
+      })
     }),
 })

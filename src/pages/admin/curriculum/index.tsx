@@ -26,6 +26,8 @@ export default function Curriculum() {
   const [isOpenLessonBtn, setIsOpenLessonBtn] = useState(false)
   const [isOpenDeleteLevelModal, setIsOpenDeleteLevelModal] = useState(false)
   const [isOpenDeleteUnitModal, setIsOpenDeleteUnitModal] = useState(false)
+  const [isOpenDisabledDeleteUnitModal, setIsOpenDisabledDeleteUnitModal] =
+    useState(false)
   const [isOpenDisabledDeleteLevelModal, setIsOpenDisabledDeleteLevelModal] =
     useState(false)
   const [levelId, setLevelId] = useState<string>()
@@ -191,8 +193,6 @@ export default function Curriculum() {
                     </button>
                     {level.Unit.length > 0 ? (
                       <button
-                        title="Cannot delete if there are units in this level."
-                        // disabled
                         onClick={() => setIsOpenDisabledDeleteLevelModal(true)}
                         type="button"
                         className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white border rounded-r-full hover:cursor-not-allowed text-neutral-700 border-neutral-300 focus:z-10 focus:border-danger-500 focus:outline-none focus:ring-1 focus:ring-danger-500"
@@ -243,12 +243,30 @@ export default function Curriculum() {
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p
+                              <div
                                 onClick={() => console.log(currentUnit.id)}
-                                className="text-2xl font-bold md:text-2xl text-primary-800"
+                                className="flex gap-2"
                               >
-                                {currentUnit.title}
-                              </p>
+                                <p className="text-2xl font-bold md:text-2xl text-primary-800">
+                                  {currentUnit.title}
+                                </p>
+                                {level.published == false ? (
+                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800 border border-neutral-900 gap-1">
+                                    <MdUnpublished />
+                                    Drafted by the Level
+                                  </span>
+                                ) : currentUnit.published ? (
+                                  <span className="inline-flex items-center rounded-full bg-accent-100 px-3 py-0.5 text-sm font-medium text-accent-800 border border-accent-900 gap-2">
+                                    <BsCheckLg />
+                                    Published
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800 border border-neutral-900 gap-1">
+                                    <MdUnpublished />
+                                    Draft
+                                  </span>
+                                )}
+                              </div>
                               <p className="font-bold truncate text-neutral-500">
                                 Unit {currentUnit.number}
                               </p>
@@ -272,20 +290,35 @@ export default function Curriculum() {
                               />
                               Edit Unit
                             </button>
-
-                            <button
-                              onClick={() =>
-                                handleDeleteUnitModal(currentUnit.id)
-                              }
-                              type="button"
-                              className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                            >
-                              <RiDeleteBinLine
-                                className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
-                                aria-hidden="true"
-                              />
-                              Delete Unit
-                            </button>
+                            {currentUnit.Lesson.length > 0 ? (
+                              <button
+                                onClick={() =>
+                                  setIsOpenDisabledDeleteUnitModal(true)
+                                }
+                                type="button"
+                                className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-danger-500 focus:outline-none focus:ring-1 focus:ring-danger-500 hover:cursor-not-allowed"
+                              >
+                                <RiDeleteBinLine
+                                  className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
+                                  aria-hidden="true"
+                                />
+                                Delete Unit
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() =>
+                                  handleDeleteUnitModal(currentUnit.id)
+                                }
+                                type="button"
+                                className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                              >
+                                <RiDeleteBinLine
+                                  className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
+                                  aria-hidden="true"
+                                />
+                                Delete Unit
+                              </button>
+                            )}
                           </span>
                           <div className="flex flex-col gap-3">
                             {currentUnit?.Lesson?.map((lesson: any) => (
@@ -373,10 +406,6 @@ export default function Curriculum() {
         isOpen={isOpenEditLevelModal}
         setIsOpen={setIsOpenEditLevelModal}
         actionFunction={deleteLevelEvent}
-        // loading={deleteLevel.isLoading}
-        // btnIntent="primary"
-        // actionButton="Update"
-        // loadingLabel="Updating Level..."
         title="Edit Level"
         description={
           <EditLevel
@@ -417,6 +446,28 @@ export default function Curriculum() {
           </div>
         }
         closeButton="Cancel"
+      />
+      {/* Disabled Delete Unit Modal */}
+      <Modal
+        isOpen={isOpenDisabledDeleteUnitModal}
+        setIsOpen={setIsOpenDisabledDeleteUnitModal}
+        title={
+          <div className="flex items-center gap-2">
+            <span className="text-danger-500">
+              <MdError />
+            </span>
+            Cannot Delete Unit
+          </div>
+        }
+        description={
+          <div>
+            <p className="mt-2">
+              You must delete all lessons or move them to another unit before
+              you can delete this unit.
+            </p>
+          </div>
+        }
+        closeButton="Okay"
       />
     </Layout>
   )

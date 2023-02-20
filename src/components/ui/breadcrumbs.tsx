@@ -31,7 +31,7 @@ export default function Breadcrumbs({ loading, pages }: Props) {
                 <LoadingSkeleton />
               ) : page.href ? (
                 <Link
-                  as="div"
+                  // as="div"
                   href={page?.href}
                   aria-current={page.current ? "page" : undefined}
                 >

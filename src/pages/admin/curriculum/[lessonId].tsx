@@ -1,8 +1,10 @@
 import Layout from "@src/components/layout/layout"
 import { Button } from "@src/components/ui/button"
+import Modal from "@src/components/ui/modal"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
 import { trpc } from "@src/utils/trpc"
 import { useRouter } from "next/router"
+import { useState } from "react"
 import { BiLinkAlt } from "react-icons/bi"
 import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
 
@@ -13,23 +15,36 @@ interface Props {
 export default function LessonPage({ lessonTitle }: Props) {
   const router = useRouter()
   const { lessonId } = router.query
+  const [isOpenDeleteLessonModal, setIsOpenDeleteLessonModal] = useState(false)
   const lesson = trpc.lesson.getById.useQuery(
     { id: lessonId as string },
     { enabled: router.isReady }
   )
+  const deleteLesson = trpc.lesson.delete.useMutation()
+
+  const handleDeleteLessonModal = async (lessonId: string) => {
+    setIsOpenDeleteLessonModal(true)
+  }
+
+  const deleteLessonEvent = async () => {
+    try {
+      await deleteLesson.mutateAsync({
+        id: lessonId as string,
+      })
+    } catch (error) {
+      console.log("Error deleting lesson.", error)
+    }
+    router.push("/admin/curriculum")
+  }
 
   const pages = [
     { name: "Curriculum", href: "/admin/curriculum/", current: false },
     {
-      name: `${lesson.data?.title}`,
+      name: `Level ${lesson.data?.Unit.Level.number}: ${lesson.data?.Unit.Level.title} / Unit ${lesson.data?.Unit?.number}: ${lesson.data?.Unit?.title} / Lesson ${lesson.data?.number}: ${lesson.data?.title}`,
       href: `/admin/curriculum/${lesson.data?.id}`,
       current: true,
     },
   ]
-
-  console.log("slug: ", router.isReady)
-  console.log("lesson: ", lesson.data)
-  console.log("window: ", typeof window)
 
   const url =
     "https://docs.google.com/presentation/d/19JRDnDauISL9PmfrjV4rewaSRIlvY7r573MLDqZ16AM"
@@ -49,7 +64,12 @@ export default function LessonPage({ lessonTitle }: Props) {
             <RiPencilLine />
             Edit Lesson
           </Button>
-          <Button size="small" intent="danger" className="flex gap-2">
+          <Button
+            size="small"
+            intent="danger"
+            className="flex gap-2"
+            onClick={() => setIsOpenDeleteLessonModal(true)}
+          >
             <RiDeleteBinLine /> Delete Lesson
           </Button>
         </div>
@@ -181,6 +201,23 @@ export default function LessonPage({ lessonTitle }: Props) {
           </div>
         </div>
       </div>
+      {/* Delete Lesson Modal */}
+      <Modal
+        isOpen={isOpenDeleteLessonModal}
+        setIsOpen={setIsOpenDeleteLessonModal}
+        actionFunction={deleteLessonEvent}
+        loading={deleteLesson.isLoading}
+        btnIntent="danger"
+        actionButton="Delete"
+        loadingLabel="Deleting Lesson..."
+        title="Delete Level"
+        description={
+          <div>
+            <p className="mt-2">Are you sure you want to delete this lesson?</p>
+          </div>
+        }
+        closeButton="Cancel"
+      />
     </Layout>
   )
 }
