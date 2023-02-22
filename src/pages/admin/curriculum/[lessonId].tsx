@@ -1,3 +1,4 @@
+import EditLesson from "@src/components/admin/lessons/EditLesson"
 import Layout from "@src/components/layout/layout"
 import { Button } from "@src/components/ui/button"
 import Modal from "@src/components/ui/modal"
@@ -10,19 +11,36 @@ import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
 
 interface Props {
   lessonTitle: string
+  levels: any
 }
 
-export default function LessonPage({ lessonTitle }: Props) {
+export default function LessonPage({ lessonTitle, levels }: Props) {
   const router = useRouter()
   const { lessonId } = router.query
   const [isOpenDeleteLessonModal, setIsOpenDeleteLessonModal] = useState(false)
+  const [isOpenEditLessonModal, setIsOpenEditLessonModal] = useState(false)
   const lesson = trpc.lesson.getById.useQuery(
     { id: lessonId as string },
     { enabled: router.isReady }
   )
   const deleteLesson = trpc.lesson.delete.useMutation()
+  const editLesson = trpc.lesson.edit.useMutation()
 
-  const handleDeleteLessonModal = async (lessonId: string) => {
+  const handleEditLessonModal = async () => {
+    setIsOpenEditLessonModal(true)
+  }
+
+  const editLessonEvent = async () => {
+    try {
+      // await editLesson.mutateAsync({
+      //   id: lessonId as string,
+      // })
+    } catch (error) {
+      console.log("Error editing lesson.", error)
+    }
+  }
+
+  const handleDeleteLessonModal = async () => {
     setIsOpenDeleteLessonModal(true)
   }
 
@@ -60,7 +78,12 @@ export default function LessonPage({ lessonTitle }: Props) {
           />
         </div>
         <div className="flex gap-2">
-          <Button size="small" intent="secondary" className="flex gap-2">
+          <Button
+            onClick={() => setIsOpenEditLessonModal(true)}
+            size="small"
+            intent="secondary"
+            className="flex gap-2"
+          >
             <RiPencilLine />
             Edit Lesson
           </Button>
@@ -210,11 +233,27 @@ export default function LessonPage({ lessonTitle }: Props) {
         btnIntent="danger"
         actionButton="Delete"
         loadingLabel="Deleting Lesson..."
-        title="Delete Level"
+        title="Delete Lesson"
         description={
           <div>
             <p className="mt-2">Are you sure you want to delete this lesson?</p>
           </div>
+        }
+        closeButton="Cancel"
+      />
+      {/* Edit Lesson Modal */}
+      <Modal
+        isOpen={isOpenEditLessonModal}
+        setIsOpen={setIsOpenEditLessonModal}
+        actionFunction={editLessonEvent}
+        loading={editLesson.isLoading}
+        loadingLabel="Updating Lesson..."
+        title="Edit Lesson"
+        description={
+          <EditLesson
+            currentLesson={lesson}
+            closeModal={() => setIsOpenEditLessonModal(false)}
+          />
         }
         closeButton="Cancel"
       />

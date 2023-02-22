@@ -168,12 +168,12 @@ export default function Curriculum() {
                       {level.number}. {level.title}
                     </h3>
                     {level.published ? (
-                      <span className="inline-flex items-center rounded-full bg-accent-100 px-3 py-0.5 text-sm font-medium text-accent-800 border border-accent-900 gap-2">
+                      <span className="inline-flex items-center rounded-full bg-accent-100 px-2 py-0.5 text-xs font-medium text-accent-800 border border-accent-900 gap-2">
                         <BsCheckLg />
                         Published
                       </span>
                     ) : (
-                      <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800 border border-neutral-900 gap-1">
+                      <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 border border-neutral-900 gap-1">
                         <MdUnpublished />
                         Draft
                       </span>
@@ -251,17 +251,17 @@ export default function Curriculum() {
                                   {currentUnit.title}
                                 </p>
                                 {level.published == false ? (
-                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800 border border-neutral-900 gap-1">
+                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 border border-neutral-900 gap-1">
                                     <MdUnpublished />
                                     Drafted by the Level
                                   </span>
                                 ) : currentUnit.published ? (
-                                  <span className="inline-flex items-center rounded-full bg-accent-100 px-3 py-0.5 text-sm font-medium text-accent-800 border border-accent-900 gap-2">
+                                  <span className="inline-flex items-center rounded-full bg-accent-100 px-2 py-0.5 text-xs font-medium text-accent-800 border border-accent-900 gap-2">
                                     <BsCheckLg />
                                     Published
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800 border border-neutral-900 gap-1">
+                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 border border-neutral-900 gap-1">
                                     <MdUnpublished />
                                     Draft
                                   </span>

@@ -47,6 +47,7 @@ export const Input: FC<InputProps> = forwardRef<HTMLInputElement, InputProps>(
           className="w-full input input-bordered"
           {...props}
         />
+
         <label className="pt-0 pb-1.5 label">
           <div className="h-2 label-text-alt text-error">
             {errors ? errors : ""}

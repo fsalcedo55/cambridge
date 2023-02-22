@@ -60,6 +60,23 @@ export const levelRouter = router({
       },
     })
   }),
+  getLevelsReduced: publicProcedure.query(() => {
+    return prisma.level.findMany({
+      orderBy: {
+        number: "asc",
+      },
+      select: {
+        id: true,
+        title: true,
+        number: true,
+        Unit: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    })
+  }),
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {

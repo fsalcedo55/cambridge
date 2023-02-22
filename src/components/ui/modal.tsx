@@ -51,7 +51,7 @@ export default function Modal({
         >
           <div className="fixed inset-0 bg-black/20" aria-hidden="true" />
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Dialog.Panel className="w-full max-w-md p-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+            <Dialog.Panel className="w-full max-w-md max-h-full p-4 overflow-auto text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
               <Dialog.Title
                 as="h3"
                 className="text-lg font-bold leading-6 text-gray-900"
