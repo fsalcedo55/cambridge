@@ -394,13 +394,13 @@ export default function Curriculum() {
                                         {lessonIdx !==
                                         currentUnit?.Lesson?.length - 1 ? (
                                           <span
-                                            className="absolute top-5 left-3.5 -ml-px h-full w-0.5 bg-primary-600"
+                                            className="absolute top-6 left-6 -ml-px h-full w-0.5 bg-primary-600"
                                             aria-hidden="true"
                                           />
                                         ) : null}
                                         <div className="relative flex items-center space-x-3">
                                           <div>
-                                            <span className="inline-flex items-center p-2 text-lg font-bold rounded-full bg-primary-800 text-primary-100">
+                                            <span className="inline-flex items-center justify-center w-12 h-12 p-2 text-lg font-bold rounded-full bg-primary-800 text-primary-100">
                                               {lesson.number}
                                             </span>
                                           </div>
@@ -408,7 +408,7 @@ export default function Curriculum() {
                                             href={`/admin/curriculum/${lesson.id}`}
                                           >
                                             <div className="flex justify-between flex-1 min-w-0 space-x-4">
-                                              <div className="flex items-center min-w-full space-x-3 bg-white border-2 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-primary-500 hover:shadow">
+                                              <div className="flex items-center min-w-full space-x-3 bg-white border-2 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-primary-500 hover:shadow hover:cursor-pointer">
                                                 <Image
                                                   height={80}
                                                   width={125}
@@ -417,14 +417,9 @@ export default function Curriculum() {
                                                   alt=""
                                                 />
                                                 <div className="flex-1 min-w-0">
-                                                  <a
-                                                    href="#"
-                                                    className="focus:outline-none"
-                                                  >
-                                                    <p className="text-lg font-bold text-neutral-900">
-                                                      {lesson.title}
-                                                    </p>
-                                                  </a>
+                                                  <p className="text-lg font-bold text-neutral-900">
+                                                    {lesson.title}
+                                                  </p>
                                                 </div>
                                               </div>
                                             </div>
@@ -436,45 +431,9 @@ export default function Curriculum() {
                                 )}
                               </ul>
                             </div>
-                            {/* {currentUnit?.Lesson?.map((lesson: any) => (
-                              <Link
-                                href={`/admin/curriculum/${lesson.id}`}
-                                key={lesson.name}
-                                className="flex justify-between"
-                              >
-                                <div>
-                                  <div className="relative flex items-center min-w-full p-3 space-x-3 bg-white border-2 border-white rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-accent-400 hover:shadow-lg">
-                                    <div className="flex-shrink-0">
-                                      <Image
-                                        height={80}
-                                        width={125}
-                                        className="rounded"
-                                        src={lesson.photoUrl}
-                                        alt=""
-                                      />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <a
-                                        href="#"
-                                        className="focus:outline-none"
-                                      >
-                                        <span
-                                          className="absolute inset-0"
-                                          aria-hidden="true"
-                                        />
-                                        <p className="text-lg font-bold text-neutral-900">
-                                          Lesson {lesson.number}: {lesson.title}
-                                        </p>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </Link>
-                            ))} */}
                           </div>
                         </Disclosure.Panel>
                       </Disclosure>
-                      {/* </a> */}
                     </li>
                   ))}
                 </ul>
