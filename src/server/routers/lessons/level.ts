@@ -53,6 +53,7 @@ export const levelRouter = router({
                 id: true,
                 photoUrl: true,
                 number: true,
+                slidesUrl: true,
               },
             },
           },

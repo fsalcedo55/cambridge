@@ -7,7 +7,7 @@ import Modal from "@src/components/ui/modal"
 import PageHeading from "@src/components/ui/pageHeading"
 import { trpc } from "@src/utils/trpc"
 import { useState } from "react"
-import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
+import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
 import { SiBookstack } from "react-icons/si"
 import Image from "next/image"
 import { BsCheckLg } from "react-icons/bs"
@@ -416,10 +416,17 @@ export default function Curriculum() {
                                                   src={lesson.photoUrl}
                                                   alt=""
                                                 />
-                                                <div className="flex-1 min-w-0">
-                                                  <p className="text-lg font-bold text-neutral-900">
-                                                    {lesson.title}
-                                                  </p>
+                                                <div className="flex items-center justify-between w-full pr-6">
+                                                  <div className="flex-1 min-w-0">
+                                                    <p className="text-lg font-bold text-neutral-900">
+                                                      {lesson.title}
+                                                    </p>
+                                                  </div>
+                                                  {lesson.slidesUrl ? (
+                                                    <div className="text-2xl opacity-80">
+                                                      <RiSlideshowLine />
+                                                    </div>
+                                                  ) : null}
                                                 </div>
                                               </div>
                                             </div>
