@@ -423,7 +423,7 @@ export default function Curriculum() {
                                                     </p>
                                                   </div>
                                                   {lesson.slidesUrl ? (
-                                                    <div className="text-2xl opacity-80">
+                                                    <div className="text-4xl opacity-80">
                                                       <RiSlideshowLine />
                                                     </div>
                                                   ) : null}
