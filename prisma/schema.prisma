@@ -108,6 +108,7 @@ model Lesson {
     id        String   @id @unique @default(cuid())
     title     String
     photoUrl  String
+    slidesUrl String?
     number    Int
     published Boolean  @default(false)
     Student   Student? @relation(fields: [studentId], references: [id])

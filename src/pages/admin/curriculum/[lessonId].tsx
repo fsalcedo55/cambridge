@@ -7,7 +7,7 @@ import { trpc } from "@src/utils/trpc"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { BiLinkAlt } from "react-icons/bi"
-import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
+import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
 
 interface Props {
   lessonTitle: string
@@ -64,8 +64,8 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
     },
   ]
 
-  const url =
-    "https://docs.google.com/presentation/d/19JRDnDauISL9PmfrjV4rewaSRIlvY7r573MLDqZ16AM"
+  // const url =
+  //   "https://docs.google.com/presentation/d/19JRDnDauISL9PmfrjV4rewaSRIlvY7r573MLDqZ16AM"
 
   return (
     <Layout>
@@ -102,18 +102,33 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
           <div>
             <div className="flex justify-between p-2 bg-white rounded-t-xl">
               <div className="text-xl font-bold">Slides</div>
-              <Button size="small" intent="secondary">
+              {/* <Button size="small" intent="secondary">
                 Edit
-              </Button>
+              </Button> */}
             </div>
-            <iframe
-              src={`${url}/embed?start=false&loop=false&delayms=60000`}
-              frameBorder="0"
-              width="480"
-              height="299"
-              allowFullScreen={true}
-              className="flex-1"
-            ></iframe>
+            <div className="w-[480px] h-[299px] bg-neutral-200 rounded-b-xl flex items-center justify-center">
+              {lesson.data?.slidesUrl ? (
+                <iframe
+                  src={`${lesson.data?.slidesUrl}/embed?start=false&loop=false&delayms=60000`}
+                  frameBorder="0"
+                  width="480"
+                  height="299"
+                  allowFullScreen={true}
+                  className="flex-1"
+                ></iframe>
+              ) : (
+                <div>
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="opacity-50 text-8xl">
+                      <RiSlideshowLine />
+                    </div>
+                    <div className="font-bold">
+                      Add slides URL to see the content
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           <div className="h-4"></div>
           <div className="px-4 pb-2 bg-white shadow rounded-xl">
@@ -134,9 +149,9 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
           <div className="px-4 pb-2 bg-white shadow rounded-xl">
             <div className="flex items-center justify-between py-2">
               <div className="text-xl font-bold">Lesson Objective</div>
-              <Button size="small" intent="secondary">
+              {/* <Button size="small" intent="secondary">
                 Edit
-              </Button>
+              </Button> */}
             </div>
             <div className="relative">
               <div
@@ -157,9 +172,9 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
           <div className="px-4 pb-2 bg-white shadow rounded-xl">
             <div className="flex items-center justify-between py-2">
               <div className="text-xl font-bold">Assignments</div>
-              <Button size="small" intent="secondary">
+              {/* <Button size="small" intent="secondary">
                 Edit
-              </Button>
+              </Button> */}
             </div>
             <div className="relative">
               <div
@@ -207,9 +222,9 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
           <div className="px-4 pb-2 bg-white shadow rounded-xl">
             <div className="flex items-center justify-between py-2">
               <div className="text-xl font-bold">Extra Resources</div>
-              <Button size="small" intent="secondary">
+              {/* <Button size="small" intent="secondary">
                 Edit
-              </Button>
+              </Button> */}
             </div>
             <div className="relative">
               <div

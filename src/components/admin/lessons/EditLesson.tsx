@@ -57,15 +57,13 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         number: Number(data.number),
         photoUrl: data.photoUrl,
         unitId: unitIdState,
+        slidesUrl: data.slidesUrl,
       })
     } catch (error) {
       console.log("Error editing lesson.", error)
     }
     closeModal()
   })
-
-  console.log("level state: ", currentLesson?.data?.Unit?.Level?.id)
-  console.log("unit state: ", currentLesson?.data?.Unit?.id)
 
   const selectLevel = register("levelId", {
     required: "You must enter a level.",
@@ -167,7 +165,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         name="photoUrl"
         label="Photo URL"
         register={register}
-        rules={{ required: "You must enter a title." }}
+        rules={{ required: "You must enter a url." }}
         errors={errors}
         defaultValue={currentLesson?.data?.photoUrl}
       />
@@ -180,16 +178,16 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         errors={errors}
         defaultValue={currentLesson?.data?.number}
       />
-      {/* <FormInput
+      <FormInput
         id="slidesUrl"
         type="text"
         name="slidesUrl"
         label="Slides URL"
         register={register}
-        rules={{ required: "You must enter a title." }}
+        rules={{ required: "You must enter a url." }}
         errors={errors}
-        defaultValue={currentLesson?.data?.photoUrl}
-      /> */}
+        defaultValue={currentLesson?.data?.slidesUrl}
+      />
       {/* <div>
         <label
           htmlFor="comment"

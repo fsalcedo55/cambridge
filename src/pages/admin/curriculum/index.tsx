@@ -394,13 +394,13 @@ export default function Curriculum() {
                                         {lessonIdx !==
                                         currentUnit?.Lesson?.length - 1 ? (
                                           <span
-                                            className="absolute top-6 left-6 -ml-px h-full w-0.5 bg-primary-600"
+                                            className="absolute top-12 left-6 -ml-px h-24 w-0.5 bg-primary-600"
                                             aria-hidden="true"
                                           />
                                         ) : null}
                                         <div className="relative flex items-center space-x-3">
                                           <div>
-                                            <span className="inline-flex items-center justify-center w-12 h-12 p-2 text-lg font-bold rounded-full bg-primary-800 text-primary-100">
+                                            <span className="inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100">
                                               {lesson.number}
                                             </span>
                                           </div>
