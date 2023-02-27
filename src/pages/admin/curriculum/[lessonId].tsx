@@ -9,6 +9,7 @@ import { useRouter } from "next/router"
 import { useState } from "react"
 import { BiLinkAlt } from "react-icons/bi"
 import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
+import Image from "next/image"
 
 interface Props {
   lessonTitle: string
@@ -74,7 +75,25 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
         <div>
           <PageHeadingWithBreadcrumb
             pages={pages}
-            pageTitle={lesson.data?.title}
+            pageTitle={
+              <div className="flex justify-between flex-1 min-w-0 space-x-4">
+                <div className="flex items-center space-x-3">
+                  <Image
+                    height={138.24}
+                    width={180}
+                    className="rounded"
+                    src={lesson.data?.photoUrl!}
+                    alt=""
+                  />
+                  <div className="flex items-center justify-between w-full pr-6">
+                    <p className="text-2xl font-bold text-neutral-900">
+                      {lesson.data?.title}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            }
+            // pageTitle={lesson.data?.title}
             loading={lesson.isLoading}
           />
         </div>
