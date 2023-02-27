@@ -295,15 +295,13 @@ export default function Curriculum() {
                           className="flex items-center justify-between pr-6 cursor-pointer"
                         >
                           <div className="relative flex items-center px-6 py-2 space-x-3 ">
-                            <div className="flex-shrink-0">
-                              <Image
-                                height={120}
-                                width={175}
-                                src={currentUnit.photoUrl}
-                                alt=""
-                                className="rounded-lg"
-                              />
-                            </div>
+                            <Image
+                              height={120}
+                              width={175}
+                              src={currentUnit.photoUrl}
+                              alt=""
+                              className="rounded-lg"
+                            />
                             <div className="flex-1 min-w-0">
                               <div
                                 onClick={() => console.log(currentUnit.id)}

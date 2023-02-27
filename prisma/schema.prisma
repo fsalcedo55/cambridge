@@ -111,6 +111,7 @@ model Lesson {
     slidesUrl String?
     number    Int
     published Boolean  @default(false)
+    objective String?  @db.Text
     Student   Student? @relation(fields: [studentId], references: [id])
     studentId String?
     Unit      Unit     @relation(fields: [unitId], references: [id])

@@ -6,6 +6,7 @@ import { Switch } from "@headlessui/react"
 import { Fragment, useState } from "react"
 import { useSession } from "next-auth/react"
 import { ErrorMessage } from "@hookform/error-message"
+import Link from "next/link"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -49,6 +50,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
   } = useForm<FormFields>()
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log("objective: ", data)
     try {
       await editLesson.mutateAsync({
         title: data.title,
@@ -58,6 +60,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         photoUrl: data.photoUrl,
         unitId: unitIdState,
         slidesUrl: data.slidesUrl,
+        objective: data.lessonObjective,
       })
     } catch (error) {
       console.log("Error editing lesson.", error)
@@ -163,7 +166,21 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         id="photoUrl"
         type="text"
         name="photoUrl"
-        label="Photo URL"
+        label={
+          <div>
+            Photo URL{" "}
+            <Link href="https://unsplash.com/">
+              <a
+                className="cursor-pointer text-primary-400 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                (Unsplash)
+              </a>
+            </Link>
+          </div>
+        }
+        // label={`<Photo URL (${(<a href="https://unsplash.com/">Unsplash</a>)})`}
         register={register}
         rules={{ required: "You must enter a url." }}
         errors={errors}
@@ -184,13 +201,13 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         name="slidesUrl"
         label="Slides URL"
         register={register}
-        rules={{ required: "You must enter a url." }}
+        // rules={{ required: "You must enter a url." }}
         errors={errors}
         defaultValue={currentLesson?.data?.slidesUrl}
       />
-      {/* <div>
+      <div>
         <label
-          htmlFor="comment"
+          htmlFor="objective"
           className="block text-sm font-medium text-gray-700"
         >
           Lesson Objective
@@ -198,14 +215,14 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         <div className="mb-2">
           <textarea
             rows={3}
-            name="comment"
-            id="comment"
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            defaultValue={""}
+            name="objective"
+            id="objective"
+            className="block w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            defaultValue={currentLesson?.data?.objective}
           />
         </div>
       </div>
-      <div>
+      {/* <div>
         <label className="py-0 label">
           <span className="label-text">Assignments</span>
         </label>
@@ -235,7 +252,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
             <button
               className={classNames(
                 checked ? "bg-accent-500" : "bg-neutral-200",
-                "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
               )}
             >
               <span

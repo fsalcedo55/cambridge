@@ -5,7 +5,7 @@ export type InputType = "text" | "email" | "date" | "select" | "number"
 export type InputProps = {
   id: string
   name: string
-  label?: string
+  label?: any
   type?: InputType
   placeholder?: string
   defaultValue?: string

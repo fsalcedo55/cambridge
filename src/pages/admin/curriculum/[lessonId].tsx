@@ -1,6 +1,7 @@
 import EditLesson from "@src/components/admin/lessons/EditLesson"
 import Layout from "@src/components/layout/layout"
 import { Button } from "@src/components/ui/button"
+import Loading from "@src/components/ui/loading"
 import Modal from "@src/components/ui/modal"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
 import { trpc } from "@src/utils/trpc"
@@ -107,7 +108,11 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
               </Button> */}
             </div>
             <div className="w-[480px] h-[299px] bg-neutral-200 rounded-b-xl flex items-center justify-center">
-              {lesson.data?.slidesUrl ? (
+              {lesson.isLoading ? (
+                <div>
+                  <Loading />
+                </div>
+              ) : lesson.data?.slidesUrl ? (
                 <iframe
                   src={`${lesson.data?.slidesUrl}/embed?start=false&loop=false&delayms=60000`}
                   frameBorder="0"

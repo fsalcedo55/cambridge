@@ -38,6 +38,7 @@ export const lessonRouter = router({
           photoUrl: true,
           published: true,
           slidesUrl: true,
+          objective: true,
           Unit: {
             select: {
               title: true,
@@ -78,7 +79,8 @@ export const lessonRouter = router({
         number: z.number(),
         unitId: z.string(),
         published: z.boolean(),
-        slidesUrl: z.string(),
+        slidesUrl: z.string().optional(),
+        objective: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
@@ -94,6 +96,7 @@ export const lessonRouter = router({
           published: input.published,
           unitId: input.unitId,
           slidesUrl: input.slidesUrl,
+          objective: input.objective,
         },
       })
     }),
