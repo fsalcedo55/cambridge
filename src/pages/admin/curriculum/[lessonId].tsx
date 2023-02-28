@@ -10,6 +10,7 @@ import { useState } from "react"
 import { BiLinkAlt } from "react-icons/bi"
 import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
 import Image from "next/image"
+import { MdDescription } from "react-icons/md"
 
 interface Props {
   lessonTitle: string
@@ -69,6 +70,8 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
   // const url =
   //   "https://docs.google.com/presentation/d/19JRDnDauISL9PmfrjV4rewaSRIlvY7r573MLDqZ16AM"
 
+  console.log("obj: ", lesson?.data?.objective?.length)
+
   return (
     <Layout>
       <div className="flex items-center justify-between">
@@ -80,7 +83,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                 <div className="flex items-center space-x-3">
                   <Image
                     height={138.24}
-                    width={180}
+                    width={200}
                     className="rounded"
                     src={lesson.data?.photoUrl!}
                     alt=""
@@ -187,8 +190,18 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
               <div className="relative flex justify-center"></div>
             </div>
             <div className="py-3">
-              In this class, students will learn how to describe different
-              actions that animals can do in Spanish.
+              {lesson?.data?.objective?.length! > 0 ? (
+                lesson.data?.objective
+              ) : (
+                <div className="flex items-center justify-center">
+                  <div>
+                    <div className="flex justify-center mb-2 text-5xl opacity-50">
+                      <MdDescription />
+                    </div>
+                    <div>Add an Objective</div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

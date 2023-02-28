@@ -11,17 +11,11 @@ import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
 import { SiBookstack } from "react-icons/si"
 import Image from "next/image"
 import { BsCheckLg } from "react-icons/bs"
-import { MdError, MdUnpublished } from "react-icons/md"
-import AddLessonPlan from "@src/components/addLessonPlan"
+import { MdDescription, MdError, MdUnpublished } from "react-icons/md"
 import AddLesson from "@src/components/admin/lessons/AddLesson"
 import Link from "next/link"
 import EditLevel from "@src/components/admin/lessons/EditLevel"
 import EditUnit from "@src/components/admin/lessons/EditUnit"
-import {
-  CheckIcon,
-  HandThumbUpIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline"
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)
@@ -328,7 +322,7 @@ export default function Curriculum() {
                               </button>
                             )}
                           </span>
-                          {/* ***** Current Unit ***** */}
+                          {/* ***** Current Lesson ***** */}
                           <div className="flex flex-col gap-3">
                             <div className="flow-root">
                               <ul role="list" className="-mb-8">
@@ -367,11 +361,24 @@ export default function Curriculum() {
                                                       {lesson.title}
                                                     </p>
                                                   </div>
-                                                  {lesson.slidesUrl ? (
-                                                    <div className="text-4xl opacity-80">
-                                                      <RiSlideshowLine />
-                                                    </div>
-                                                  ) : null}
+                                                  <div className="flex gap-2">
+                                                    {lesson.slidesUrl ? (
+                                                      <div className="flex flex-col items-center text-4xl opacity-80">
+                                                        <RiSlideshowLine />
+                                                        <div className="text-xs">
+                                                          Slides
+                                                        </div>
+                                                      </div>
+                                                    ) : null}
+                                                    {lesson.objective ? (
+                                                      <div className="flex flex-col items-center text-4xl opacity-80">
+                                                        <MdDescription />
+                                                        <div className="text-xs">
+                                                          Objective
+                                                        </div>
+                                                      </div>
+                                                    ) : null}
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
