@@ -11,6 +11,8 @@ import { BiLinkAlt } from "react-icons/bi"
 import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
 import Image from "next/image"
 import { MdDescription } from "react-icons/md"
+import { HiOutlineExternalLink } from "react-icons/hi"
+import Link from "next/link"
 
 interface Props {
   lessonTitle: string
@@ -125,9 +127,20 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
           <div>
             <div className="flex justify-between p-2 bg-white rounded-t-xl">
               <div className="text-xl font-bold">Slides</div>
-              {/* <Button size="small" intent="secondary">
-                Edit
-              </Button> */}
+              {lesson.data?.slidesUrl && (
+                <Link href={lesson.data?.slidesUrl!}>
+                  <a target="_blank" rel="noopener noreferrer">
+                    <Button
+                      size="small"
+                      intent="secondary"
+                      className="flex items-center gap-2"
+                    >
+                      <span>Edit on Google Slides</span>
+                      <HiOutlineExternalLink />
+                    </Button>
+                  </a>
+                </Link>
+              )}
             </div>
             <div className="w-[480px] h-[299px] bg-neutral-200 rounded-b-xl flex items-center justify-center">
               {lesson.isLoading ? (

@@ -7,6 +7,7 @@ import { Fragment, useState } from "react"
 import { useSession } from "next-auth/react"
 import { ErrorMessage } from "@hookform/error-message"
 import Link from "next/link"
+import { MdAddCircle } from "react-icons/md"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -21,6 +22,7 @@ export type FormFields = {
   number: number
   levelId: string
   unitId: string
+  assignments: string[]
 }
 
 interface Props {
@@ -48,6 +50,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
+  const [assignmentsArray, setAssignmentsArray] = useState([])
 
   const onSubmit = handleSubmit(async (data) => {
     console.log("objective: ", data)
@@ -236,6 +239,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         name="number"
         label="Unit Number"
         register={register}
+        rules={{ required: "You must enter a number." }}
         errors={errors}
         defaultValue={currentLesson?.data?.number}
       />
@@ -267,20 +271,22 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
           />
         </div>
       </div>
-      {/* <div>
-        <label className="py-0 label">
-          <span className="label-text">Assignments</span>
-        </label>
-        <FormInput
-          id="assignments"
-          type="text"
-          name="assignments"
-          //   register={register}
-          //   rules={{ required: "You must enter a title." }}
-          errors={errors}
-          defaultValue={currentLesson?.data?.assignments}
-        />
-      </div> */}
+      <FormInput
+        id="assignments"
+        type="text"
+        name="assignments"
+        label={
+          <div className="flex items-center justify-between gap-2">
+            Assignments
+            {/* <div className="text-lg cursor-pointer text-neutral-500" onClick={() => }>
+              <MdAddCircle />
+            </div> */}
+          </div>
+        }
+        register={register}
+        errors={errors}
+        // defaultValue={currentLesson?.data?.assignments}
+      />
 
       {/* <Switch.Group as="div" className="flex items-center mb-1">
         <Switch.Label as="span" className="mr-3">

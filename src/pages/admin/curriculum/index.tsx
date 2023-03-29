@@ -278,7 +278,7 @@ export default function Curriculum() {
                             </div>
                           </div>
                         </Disclosure.Button>
-                        <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-200 to-neutral-100 text-neutral-500">
+                        <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
                           <span className="flex justify-end gap-3 pb-3 rounded-md isolate">
                             <button
                               onClick={() => handleEditUnitModal(currentUnit)}
