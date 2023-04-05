@@ -16,6 +16,7 @@ import AddLesson from "@src/components/admin/lessons/AddLesson"
 import Link from "next/link"
 import EditLevel from "@src/components/admin/lessons/EditLevel"
 import EditUnit from "@src/components/admin/lessons/EditUnit"
+import Loading from "@src/components/ui/loading"
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)
@@ -150,6 +151,14 @@ export default function Curriculum() {
 
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ")
+  }
+
+  if (levels.isLoading) {
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    )
   }
 
   return (
