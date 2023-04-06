@@ -288,7 +288,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                     </div>
                   </div>
                   <div className="relative items-start">
-                    {assignments.data?.map((assignment, idx) => (
+                    {assignments.data?.map((assignment: any) => (
                       <div
                         className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
                         key={assignment.id}
