@@ -7,7 +7,12 @@ import Modal from "@src/components/ui/modal"
 import PageHeading from "@src/components/ui/pageHeading"
 import { trpc } from "@src/utils/trpc"
 import { useState } from "react"
-import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
+import {
+  RiDeleteBinLine,
+  RiPencilLine,
+  RiPencilRulerLine,
+  RiSlideshowLine,
+} from "react-icons/ri"
 import { SiBookstack } from "react-icons/si"
 import Image from "next/image"
 import { BsCheckLg } from "react-icons/bs"
@@ -17,6 +22,7 @@ import Link from "next/link"
 import EditLevel from "@src/components/admin/lessons/EditLevel"
 import EditUnit from "@src/components/admin/lessons/EditUnit"
 import Loading from "@src/components/ui/loading"
+import { TfiRulerPencil } from "react-icons/tfi"
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)
@@ -356,7 +362,7 @@ export default function Curriculum() {
                                             href={`/admin/curriculum/${lesson.id}`}
                                           >
                                             <div className="flex justify-between flex-1 min-w-0 space-x-4">
-                                              <div className="flex items-center min-w-full space-x-3 bg-white border-2 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-primary-500 hover:shadow hover:cursor-pointer">
+                                              <div className="flex items-center min-w-full space-x-3 bg-white border-2 border-opacity-0 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-primary-500 hover:shadow-lg hover:cursor-pointer">
                                                 <Image
                                                   height={80}
                                                   width={125}
@@ -372,7 +378,7 @@ export default function Curriculum() {
                                                   </div>
                                                   <div className="flex gap-2">
                                                     {lesson.slidesUrl ? (
-                                                      <div className="flex flex-col items-center text-4xl opacity-80">
+                                                      <div className="flex flex-col items-center w-16 text-4xl opacity-80">
                                                         <RiSlideshowLine />
                                                         <div className="text-xs">
                                                           Slides
@@ -380,10 +386,19 @@ export default function Curriculum() {
                                                       </div>
                                                     ) : null}
                                                     {lesson.objective ? (
-                                                      <div className="flex flex-col items-center text-4xl opacity-80">
+                                                      <div className="flex flex-col items-center w-16 text-4xl opacity-80">
                                                         <MdDescription />
                                                         <div className="text-xs">
                                                           Objective
+                                                        </div>
+                                                      </div>
+                                                    ) : null}
+                                                    {lesson.assignments.length >
+                                                    0 ? (
+                                                      <div className="flex flex-col items-center w-16 text-4xl opacity-80">
+                                                        <RiPencilRulerLine />
+                                                        <div className="text-xs">
+                                                          Assignments
                                                         </div>
                                                       </div>
                                                     ) : null}

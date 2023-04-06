@@ -6,13 +6,16 @@ import Modal from "@src/components/ui/modal"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
 import { trpc } from "@src/utils/trpc"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { BiLinkAlt } from "react-icons/bi"
 import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
 import Image from "next/image"
 import { MdDescription } from "react-icons/md"
 import { HiOutlineExternalLink } from "react-icons/hi"
+import { HiArrowTopRightOnSquare } from "react-icons/hi2"
 import Link from "next/link"
+import AddAssignment from "@src/components/admin/lessons/AddAssignment"
+import EditAssignment from "@src/components/admin/lessons/EditAssignment"
 
 interface Props {
   lessonTitle: string
@@ -24,29 +27,55 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
   const { lessonId } = router.query
   const [isOpenDeleteLessonModal, setIsOpenDeleteLessonModal] = useState(false)
   const [isOpenEditLessonModal, setIsOpenEditLessonModal] = useState(false)
+  const [isOpenAddAssignmentModal, setIsOpenAddAssignmentModal] =
+    useState(false)
+  const [isOpenEditAssignmentModal, setIsOpenEditAssignmentModal] =
+    useState(false)
+  const [isOpenDeleteAssignmentModal, setIsOpenDeleteAssignmentModal] =
+    useState(false)
+  const currentAssignment = useRef<{
+    title: string
+    url: string
+    lessonId: string
+    id: string
+  }>({
+    title: "",
+    url: "",
+    lessonId: "",
+    id: "",
+  })
+  // const [currentAssignment, setCurrentAssignment] = useState<{
+  //   title: string
+  //   url: string
+  //   lessonId: string
+  //   id: string
+  // }>({
+  //   title: "",
+  //   url: "",
+  //   lessonId: "",
+  //   id: "",
+  // })
   const lesson = trpc.lesson.getById.useQuery(
     { id: lessonId as string },
     { enabled: router.isReady }
   )
   const deleteLesson = trpc.lesson.delete.useMutation()
   const editLesson = trpc.lesson.edit.useMutation()
+  const assignments = trpc.assignment.getById.useQuery(
+    { lessonId: lessonId as string },
+    { enabled: router.isReady }
+  )
+  const deleteAssignment = trpc.assignment.delete.useMutation()
 
-  const handleEditLessonModal = async () => {
-    setIsOpenEditLessonModal(true)
-  }
-
-  const editLessonEvent = async () => {
+  const deleteAssignmentEvent = async () => {
     try {
-      // await editLesson.mutateAsync({
-      //   id: lessonId as string,
-      // })
+      await deleteAssignment.mutateAsync({
+        id: currentAssignment.current.id,
+      })
     } catch (error) {
-      console.log("Error editing lesson.", error)
+      console.log("Error deleting assignment.", error)
     }
-  }
-
-  const handleDeleteLessonModal = async () => {
-    setIsOpenDeleteLessonModal(true)
+    setIsOpenDeleteAssignmentModal(false)
   }
 
   const deleteLessonEvent = async () => {
@@ -69,10 +98,16 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
     },
   ]
 
-  // const url =
-  //   "https://docs.google.com/presentation/d/19JRDnDauISL9PmfrjV4rewaSRIlvY7r573MLDqZ16AM"
+  const handleEditAssignment = (assignment: any) => {
+    // setCurrentAssignment(assignment)
+    currentAssignment.current = assignment
+    setIsOpenEditAssignmentModal(true)
+  }
 
-  console.log("obj: ", lesson?.data?.objective?.length)
+  const handleDeleteAssignmentModal = (assignment: any) => {
+    currentAssignment.current = assignment
+    setIsOpenDeleteAssignmentModal(true)
+  }
 
   return (
     <Layout>
@@ -98,7 +133,6 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                 </div>
               </div>
             }
-            // pageTitle={lesson.data?.title}
             loading={lesson.isLoading}
           />
         </div>
@@ -150,7 +184,6 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
               ) : lesson.data?.slidesUrl ? (
                 <iframe
                   src={`${lesson.data?.slidesUrl}/embed?start=false&loop=false&delayms=60000`}
-                  frameBorder="0"
                   width="480"
                   height="299"
                   allowFullScreen={true}
@@ -240,41 +273,74 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
               <fieldset>
                 <legend className="sr-only">Notifications</legend>
                 <div>
-                  <div className="relative flex items-start p-2 rounded-lg cursor-pointer hover:bg-neutral-50">
-                    <div className="flex items-center min-w-0 gap-1">
-                      <label htmlFor="comments">Tarea 1</label>
-                      <div className="opacity-50">
+                  <div className="relative flex items-start">
+                    <div
+                      onClick={() => setIsOpenAddAssignmentModal(true)}
+                      className="flex items-center min-w-0 gap-1"
+                    >
+                      {/* <div className="opacity-50">
                         <BiLinkAlt />
+                      </div> */}
+                      <div className="p-2 rounded-lg cursor-pointer hover:bg-neutral-50">
+                        <span className="text-xl font-bold">+</span> Add
+                        assignment
                       </div>
                     </div>
                   </div>
-                  <div className="relative flex items-start p-2 rounded-lg cursor-pointer hover:bg-neutral-50">
-                    <div className="flex items-center min-w-0 gap-1">
-                      <label htmlFor="candidates">Tarea 2</label>
-                      <div className="opacity-50">
-                        <BiLinkAlt />
+                  <div className="relative items-start">
+                    {assignments.data?.map((assignment, idx) => (
+                      <div
+                        className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
+                        key={assignment.id}
+                      >
+                        <div className="flex items-center justify-between my-1">
+                          <Link href={assignment.url}>
+                            <a target="_blank" rel="noopener noreferrer">
+                              <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
+                                <div>{assignment.title}</div>
+                                <div className="opacity-50">
+                                  <HiArrowTopRightOnSquare />
+                                </div>
+                              </div>
+                            </a>
+                          </Link>
+
+                          <div className="flex invisible gap-1 px-2 opacity-80 group-hover/assignment:visible">
+                            <div
+                              className="z-50 flex items-center gap-1 p-2 rounded cursor-pointer hover:bg-neutral-100"
+                              onClick={() => handleEditAssignment(assignment)}
+                            >
+                              <RiPencilLine />
+                              <span className="text-xs">Edit Assignment</span>
+                            </div>
+                            <div
+                              className="flex items-center gap-1 p-2 rounded cursor-pointer hover:bg-neutral-100"
+                              onClick={() =>
+                                handleDeleteAssignmentModal(assignment)
+                              }
+                            >
+                              <RiDeleteBinLine />{" "}
+                              <span className="text-xs">Delete Assignment</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="relative flex items-start p-2 rounded-lg cursor-pointer hover:bg-neutral-50">
-                    <div className="flex items-center min-w-0 gap-1">
-                      <label htmlFor="offers">Tarea 3</label>
-                      <div className="opacity-50">
-                        <BiLinkAlt />
-                      </div>
-                    </div>
+                    ))}
+                    {/* <div className="text-xs opacity-50">
+                        Updated 3/28/2023
+                      </div> */}
                   </div>
                 </div>
               </fieldset>
             </div>
           </div>
-          <div className="h-4"></div>
+          {/* <div className="h-4"></div>
           <div className="px-4 pb-2 bg-white shadow rounded-xl">
             <div className="flex items-center justify-between py-2">
               <div className="text-xl font-bold">Extra Resources</div>
-              {/* <Button size="small" intent="secondary">
+              <Button size="small" intent="secondary">
                 Edit
-              </Button> */}
+              </Button>
             </div>
             <div className="relative">
               <div
@@ -286,7 +352,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
               <div className="relative flex justify-center"></div>
             </div>
             <div className="py-3">Links to resources go here</div>
-          </div>
+          </div> */}
         </div>
       </div>
       {/* Delete Lesson Modal */}
@@ -310,7 +376,6 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
       <Modal
         isOpen={isOpenEditLessonModal}
         setIsOpen={setIsOpenEditLessonModal}
-        actionFunction={editLessonEvent}
         loading={editLesson.isLoading}
         loadingLabel="Updating Lesson..."
         title="Edit Lesson"
@@ -319,6 +384,52 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
             currentLesson={lesson}
             closeModal={() => setIsOpenEditLessonModal(false)}
           />
+        }
+        closeButton="Cancel"
+      />
+      {/* Add Assignment Modal */}
+      <Modal
+        isOpen={isOpenAddAssignmentModal}
+        setIsOpen={setIsOpenAddAssignmentModal}
+        title="Add Assignment"
+        description={
+          <AddAssignment
+            currentLesson={lesson}
+            closeModal={() => setIsOpenAddAssignmentModal(false)}
+          />
+        }
+        closeButton="Cancel"
+      />
+      {/* Edit Assignment Modal */}
+      <Modal
+        isOpen={isOpenEditAssignmentModal}
+        setIsOpen={setIsOpenEditAssignmentModal}
+        loading={editLesson.isLoading}
+        title={`Edit ${currentAssignment.current.title}`}
+        description={
+          <EditAssignment
+            currentAssignment={currentAssignment.current}
+            closeModal={() => setIsOpenEditAssignmentModal(false)}
+          />
+        }
+        closeButton="Cancel"
+      />
+      {/* Delete Assignment Modal */}
+      <Modal
+        isOpen={isOpenDeleteAssignmentModal}
+        setIsOpen={setIsOpenDeleteAssignmentModal}
+        actionFunction={deleteAssignmentEvent}
+        loading={deleteAssignment.isLoading}
+        btnIntent="danger"
+        actionButton="Delete"
+        loadingLabel="Deleting Assignment..."
+        title={`Delete ${currentAssignment.current.title}`}
+        description={
+          <div>
+            <p className="mt-2">
+              Are you sure you want to delete this assignment?
+            </p>
+          </div>
         }
         closeButton="Cancel"
       />

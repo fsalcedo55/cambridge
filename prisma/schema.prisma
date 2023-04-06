@@ -105,25 +105,26 @@ model LessonPlanComment {
 }
 
 model Lesson {
-    id          String              @id @unique @default(cuid())
+    id          String       @id @unique @default(cuid())
     title       String
     photoUrl    String
     slidesUrl   String?
     number      Int
-    published   Boolean             @default(false)
-    objective   String?             @db.Text
-    assignments LessonAssignments[]
-    Student     Student?            @relation(fields: [studentId], references: [id])
+    published   Boolean      @default(false)
+    objective   String?      @db.Text
+    assignments Assignment[]
+    Student     Student?     @relation(fields: [studentId], references: [id])
     studentId   String?
-    Unit        Unit                @relation(fields: [unitId], references: [id])
+    Unit        Unit         @relation(fields: [unitId], references: [id])
     unitId      String
 
     @@index([studentId])
     @@index([unitId])
 }
 
-model LessonAssignments {
+model Assignment {
     id       String  @id @unique @default(cuid())
+    title    String
     url      String
     Lesson   Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
     lessonId String?

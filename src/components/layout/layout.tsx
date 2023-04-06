@@ -489,7 +489,9 @@ export default function Example({ children }: Props) {
               </div>
             </div>
           </main>
-          <Footer />
+          <div className="z-50">
+            <Footer />
+          </div>
         </div>
       </div>
     </>

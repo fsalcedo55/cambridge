@@ -3,7 +3,7 @@ import { FormInput } from "@ui/form/form-input"
 import { Button } from "@ui/button"
 import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { ErrorMessage } from "@hookform/error-message"
 import Link from "next/link"
@@ -22,7 +22,7 @@ export type FormFields = {
   number: number
   levelId: string
   unitId: string
-  assignments: string[]
+  assignment: string
 }
 
 interface Props {
@@ -51,9 +51,11 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
     formState: { errors },
   } = useForm<FormFields>()
   const [assignmentsArray, setAssignmentsArray] = useState([])
+  const [assignment, setAssignment] = useState("")
+
+  const [count, setCount] = useState(1)
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("objective: ", data)
     try {
       await editLesson.mutateAsync({
         title: data.title,
@@ -78,6 +80,10 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
   const selectUnit = register("unitId", {
     required: "You must enter a unit.",
   })
+
+  const handleNewAssignmentInput = () => {
+    setCount(count + 1)
+  }
 
   return (
     <form onSubmit={onSubmit}>
@@ -271,22 +277,6 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
           />
         </div>
       </div>
-      <FormInput
-        id="assignments"
-        type="text"
-        name="assignments"
-        label={
-          <div className="flex items-center justify-between gap-2">
-            Assignments
-            {/* <div className="text-lg cursor-pointer text-neutral-500" onClick={() => }>
-              <MdAddCircle />
-            </div> */}
-          </div>
-        }
-        register={register}
-        errors={errors}
-        // defaultValue={currentLesson?.data?.assignments}
-      />
 
       {/* <Switch.Group as="div" className="flex items-center mb-1">
         <Switch.Label as="span" className="mr-3">

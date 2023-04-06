@@ -55,6 +55,7 @@ export const levelRouter = router({
                 number: true,
                 slidesUrl: true,
                 objective: true,
+                assignments: true,
               },
             },
           },
