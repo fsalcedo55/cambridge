@@ -281,7 +281,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                       {/* <div className="opacity-50">
                         <BiLinkAlt />
                       </div> */}
-                      <div className="p-2 rounded-lg cursor-pointer hover:bg-neutral-50">
+                      <div className="p-2 text-sm rounded-lg cursor-pointer hover:bg-neutral-50">
                         <span className="text-xl font-bold">+</span> Add
                         assignment
                       </div>
@@ -297,7 +297,9 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                           <Link href={assignment.url}>
                             <a target="_blank" rel="noopener noreferrer">
                               <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
-                                <div>{assignment.title}</div>
+                                <div className="font-bold">
+                                  {assignment.title}
+                                </div>
                                 <div className="opacity-50">
                                   <HiArrowTopRightOnSquare />
                                 </div>
