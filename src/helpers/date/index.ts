@@ -1,9 +1,23 @@
-import dayjs from "dayjs"
-
 // Returns age based on birthdate
-export function getAge(birthdate: string, boolean: boolean) {
-  const dayjs = require("dayjs")
-  const relativeTime = require("dayjs/plugin/relativeTime")
-  dayjs.extend(relativeTime)
-  return dayjs().from(dayjs(birthdate), boolean)
+export function getAge(birthdate: string) {
+  if (birthdate) {
+    const birthDateObj = new Date(birthdate)
+    const currentDate = new Date()
+
+    const yearsDiff =
+      currentDate.getUTCFullYear() - birthDateObj.getUTCFullYear()
+    const monthsDiff = currentDate.getUTCMonth() - birthDateObj.getUTCMonth()
+    const daysDiff = currentDate.getUTCDate() - birthDateObj.getUTCDate()
+
+    let calculatedAge = { years: yearsDiff, months: monthsDiff }
+    if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff < 0)) {
+      calculatedAge.years--
+      calculatedAge.months += 12
+    }
+
+    if (calculatedAge.months === 1)
+      return `${calculatedAge.years} years, ${calculatedAge.months} month`
+
+    return `${calculatedAge.years} years, ${calculatedAge.months} months`
+  }
 }

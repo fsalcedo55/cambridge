@@ -46,6 +46,7 @@ export default function AddAssignment({ closeModal, currentLesson }: Props) {
         name="title"
         label="Title"
         register={register}
+        rules={{ required: "You must enter a title." }}
         errors={errors}
       />
       <FormInput
@@ -54,6 +55,7 @@ export default function AddAssignment({ closeModal, currentLesson }: Props) {
         name="url"
         label="URL"
         register={register}
+        rules={{ required: "You must enter a URL." }}
         errors={errors}
       />
       <Button

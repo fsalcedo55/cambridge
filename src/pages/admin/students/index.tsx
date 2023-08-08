@@ -109,7 +109,7 @@ export default function Students() {
         importance: 1,
       },
       {
-        content: `${getAge(student.studentDateOfBirth, true)}`,
+        content: `${getAge(student.studentDateOfBirth)}`,
         importance: 4,
       },
       {

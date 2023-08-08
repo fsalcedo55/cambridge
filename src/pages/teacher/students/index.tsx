@@ -43,7 +43,7 @@ export default function Students({ sessionSSR }: any) {
                 {student.studentFirstName} {student.studentLastName}
               </div>
               <div className="text-sm font-light md:text-md">
-                {getAge(student.studentDateOfBirth, true)}
+                {getAge(student.studentDateOfBirth)}
               </div>
             </div>
             <div className="text-3xl md:text-5xl">

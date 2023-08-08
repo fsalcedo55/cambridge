@@ -243,7 +243,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         id="number"
         type="number"
         name="number"
-        label="Unit Number"
+        label="Lesson Number"
         register={register}
         rules={{ required: "You must enter a number." }}
         errors={errors}

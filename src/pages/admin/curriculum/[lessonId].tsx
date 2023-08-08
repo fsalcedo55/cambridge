@@ -300,9 +300,9 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                                 <div className="font-bold">
                                   {assignment.title}
                                 </div>
-                                <div className="opacity-50">
+                                {/* <div className="opacity-50">
                                   <HiArrowTopRightOnSquare />
-                                </div>
+                                </div> */}
                               </div>
                             </a>
                           </Link>
@@ -313,7 +313,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                               onClick={() => handleEditAssignment(assignment)}
                             >
                               <RiPencilLine />
-                              <span className="text-xs">Edit Assignment</span>
+                              <span className="text-xs">Edit</span>
                             </div>
                             <div
                               className="flex items-center gap-1 p-2 rounded cursor-pointer hover:bg-neutral-100"
@@ -322,7 +322,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                               }
                             >
                               <RiDeleteBinLine />{" "}
-                              <span className="text-xs">Delete Assignment</span>
+                              <span className="text-xs">Delete</span>
                             </div>
                           </div>
                         </div>
