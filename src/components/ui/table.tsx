@@ -5,11 +5,11 @@ interface TableProps {
     label: any
     importance?: number
   }[]
-  rows?: IRows[]
+  rows?: IRows[] | undefined
 }
 
-interface IRows {
-  id?: string
+export interface IRows {
+  id?: string | undefined
   cells:
     | {
         content:
@@ -18,28 +18,19 @@ interface IRows {
           | boolean
           | React.ReactFragment
           | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+          | undefined
         href?: string | undefined
-        icon?: boolean
-        importance?: number
+        icon?: boolean | undefined
+        importance?: number | undefined
       }[]
+    | undefined
 }
 
-const people = [
-  {
-    name: (
-      <div>
-        <div className="font-bold">Lindsay Walton</div>
-        <div>9 years</div>
-      </div>
-    ),
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  // More people...
-]
-
 export default function Table({ rows, headers }: TableProps) {
+  console.log("rows: ", rows)
+  if (rows?.length == 0) {
+    return <div>No Data</div>
+  }
   return (
     <div>
       {/* <div className="sm:flex sm:items-center">

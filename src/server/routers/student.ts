@@ -94,7 +94,7 @@ export const studentRouter = router({
     )
     .mutation(async ({ input }) => {
       const student = await prisma.student.create({
-        data: input,
+        data: { ...input, entitlements: { create: [{ levelId: "56" }] } },
       })
       return student
     }),

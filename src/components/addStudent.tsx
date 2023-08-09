@@ -4,6 +4,7 @@ import Loading from "./ui/loading"
 import * as Yup from "yup"
 import { Button } from "@ui/button"
 import dayjs from "dayjs"
+import { trpc } from "@src/utils/trpc"
 
 interface Values {
   studentFirstName: string
@@ -28,6 +29,7 @@ export default function AddStudent({
 }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const [defaultValueState, setDefaultValueState] = useState("default")
+  const getLevels = trpc.level.getLevelsReduced.useQuery()
 
   const formik = useFormik({
     initialValues: {
@@ -162,6 +164,47 @@ export default function AddStudent({
               {formik.touched.status && formik.errors.status ? (
                 <div className="text-xs text-error">{formik.errors.status}</div>
               ) : null}
+            </div>
+
+            <div className="mb-2">
+              <label className="py-0 label">
+                <span>Entitlements</span>
+              </label>
+              <fieldset>
+                <legend className="sr-only">Plan</legend>
+                <div className="space-y-1">
+                  {getLevels.data?.map((level) => (
+                    <div key={level.id} className="relative flex items-start">
+                      <div className="flex items-center h-6">
+                        <input
+                          id={level.id}
+                          aria-describedby={`${level.id}-description`}
+                          name="level"
+                          type="checkbox"
+                          value={level.id}
+                          // onChange={() => setLevelId([...levelId, level.id])}
+                          // defaultChecked={level.id === "small"}
+                          className="w-4 h-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm leading-6">
+                        <label
+                          htmlFor={level.id}
+                          className="font-medium text-neutral-900"
+                        >
+                          Level {level.number}
+                        </label>{" "}
+                        <span
+                          id={`${level.id}-description`}
+                          className="text-neutral-500"
+                        >
+                          - {level.title}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
             </div>
 
             <Button

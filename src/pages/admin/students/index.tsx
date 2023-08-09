@@ -4,7 +4,7 @@ import AddStudent from "@components/addStudent"
 import { useState } from "react"
 import Loading from "@ui/loading"
 import Modal from "@ui/modal"
-import Table from "@ui/table"
+import Table, { IRows } from "@ui/table"
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
 import { useRouter } from "next/router"
 import Image from "next/image"
@@ -14,6 +14,12 @@ import { Button } from "@ui/button"
 import { getAge } from "@src/helpers/date"
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@src/components/ui/tabs"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -81,101 +87,116 @@ export default function Students() {
   }
 
   // Formatted rows for table cells
-  const formattedRows = students.data?.map((student, idx: number) => ({
-    cells: [
-      {
-        content: (
-          <div>
-            <div className="font-bold md:text-lg text-md">
-              {student.studentFirstName} {student.studentLastName}
-            </div>
-            <div className="text-xs font-light md:text-sm text-neutral-400">
-              {student.lessonPlans.length > 0 ? (
+  const formattedRows = (activeStatus: boolean) => {
+    return students.data?.map((student, idx: number) => {
+      const row: any = {
+        cells: [
+          {
+            content: (
+              <div>
+                <div className="font-bold md:text-lg text-md">
+                  {student.studentFirstName} {student.studentLastName}
+                </div>
+                <div className="text-xs font-light md:text-sm text-neutral-400">
+                  {student.lessonPlans.length > 0 ? (
+                    <div>
+                      <span className="font-bold">
+                        {student.lessonPlans.length}
+                      </span>{" "}
+                      lesson plans
+                    </div>
+                  ) : (
+                    <div className="text-sm font-light text-neutral-200">
+                      0 lesson plans
+                    </div>
+                  )}{" "}
+                </div>
+              </div>
+            ),
+            href: `/admin/students/${student.id}`,
+            importance: 1,
+          },
+          {
+            content: `${getAge(student.studentDateOfBirth)}`,
+            importance: 4,
+          },
+          {
+            content: (
+              <div className="flex items-center space-x-3">
+                <div className="avatar">
+                  <div className="w-6 rounded-full">
+                    {student.teacher?.image ? (
+                      <Image
+                        src={`${student.teacher?.image}`}
+                        width={24}
+                        height={24}
+                        alt={"teacher"}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
                 <div>
-                  <span className="font-bold">
-                    {student.lessonPlans.length}
-                  </span>{" "}
-                  lesson plans
+                  <div>{student.teacher?.name}</div>
                 </div>
-              ) : (
-                <div className="text-sm font-light text-neutral-200">
-                  0 lesson plans
-                </div>
-              )}{" "}
-            </div>
-          </div>
-        ),
-        href: `/admin/students/${student.id}`,
-        importance: 1,
-      },
-      {
-        content: `${getAge(student.studentDateOfBirth)}`,
-        importance: 4,
-      },
-      {
-        content: (
-          <div className="flex items-center space-x-3">
-            <div className="avatar">
-              <div className="w-6 rounded-full">
-                {student.teacher?.image ? (
-                  <Image
-                    src={`${student.teacher?.image}`}
-                    width={24}
-                    height={24}
-                    alt={"teacher"}
-                  />
+              </div>
+            ),
+            importance: 1,
+          },
+
+          {
+            content: (
+              <div>
+                {student.status == "Active" ? (
+                  <span className="inline-flex items-center rounded-full bg-accent-200 px-3 py-0.5 text-sm font-medium text-accent-900">
+                    {student.status}
+                  </span>
                 ) : (
-                  ""
+                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800">
+                    Inactive
+                  </span>
                 )}
               </div>
-            </div>
-            <div>
-              <div>{student.teacher?.name}</div>
-            </div>
-          </div>
-        ),
-        importance: 1,
-      },
-
-      {
-        content: (
-          <div>
-            {student.status == "Active" ? (
-              <span className="inline-flex items-center rounded-full bg-accent-200 px-3 py-0.5 text-sm font-medium text-accent-900">
-                {student.status}
-              </span>
-            ) : (
-              <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800">
-                Inactive
-              </span>
-            )}
-          </div>
-        ),
-        importance: 4,
-      },
-      {
-        content: (
-          <div className="flex gap-2 text-xl text-base-300">
-            <div
-              onClick={() => handleEditModal(student)}
-              className="cursor-pointer hover:text-primary tooltip tooltip-top"
-              data-tip="Edit"
-            >
-              <RiPencilLine />
-            </div>
-            <div
-              onClick={() => handleDeleteModal(student)}
-              className="cursor-pointer hover:text-error tooltip tooltip-error tooltip-top"
-              data-tip="Delete"
-            >
-              <RiDeleteBinLine />
-            </div>
-          </div>
-        ),
-        importance: 4,
-      },
-    ],
-  }))
+            ),
+            importance: 4,
+          },
+          {
+            content: (
+              <div className="flex gap-2 text-xl text-base-300">
+                <div
+                  onClick={() => handleEditModal(student)}
+                  className="cursor-pointer hover:text-primary tooltip tooltip-top"
+                  data-tip="Edit"
+                >
+                  <RiPencilLine />
+                </div>
+                <div
+                  onClick={() => handleDeleteModal(student)}
+                  className="cursor-pointer hover:text-error tooltip tooltip-error tooltip-top"
+                  data-tip="Delete"
+                >
+                  <RiDeleteBinLine />
+                </div>
+              </div>
+            ),
+            importance: 4,
+          },
+        ],
+      }
+      if (activeStatus) {
+        if (student.status == "Active") {
+          return row
+        } else {
+          return []
+        }
+      } else if (activeStatus == false) {
+        if (student.status == "Inactive") {
+          return row
+        } else return []
+      }
+    })
+  }
 
   if (session?.role === "admin") {
     return (
@@ -263,7 +284,21 @@ export default function Students() {
         {students.isLoading ? (
           <Loading />
         ) : (
-          <Table headers={studentTableHeaders} rows={formattedRows} />
+          <Tabs defaultValue="active" className="w-full">
+            <TabsList>
+              <TabsTrigger value="active">Active</TabsTrigger>
+              <TabsTrigger value="inactive">Inactive</TabsTrigger>
+            </TabsList>
+            <TabsContent value="active">
+              <Table headers={studentTableHeaders} rows={formattedRows(true)} />
+            </TabsContent>
+            <TabsContent value="inactive">
+              <Table
+                headers={studentTableHeaders}
+                rows={formattedRows(false)}
+              />
+            </TabsContent>
+          </Tabs>
         )}
       </div>
     )
