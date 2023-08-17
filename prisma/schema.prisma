@@ -157,7 +157,7 @@ model Level {
 
 model Entitlements {
     id        String   @id @unique @default(cuid())
-    Level     Level?   @relation(fields: [levelId], references: [id])
+    Level     Level?   @relation(fields: [levelId], references: [id], onDelete: Cascade)
     levelId   String?
     Student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
     studentId String?

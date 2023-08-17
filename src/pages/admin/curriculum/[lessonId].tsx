@@ -16,13 +16,15 @@ import { HiArrowTopRightOnSquare } from "react-icons/hi2"
 import Link from "next/link"
 import AddAssignment from "@src/components/admin/lessons/AddAssignment"
 import EditAssignment from "@src/components/admin/lessons/EditAssignment"
+import { PublishedStatus } from "@src/components/ui/badges"
 
 interface Props {
   lessonTitle: string
   levels: any
+  admin: boolean
 }
 
-export default function LessonPage({ lessonTitle, levels }: Props) {
+export default function LessonPage({ lessonTitle, levels, admin }: Props) {
   const router = useRouter()
   const { lessonId } = router.query
   const [isOpenDeleteLessonModal, setIsOpenDeleteLessonModal] = useState(false)
@@ -66,6 +68,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
     { enabled: router.isReady }
   )
   const deleteAssignment = trpc.assignment.delete.useMutation()
+  console.log("lesson: ", lesson.data?.published)
 
   const deleteAssignmentEvent = async () => {
     try {
@@ -117,7 +120,7 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
             pages={pages}
             pageTitle={
               <div className="flex justify-between flex-1 min-w-0 space-x-4">
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center gap-4">
                   <Image
                     height={138.24}
                     width={200}
@@ -125,10 +128,19 @@ export default function LessonPage({ lessonTitle, levels }: Props) {
                     src={lesson.data?.photoUrl!}
                     alt=""
                   />
-                  <div className="flex items-center justify-between w-full pr-6">
+                  <div className="flex items-center w-full gap-2">
                     <p className="text-2xl font-bold text-neutral-900">
                       {lesson.data?.title}
                     </p>
+                    <div>
+                      {lesson.data && (
+                        <PublishedStatus
+                          published={lesson.data?.published}
+                          parentPublished={lesson.data?.Unit.published}
+                          draftedBy="Unit"
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="items-center p-4 footer bg-primary-500 text-base-100">
       <div className="items-center grid-flow-col">
         <div className="font-bold">Spanish For Us</div>
-        <p>Copyright © 2022 - All right reserved</p>
+        <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
       </div>
       <div className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
         <a>

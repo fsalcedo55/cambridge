@@ -22,7 +22,11 @@ import Link from "next/link"
 import EditLevel from "@src/components/admin/lessons/EditLevel"
 import EditUnit from "@src/components/admin/lessons/EditUnit"
 import Loading from "@src/components/ui/loading"
-import { TfiRulerPencil } from "react-icons/tfi"
+import {
+  CurrentLesson,
+  LevelPanel,
+  UnitPanel,
+} from "@src/components/curriculum/curriculumNav"
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)
@@ -167,6 +171,159 @@ export default function Curriculum() {
     )
   }
 
+  interface UnitCrudTabsProps {
+    editUnit: () => void
+    numberOfLessons: number
+    deleteUnitDisabled: () => void
+    deleteUnit: () => void
+  }
+
+  function UnitCrudTabs({
+    editUnit,
+    numberOfLessons,
+    deleteUnitDisabled,
+    deleteUnit,
+  }: UnitCrudTabsProps) {
+    const deleteUnitIcon = (
+      <RiDeleteBinLine
+        className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
+        aria-hidden="true"
+      />
+    )
+
+    const editUnitIcon = (
+      <RiPencilLine
+        className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
+        aria-hidden="true"
+      />
+    )
+
+    const tabButton = (
+      handleOnClick: any,
+      icon: any,
+      title: string,
+      editButton: boolean
+    ) => {
+      const tabButtonStyles = () => {
+        if (numberOfLessons > 0) {
+          if (!editButton) {
+            return "relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-danger-500 focus:outline-none focus:ring-1 focus:ring-danger-500 hover:cursor-not-allowed"
+          } else {
+            return "relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+          }
+        } else
+          return "relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      }
+      return (
+        <button
+          onClick={handleOnClick}
+          type="button"
+          className={tabButtonStyles()}
+        >
+          {icon}
+          {title}
+        </button>
+      )
+    }
+    return (
+      <span className="flex justify-end gap-3 pb-3 rounded-md isolate">
+        {tabButton(editUnit, editUnitIcon, "Edit Unit", true)}
+        {numberOfLessons > 0 ? (
+          <div>
+            {tabButton(
+              deleteUnitDisabled,
+              deleteUnitIcon,
+              "Delete Unit",
+              false
+            )}
+          </div>
+        ) : (
+          <div>
+            {tabButton(deleteUnit, deleteUnitIcon, "Delete Unit", false)}
+          </div>
+        )}
+      </span>
+    )
+  }
+
+  function curriculumDisclosure(levelsArray: any, admin: boolean) {
+    return (
+      <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
+        {levelsArray &&
+          levelsArray.map((level: any) => (
+            <div key={level.id} className="relative">
+              {
+                <LevelPanel
+                  levelNumber={level.number}
+                  levelTitle={level.title}
+                  levelPublished={level.published}
+                  levelObj={undefined}
+                  numberOfUnits={level.Unit.length}
+                  levelId={level.id}
+                  editLevelModal={() => handleEditLevelModal(level)}
+                  setStateOpenDisabledDeleteLevelModal={() =>
+                    setIsOpenDisabledDeleteLevelModal(true)
+                  }
+                  deleteLevelModal={() => handleDeleteLevelModal(level.id)}
+                  admin={admin}
+                />
+              }
+              <ul
+                role="list"
+                className="relative z-0 divide-y divide-neutral-200"
+              >
+                {level.Unit.map((currentUnit: any) => (
+                  <li
+                    key={currentUnit.id}
+                    className="bg-white hover:bg-neutral-50"
+                  >
+                    <Disclosure>
+                      <Disclosure.Button
+                        as="div"
+                        className="flex items-center justify-between pr-6 cursor-pointer"
+                      >
+                        {
+                          <UnitPanel
+                            imageUrl={currentUnit.photoUrl}
+                            title={currentUnit.title}
+                            levelPublished={level.published}
+                            unitPublished={currentUnit.published}
+                            unitNumber={currentUnit.number}
+                            numberOfLessons={currentUnit.Lesson.length}
+                            admin={admin}
+                          />
+                        }
+                      </Disclosure.Button>
+                      <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
+                        {admin && (
+                          <UnitCrudTabs
+                            editUnit={() => handleEditUnitModal(currentUnit)}
+                            numberOfLessons={currentUnit.Lesson.length}
+                            deleteUnitDisabled={() =>
+                              setIsOpenDisabledDeleteUnitModal(true)
+                            }
+                            deleteUnit={() =>
+                              handleDeleteUnitModal(currentUnit.id)
+                            }
+                          />
+                        )}
+                        {!admin && <div className="h-4"></div>}
+                        <CurrentLesson
+                          lessonList={currentUnit?.Lesson}
+                          admin={admin}
+                          unitPublished={currentUnit.published}
+                        />
+                      </Disclosure.Panel>
+                    </Disclosure>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+      </nav>
+    )
+  }
+
   return (
     <Layout>
       <div className="flex items-center justify-between">
@@ -175,255 +332,11 @@ export default function Curriculum() {
           {addLevelBtn} {addUnitBtn} {addLessonBtn}
         </div>
       </div>
-      <div className="z-50">
-        <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
-          {levels &&
-            levels?.data?.map((level) => (
-              <div key={level.id} className="relative">
-                <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-1 text-sm font-medium border-t border-b text-neutral-500 border-neutral-200 bg-primary-50">
-                  <div className="flex gap-2">
-                    <h3 className="text-xl font-bold text-primary-800">
-                      {level.number}. {level.title}
-                    </h3>
-                    {level.published ? (
-                      <span className="inline-flex items-center rounded-full bg-accent-100 px-2 py-0.5 text-xs font-medium text-accent-800 border border-accent-900 gap-2">
-                        <BsCheckLg />
-                        Published
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 border border-neutral-900 gap-1">
-                        <MdUnpublished />
-                        Draft
-                      </span>
-                    )}
-                  </div>
-                  <span className="inline-flex rounded-md shadow-sm isolate">
-                    <button
-                      onClick={() => handleEditLevelModal(level)}
-                      type="button"
-                      className="relative inline-flex items-center px-4 py-2 text-sm font-medium bg-white border rounded-l-full text-neutral-700 border-neutral-300 hover:bg-neutral-50 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                    >
-                      <RiPencilLine
-                        className="w-5 h-5 mr-2 -ml-1 text-neutral-400"
-                        aria-hidden="true"
-                      />
-                      Edit
-                    </button>
-                    {level.Unit.length > 0 ? (
-                      <button
-                        onClick={() => setIsOpenDisabledDeleteLevelModal(true)}
-                        type="button"
-                        className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white border rounded-r-full hover:cursor-not-allowed text-neutral-700 border-neutral-300 focus:z-10 focus:border-danger-500 focus:outline-none focus:ring-1 focus:ring-danger-500"
-                      >
-                        <RiDeleteBinLine
-                          className="w-5 h-5 mr-2 -ml-1 text-neutral-400"
-                          aria-hidden="true"
-                        />
-                        Delete
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleDeleteLevelModal(level.id)}
-                        type="button"
-                        className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white border rounded-r-full text-neutral-700 border-neutral-300 hover:bg-neutral-50 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                      >
-                        <RiDeleteBinLine
-                          className="w-5 h-5 mr-2 -ml-1 text-neutral-400"
-                          aria-hidden="true"
-                        />
-                        Delete
-                      </button>
-                    )}
-                  </span>
-                </div>
-                <ul
-                  role="list"
-                  className="relative z-0 divide-y divide-neutral-200"
-                >
-                  {level.Unit.map((currentUnit: any) => (
-                    <li
-                      key={currentUnit.id}
-                      className="bg-white hover:bg-neutral-50"
-                    >
-                      <Disclosure>
-                        <Disclosure.Button
-                          as="div"
-                          className="flex items-center justify-between pr-6 cursor-pointer"
-                        >
-                          <div className="relative flex items-center px-6 py-2 space-x-3 ">
-                            <Image
-                              height={120}
-                              width={175}
-                              src={currentUnit.photoUrl}
-                              alt=""
-                              className="rounded-lg"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <div
-                                onClick={() => console.log(currentUnit.id)}
-                                className="flex gap-2"
-                              >
-                                <p className="text-2xl font-bold md:text-2xl text-primary-800">
-                                  {currentUnit.title}
-                                </p>
-                                {level.published == false ? (
-                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 border border-neutral-900 gap-1">
-                                    <MdUnpublished />
-                                    Drafted by the Level
-                                  </span>
-                                ) : currentUnit.published ? (
-                                  <span className="inline-flex items-center rounded-full bg-accent-100 px-2 py-0.5 text-xs font-medium text-accent-800 border border-accent-900 gap-2">
-                                    <BsCheckLg />
-                                    Published
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 border border-neutral-900 gap-1">
-                                    <MdUnpublished />
-                                    Draft
-                                  </span>
-                                )}
-                              </div>
-                              <p className="font-bold truncate text-neutral-500">
-                                Unit {currentUnit.number}
-                              </p>
-                              <div className="flex items-center gap-1 text-sm truncate text-neutral-500">
-                                <SiBookstack />
-                                <span>{currentUnit.Lesson.length} Lessons</span>
-                              </div>
-                            </div>
-                          </div>
-                        </Disclosure.Button>
-                        <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
-                          <span className="flex justify-end gap-3 pb-3 rounded-md isolate">
-                            <button
-                              onClick={() => handleEditUnitModal(currentUnit)}
-                              type="button"
-                              className="relative inline-flex items-center px-4 py-2 text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                            >
-                              <RiPencilLine
-                                className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
-                                aria-hidden="true"
-                              />
-                              Edit Unit
-                            </button>
-
-                            {currentUnit.Lesson.length > 0 ? (
-                              <button
-                                onClick={() =>
-                                  setIsOpenDisabledDeleteUnitModal(true)
-                                }
-                                type="button"
-                                className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-danger-500 focus:outline-none focus:ring-1 focus:ring-danger-500 hover:cursor-not-allowed"
-                              >
-                                <RiDeleteBinLine
-                                  className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
-                                  aria-hidden="true"
-                                />
-                                Delete Unit
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  handleDeleteUnitModal(currentUnit.id)
-                                }
-                                type="button"
-                                className="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium bg-white hover:bg-neutral-50 rounded-b-xl text-neutral-700 focus:z-10 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                              >
-                                <RiDeleteBinLine
-                                  className="w-5 h-5 mr-1 -ml-1 text-neutral-400"
-                                  aria-hidden="true"
-                                />
-                                Delete Unit
-                              </button>
-                            )}
-                          </span>
-                          {/* ***** Current Lesson ***** */}
-                          <div className="flex flex-col gap-3">
-                            <div className="flow-root">
-                              <ul role="list" className="-mb-8">
-                                {currentUnit?.Lesson?.map(
-                                  (lesson: any, lessonIdx: number) => (
-                                    <li key={lesson.id}>
-                                      <div className="relative pb-8">
-                                        {lessonIdx !==
-                                        currentUnit?.Lesson?.length - 1 ? (
-                                          <span
-                                            className="absolute top-12 left-6 -ml-px h-24 w-0.5 bg-primary-600"
-                                            aria-hidden="true"
-                                          />
-                                        ) : null}
-                                        <div className="relative flex items-center space-x-3">
-                                          <div>
-                                            <span className="inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100">
-                                              {lesson.number}
-                                            </span>
-                                          </div>
-                                          <Link
-                                            href={`/admin/curriculum/${lesson.id}`}
-                                          >
-                                            <div className="flex justify-between flex-1 min-w-0 space-x-4">
-                                              <div className="flex items-center min-w-full space-x-3 bg-white border-2 border-opacity-0 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-primary-500 hover:shadow-lg hover:cursor-pointer">
-                                                <Image
-                                                  height={80}
-                                                  width={125}
-                                                  className="rounded-l"
-                                                  src={lesson.photoUrl}
-                                                  alt=""
-                                                />
-                                                <div className="flex items-center justify-between w-full pr-6">
-                                                  <div className="flex-1 min-w-0">
-                                                    <p className="text-lg font-bold text-neutral-900">
-                                                      {lesson.title}
-                                                    </p>
-                                                  </div>
-                                                  <div className="flex gap-2">
-                                                    {lesson.slidesUrl ? (
-                                                      <div className="flex flex-col items-center w-16 text-4xl opacity-80">
-                                                        <RiSlideshowLine />
-                                                        <div className="text-xs">
-                                                          Slides
-                                                        </div>
-                                                      </div>
-                                                    ) : null}
-                                                    {lesson.objective ? (
-                                                      <div className="flex flex-col items-center w-16 text-4xl opacity-80">
-                                                        <MdDescription />
-                                                        <div className="text-xs">
-                                                          Objective
-                                                        </div>
-                                                      </div>
-                                                    ) : null}
-                                                    {lesson.assignments.length >
-                                                    0 ? (
-                                                      <div className="flex flex-col items-center w-16 text-4xl opacity-80">
-                                                        <RiPencilRulerLine />
-                                                        <div className="text-xs">
-                                                          Assignments
-                                                        </div>
-                                                      </div>
-                                                    ) : null}
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </Link>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  )
-                                )}
-                              </ul>
-                            </div>
-                          </div>
-                        </Disclosure.Panel>
-                      </Disclosure>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-        </nav>
-      </div>
+      <div className="z-50">{curriculumDisclosure(levels.data, true)}</div>
+      {/* <CurriculumNav
+        levelsArray={levels.data}
+        handleEditLevelModal={handleEditLevelModal}
+      /> */}
       {/* Delete Level Modal */}
       <Modal
         isOpen={isOpenDeleteLevelModal}

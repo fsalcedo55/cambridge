@@ -3,7 +3,7 @@ import { FormInput } from "@src/components/ui/form/form-input"
 import { Button } from "./ui/button"
 import { trpc } from "@src/utils/trpc"
 import { IStudent } from "@src/interfaces"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export type FormFields = {
   firstName: string
@@ -24,7 +24,9 @@ export default function EditStudentForm({
   teachers,
   closeModal,
 }: Props) {
-  const [levelId, setLevelId] = useState<string[]>([])
+  const [levelId, setLevelId] = useState<string[]>(
+    getExistingLevelIds().length > 0 ? getExistingLevelIds() : []
+  )
   const editStudent = trpc.student.editStudent.useMutation()
   const {
     register,
@@ -34,7 +36,29 @@ export default function EditStudentForm({
 
   const getLevels = trpc.level.getLevelsReduced.useQuery()
 
-  console.log("getLevels: ", getLevels.data)
+  console.log("currentstudent entitlements: ", currentStudent.entitlements)
+
+  function getExistingLevelIds() {
+    const newArray: string[] = []
+    currentStudent.entitlements.map((entitlement: any) => {
+      if (newArray.includes(entitlement.Level.id) == false) {
+        newArray.push(entitlement.Level.id)
+      }
+    })
+    return newArray
+  }
+
+  const handleCheckboxChange = (levelIdToAdd: any) => {
+    if (levelId.includes(levelIdToAdd)) {
+      // Remove the level id if it already exists in the array
+      setLevelId(levelId.filter((id) => id !== levelIdToAdd))
+    } else {
+      // Add the level id if it doesn't exist in the array
+      setLevelId([...levelId, levelIdToAdd])
+    }
+  }
+
+  console.log("levelId: ", levelId)
 
   const levels = [
     {
@@ -63,6 +87,8 @@ export default function EditStudentForm({
         userId: data.teacher,
         status: data.status,
         id: currentStudent.id as string,
+        levelId: levelId,
+        existingLevelIds: getExistingLevelIds(),
       })
     } catch (error) {
       console.log("Error editing student", error)
@@ -103,7 +129,7 @@ export default function EditStudentForm({
         defaultValue={currentStudent.studentDateOfBirth}
       />
 
-      <div className="mb-2">
+      <div className="mb-4">
         <label className="py-0 label">
           <span className="label-text">Teacher</span>
         </label>
@@ -122,7 +148,7 @@ export default function EditStudentForm({
         </select>
       </div>
 
-      <div className="mb-2">
+      <div className="mb-4">
         <label className="py-0 label">
           <span className="label-text">Status</span>
         </label>
@@ -137,14 +163,13 @@ export default function EditStudentForm({
           <option value="Inactive">Inactive</option>
         </select>
       </div>
-      <div className="mb-2">
+      <div className="mb-4">
         <label className="py-0 label">
-          <span className="label-text">Entitlements</span>
+          <span className="label-text">Levels Assigned</span>
         </label>
         <fieldset>
-          <legend className="sr-only">Plan</legend>
           <div className="space-y-1">
-            {getLevels.data?.map((level) => (
+            {getLevels.data?.map((level, index) => (
               <div key={level.id} className="relative flex items-start">
                 <div className="flex items-center h-6">
                   <input
@@ -152,9 +177,13 @@ export default function EditStudentForm({
                     aria-describedby={`${level.id}-description`}
                     name="level"
                     type="checkbox"
-                    value={level.id}
-                    onChange={() => setLevelId([...levelId, level.id])}
-                    // defaultChecked={level.id === "small"}
+                    value={
+                      getExistingLevelIds().length > 0 && levelId.length == 0
+                        ? getExistingLevelIds()
+                        : levelId
+                    }
+                    onChange={() => handleCheckboxChange(level.id)}
+                    defaultChecked={getExistingLevelIds().includes(level.id)}
                     className="w-4 h-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
                   />
                 </div>

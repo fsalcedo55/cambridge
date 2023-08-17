@@ -43,6 +43,7 @@ export const lessonRouter = router({
             select: {
               title: true,
               number: true,
+              published: true,
               id: true,
               Level: {
                 select: {

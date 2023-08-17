@@ -278,7 +278,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         </div>
       </div>
 
-      {/* <Switch.Group as="div" className="flex items-center mb-1">
+      <Switch.Group as="div" className="flex items-center mb-1">
         <Switch.Label as="span" className="mr-3">
           <span className="text-sm font-medium text-gray-900">
             Publish Lesson
@@ -306,7 +306,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
             </button>
           )}
         </Switch>
-      </Switch.Group> */}
+      </Switch.Group>
 
       <Button
         type="submit"

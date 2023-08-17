@@ -13,6 +13,7 @@ export interface IStudent {
   userId: string
   id: string
   status: string
+  entitlements: any
   teacher: {
     id: string
     name: string

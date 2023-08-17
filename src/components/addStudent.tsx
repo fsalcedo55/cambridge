@@ -12,6 +12,7 @@ interface Values {
   studentDateOfBirth: string
   teacher: any
   status: string
+  levelId: string[]
 }
 
 interface Props {
@@ -29,7 +30,20 @@ export default function AddStudent({
 }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const [defaultValueState, setDefaultValueState] = useState("default")
+  const [levelId, setLevelId] = useState<string[]>([])
   const getLevels = trpc.level.getLevelsReduced.useQuery()
+
+  console.log("levelid: ", levelId)
+
+  const handleLevelCheckboxChange = (e: any) => {
+    const value = e.target.value
+
+    if (e.target.checked) {
+      setLevelId([...levelId, value])
+    } else {
+      setLevelId((prevLevels) => prevLevels.filter((level) => level !== value))
+    }
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -38,6 +52,7 @@ export default function AddStudent({
       studentDateOfBirth: "",
       teacher: "",
       status: "",
+      levelId: [] as string[],
     },
     validationSchema: Yup.object({
       studentFirstName: Yup.string()
@@ -49,10 +64,12 @@ export default function AddStudent({
       studentDateOfBirth: Yup.string().required("Required"),
       teacher: Yup.string().required("Required"),
       status: Yup.string().required("Required"),
+      levelId: Yup.array(Yup.string()),
     }),
-    onSubmit: (values, actions) => {
+    onSubmit: async (values, actions) => {
+      values.levelId = levelId
       console.log("values", values)
-      handleSubmit(values)
+      await handleSubmit(values)
     },
   })
 
@@ -168,7 +185,7 @@ export default function AddStudent({
 
             <div className="mb-2">
               <label className="py-0 label">
-                <span>Entitlements</span>
+                <span>Assign Levels</span>
               </label>
               <fieldset>
                 <legend className="sr-only">Plan</legend>
@@ -177,12 +194,13 @@ export default function AddStudent({
                     <div key={level.id} className="relative flex items-start">
                       <div className="flex items-center h-6">
                         <input
+                          checked={levelId.includes(level.id)}
                           id={level.id}
                           aria-describedby={`${level.id}-description`}
                           name="level"
                           type="checkbox"
                           value={level.id}
-                          // onChange={() => setLevelId([...levelId, level.id])}
+                          onChange={handleLevelCheckboxChange}
                           // defaultChecked={level.id === "small"}
                           className="w-4 h-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
                         />

@@ -37,6 +37,7 @@ const studentTableHeaders = [
   { label: "Name", importance: 1 },
   { label: "Age", importance: 4 },
   { label: "Teacher", importance: 1 },
+  { label: "Levels Assigned", importance: 1 },
   { label: "Status", importance: 4 },
   { label: "Actions", importance: 4 },
 ]
@@ -62,6 +63,7 @@ export default function Students() {
         studentDateOfBirth: values.studentDateOfBirth,
         userId: values.teacher,
         status: values.status,
+        levelId: values.levelId,
       })
     } catch (error) {
       console.log("Error adding new student to the database.")
@@ -140,6 +142,32 @@ export default function Students() {
                 <div>
                   <div>{student.teacher?.name}</div>
                 </div>
+              </div>
+            ),
+            importance: 1,
+          },
+          {
+            content: (
+              <div className="flex flex-col">
+                {student.entitlements.length > 0 ? (
+                  student.entitlements
+                    .slice()
+                    .sort(
+                      (a, b) => (a.Level?.number || 0) - (b.Level?.number || 0)
+                    )
+                    .map((level) => {
+                      return (
+                        <div key={level.id}>
+                          <span className="font-bold">
+                            Level {level.Level?.number}
+                          </span>{" "}
+                          - {level.Level?.title}
+                        </div>
+                      )
+                    })
+                ) : (
+                  <div>No Levels Assigned</div>
+                )}
               </div>
             ),
             importance: 1,
@@ -284,7 +312,7 @@ export default function Students() {
         {students.isLoading ? (
           <Loading />
         ) : (
-          <Tabs defaultValue="active" className="w-full">
+          <Tabs defaultValue="active" className="w-full mt-6">
             <TabsList>
               <TabsTrigger value="active">Active</TabsTrigger>
               <TabsTrigger value="inactive">Inactive</TabsTrigger>

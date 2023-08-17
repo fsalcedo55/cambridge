@@ -56,6 +56,7 @@ export const levelRouter = router({
                 slidesUrl: true,
                 objective: true,
                 assignments: true,
+                published: true,
               },
             },
           },
@@ -80,6 +81,55 @@ export const levelRouter = router({
       },
     })
   }),
+  byId: publicProcedure
+    .input(z.object({ id: z.array(z.string()) }))
+    .query(({ input }) => {
+      return prisma.level.findMany({
+        orderBy: {
+          number: "asc",
+        },
+        where: { id: { in: input.id } },
+        select: {
+          id: true,
+          title: true,
+          published: true,
+          number: true,
+          Unit: {
+            orderBy: {
+              number: "asc",
+            },
+            select: {
+              photoUrl: true,
+              title: true,
+              number: true,
+              id: true,
+              published: true,
+              Level: {
+                select: {
+                  title: true,
+                  id: true,
+                },
+              },
+              Lesson: {
+                orderBy: {
+                  number: "asc",
+                },
+                select: {
+                  title: true,
+                  id: true,
+                  photoUrl: true,
+                  number: true,
+                  slidesUrl: true,
+                  objective: true,
+                  assignments: true,
+                  published: true,
+                },
+              },
+            },
+          },
+        },
+      })
+    }),
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {

@@ -27,7 +27,6 @@ export interface IRows {
 }
 
 export default function Table({ rows, headers }: TableProps) {
-  console.log("rows: ", rows)
   if (rows?.length == 0) {
     return <div>No Data</div>
   }
@@ -50,7 +49,7 @@ export default function Table({ rows, headers }: TableProps) {
           </button>
         </div>
       </div> */}
-      <div className="mt-8 -mx-4 overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg">
+      <div className="mt-2 -mx-4 overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg">
         <table className="min-w-full divide-y divide-neutral-300">
           <thead className="bg-neutral-100">
             <tr>
