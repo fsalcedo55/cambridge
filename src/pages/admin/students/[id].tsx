@@ -49,6 +49,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     useState(false)
   const [commentId, setCommentId] = useState<string>()
   const [levelIds, setLevelIds] = useState<string[]>([])
+  const [assignedLevels, setAssignedLevels] = useState<any>([])
   const lessonId = useRef("")
   const currentLessonPlan = useRef({})
   const student = trpc.student.byId.useQuery(
@@ -63,20 +64,44 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     },
     { enabled: levelIds.length > 0 }
   )
+  const studentEntitlements = trpc.student.getEntitlementsByStudentId.useQuery(
+    {
+      id: id as string,
+    },
+    { enabled: router.isReady }
+  )
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
   const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
 
-  useEffect(() => {
-    if (student.data?.entitlements) {
-      const newLevelsArray = student.data.entitlements.map(
-        (entitlement) => entitlement.Level?.id!
-      )
-      const uniqueLevels = Array.from(new Set([...levelIds, ...newLevelsArray]))
-      setLevelIds(uniqueLevels)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [student.data?.entitlements])
+  console.log("assignedLevels: ", assignedLevels)
+  console.log("studentEntitlements: ", studentEntitlements?.data)
+  console.log("student: ", student.data?.entitlements)
+
+  // useEffect(() => {
+  //   if (student.data?.entitlements) {
+  //     student.data?.entitlements.forEach((level) => {
+  //       // Check if the level already exists in the assignedLevels array
+  //       // const levelExists = assignedLevels.some(
+  //       //   (existingLevel: { id: string }) => existingLevel.id === level.id
+  //       // )
+
+  //       // If the level doesn't exist, add it to the assignedLevels array
+  //       // if (!levelExists)
+  //       setAssignedLevels(() => [
+  //         // ...prevAssignedLevels,
+  //         level.Level,
+  //       ])
+  //       // }
+  //     })
+  //     const newLevelsArray = student.data.entitlements.map(
+  //       (entitlement) => entitlement.Level?.id!
+  //     )
+  //     const uniqueLevels = Array.from(new Set([...levelIds, ...newLevelsArray]))
+  //     setLevelIds(uniqueLevels)
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [student.data?.entitlements])
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -157,8 +182,12 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     <div>
       <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
         <div>
-          {levelsById.data && (
-            <CurriculumDisclosure levelsArray={levelsById.data} admin={false} />
+          {studentEntitlements?.data && (
+            <CurriculumDisclosure
+              levelsArray={studentEntitlements?.data}
+              admin={false}
+            />
+            // <CurriculumDisclosure levelsArray={levelsById.data} admin={false} />
           )}
         </div>
       </nav>

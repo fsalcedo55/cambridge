@@ -84,14 +84,132 @@ export function CurriculumDisclosure({
     )
   }
 
+  interface LevelMapProps {
+    levelId: string
+    levelNumber: number
+    levelTitle: string
+    levelPublished: boolean
+    numberOfUnits: number
+    publishedUnitsArray: []
+    unitsArray: []
+  }
+
+  function LevelMap({
+    levelId,
+    levelNumber,
+    levelTitle,
+    levelPublished,
+    numberOfUnits,
+    publishedUnitsArray,
+    unitsArray,
+  }: LevelMapProps) {
+    return (
+      <div key={levelId} className="relative">
+        {
+          <LevelPanel
+            levelNumber={levelNumber}
+            levelTitle={levelTitle}
+            levelPublished={levelPublished}
+            levelObj={undefined}
+            admin={admin}
+            numberOfUnits={numberOfUnits}
+            levelId={levelId}
+          />
+        }
+        <ul role="list" className="relative z-0 divide-y divide-neutral-200">
+          {!admin &&
+            publishedUnitsArray.map((currentUnit: any) => {
+              const publishedLessons = currentUnit.Lesson.filter(
+                (item: any) => item.published
+              )
+              return (
+                <div key={currentUnit.id}>
+                  <UnitMap
+                    unitPhoto={currentUnit.photoUrl}
+                    unitTitle={currentUnit.title}
+                    unitPublished={currentUnit.published}
+                    unitNumber={currentUnit.number}
+                    unitNumberOfLessons={publishedLessons.length}
+                    levelPublished={levelPublished}
+                    currentLessonList={currentUnit?.Lesson}
+                  />
+                </div>
+              )
+            })}
+
+          {admin &&
+            unitsArray?.map((currentUnit: any) => {
+              const publishedLessons = currentUnit.Lesson.filter(
+                (item: any) => item.published
+              )
+              return (
+                <div key={currentUnit.id}>
+                  <UnitMap
+                    unitPhoto={currentUnit.photoUrl}
+                    unitTitle={currentUnit.title}
+                    unitPublished={currentUnit.published}
+                    unitNumber={currentUnit.number}
+                    unitNumberOfLessons={currentUnit.Lesson.length}
+                    levelPublished={levelPublished}
+                    currentLessonList={currentUnit?.Lesson}
+                  />
+                </div>
+              )
+            })}
+        </ul>
+      </div>
+    )
+  }
+
+  const publishedLevels = levelsArray.filter((level: any) => level.published)
+
   return (
     <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
-      {levelsArray &&
+      {!admin &&
+        levelsArray &&
+        publishedLevels.map((level: any) => {
+          const publishedUnits = level.Unit.filter(
+            (uniqueUnit: any) => uniqueUnit.published
+          )
+          return (
+            <div key={level.id}>
+              <LevelMap
+                levelId={level.id}
+                levelNumber={level.number}
+                levelTitle={level.title}
+                levelPublished={level.published}
+                numberOfUnits={level.Unit?.length}
+                publishedUnitsArray={publishedUnits}
+                unitsArray={level.Unit}
+              />
+            </div>
+          )
+        })}
+      {admin &&
+        levelsArray &&
+        levelsArray.levels.map((level: any) => {
+          const publishedUnits = level.Unit.filter(
+            (uniqueUnit: any) => uniqueUnit.published
+          )
+          return (
+            <div key={level.id}>
+              <LevelMap
+                levelId={level.id}
+                levelNumber={level.number}
+                levelTitle={level.title}
+                levelPublished={level.published}
+                numberOfUnits={level.Unit?.length}
+                publishedUnitsArray={publishedUnits}
+                unitsArray={level.Unit}
+              />
+            </div>
+          )
+        })}
+      {/* {levelsArray &&
         levelsArray.map((level: any) => {
           const publishedUnits = level.Unit.filter(
             (uniqueUnit: any) => uniqueUnit.published
           )
-          console.log("publishedUnits: ", publishedUnits)
           return (
             <div key={level.id} className="relative">
               {
@@ -151,7 +269,7 @@ export function CurriculumDisclosure({
               </ul>
             </div>
           )
-        })}
+        })} */}
     </nav>
   )
 }

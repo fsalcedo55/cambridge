@@ -81,7 +81,40 @@ export const studentRouter = router({
                   id: true,
                   title: true,
                   number: true,
-                  Unit: true,
+                  Unit: {
+                    orderBy: {
+                      number: "asc",
+                    },
+                    select: {
+                      photoUrl: true,
+                      title: true,
+                      number: true,
+                      id: true,
+                      published: true,
+                      Level: {
+                        select: {
+                          title: true,
+                          id: true,
+                        },
+                      },
+                      Lesson: {
+                        orderBy: {
+                          number: "asc",
+                        },
+                        select: {
+                          title: true,
+                          id: true,
+                          photoUrl: true,
+                          number: true,
+                          slidesUrl: true,
+                          objective: true,
+                          assignments: true,
+                          published: true,
+                        },
+                      },
+                    },
+                  },
+                  published: true,
                 },
               },
             },
@@ -209,74 +242,62 @@ export const studentRouter = router({
         })
       )
 
-      console.log("levelIdsToAdd: ", levelIdsToAdd)
-      console.log("levelIdsToRemove: ", levelIdsToRemove)
-
       return student
     }),
+  getEntitlementsByStudentId: publicProcedure
+    .input(
+      z.object({
+        id: z.string().nullable(),
+      })
+    )
+    .query(async ({ input }) => {
+      const entitlements = await prisma.entitlements.findMany({
+        where: { studentId: input.id },
+        select: {
+          id: true,
+          Level: {
+            select: {
+              id: true,
+              title: true,
+              number: true,
+              Unit: {
+                orderBy: {
+                  number: "asc",
+                },
+                select: {
+                  photoUrl: true,
+                  title: true,
+                  number: true,
+                  id: true,
+                  published: true,
+                  Level: {
+                    select: {
+                      title: true,
+                      id: true,
+                    },
+                  },
+                  Lesson: {
+                    orderBy: {
+                      number: "asc",
+                    },
+                    select: {
+                      title: true,
+                      id: true,
+                      photoUrl: true,
+                      number: true,
+                      slidesUrl: true,
+                      objective: true,
+                      assignments: true,
+                      published: true,
+                    },
+                  },
+                },
+              },
+              published: true,
+            },
+          },
+        },
+      })
+      return entitlements.map((entitlement: any) => entitlement.Level)
+    }),
 })
-
-// editStudent: publicProcedure
-//     .input(
-//       z.object({
-//         studentFirstName: z.string(),
-//         studentLastName: z.string(),
-//         studentDateOfBirth: z.string(),
-//         userId: z.string(),
-//         id: z.string(),
-//         status: z.string(),
-//         levelId: z.array(z.string()),
-//         existingLevelIds: z.array(z.string()),
-//       })
-//     )
-//     .mutation(async ({ input }) => {
-//       console.log("existinglevelids: ", input.existingLevelIds)
-//       console.log("levelId: ", input.levelId)
-//       const student = await prisma.student.update({
-//         where: { id: input.id },
-//         data: {
-//           studentFirstName: input.studentFirstName,
-//           studentLastName: input.studentLastName,
-//           studentDateOfBirth: input.studentDateOfBirth,
-//           userId: input.userId,
-//           id: input.id,
-//           status: input.status,
-//         },
-//       })
-
-//       // Get existing entitlements
-//       const existingEntitlements = await prisma.entitlements.findMany({
-//         where: { studentId: input.id },
-//       })
-
-//       // Compare the existing entitlements and updated entitlements
-//       const levelIdsToAdd = input.levelId.filter(
-//         (levelId) => !input.existingLevelIds.includes(levelId)
-//       )
-//       const levelIdsToRemove = existingEntitlements.filter(
-//         (entitlement) => !input.levelId.includes(entitlement.levelId)
-//       )
-
-//       // Add new entitlements
-//       await Promise.all(
-//         levelIdsToAdd.map(async (levelId) => {
-//           await prisma.entitlements.create({
-//             data: {
-//               Student: { connect: { id: student.id } },
-//               Level: { connect: { id: levelId } },
-//             },
-//           })
-//         })
-//       )
-
-//       // Remove old entitlements
-//       await Promise.all(
-//         levelIdsToRemove.map(async (entitlement) => {
-//           await prisma.entitlements.delete({
-//             where: { id: entitlement.id },
-//           })
-//         })
-//       )
-
-//       return student;
-//     }),
