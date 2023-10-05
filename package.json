@@ -16,10 +16,8 @@
     "@knocklabs/node": "^0.4.14",
     "@knocklabs/react-notification-feed": "^0.8.2",
     "@next-auth/prisma-adapter": "^1.0.5",
-    "@novu/notification-center": "^0.9.2",
     "@prisma/client": "^4.8.0",
     "@radix-ui/react-tabs": "^1.0.3",
-    "@react-aria/datepicker": "^3.2.0",
     "@tanstack/react-query": "^4.15.0",
     "@trpc/client": "^10.0.0-rc.5",
     "@trpc/next": "^10.0.0-rc.5",
@@ -48,7 +46,6 @@
     "react-query": "^3.39.2",
     "superjson": "^1.11.0",
     "tailwind-merge": "^1.12.0",
-    "tailwindcss-animate": "^1.0.5",
     "typescript": "4.8.4",
     "yup": "^0.32.11",
     "zod": "^3.19.1"
