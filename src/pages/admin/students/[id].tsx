@@ -17,7 +17,7 @@ import AddLessonPlanCommentInput from "@components/addLessonPlanCommentInput"
 import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { ILessonPlan } from "@src/interfaces/index"
-import { CurriculumDisclosure } from "@src/components/curriculum/curriculumNav"
+import { CurriculumDisclosure } from "@src/components/curriculum/curriculumDisclosure"
 import Breadcrumbs from "@src/components/ui/breadcrumbs"
 
 type Student = {
@@ -73,35 +73,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
   const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
-
-  console.log("assignedLevels: ", assignedLevels)
-  console.log("studentEntitlements: ", studentEntitlements?.data)
-  console.log("student: ", student.data?.entitlements)
-
-  // useEffect(() => {
-  //   if (student.data?.entitlements) {
-  //     student.data?.entitlements.forEach((level) => {
-  //       // Check if the level already exists in the assignedLevels array
-  //       // const levelExists = assignedLevels.some(
-  //       //   (existingLevel: { id: string }) => existingLevel.id === level.id
-  //       // )
-
-  //       // If the level doesn't exist, add it to the assignedLevels array
-  //       // if (!levelExists)
-  //       setAssignedLevels(() => [
-  //         // ...prevAssignedLevels,
-  //         level.Level,
-  //       ])
-  //       // }
-  //     })
-  //     const newLevelsArray = student.data.entitlements.map(
-  //       (entitlement) => entitlement.Level?.id!
-  //     )
-  //     const uniqueLevels = Array.from(new Set([...levelIds, ...newLevelsArray]))
-  //     setLevelIds(uniqueLevels)
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [student.data?.entitlements])
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -176,8 +147,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     },
   ]
 
-  console.log("levels by id data: ", levelsById.data)
-
   const tabPanel = (
     <div>
       <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
@@ -185,9 +154,9 @@ export default function AdminStudentPage({ sessionSSR }: any) {
           {studentEntitlements?.data && (
             <CurriculumDisclosure
               levelsArray={studentEntitlements?.data}
+              studentId={student.data?.id}
               admin={false}
             />
-            // <CurriculumDisclosure levelsArray={levelsById.data} admin={false} />
           )}
         </div>
       </nav>

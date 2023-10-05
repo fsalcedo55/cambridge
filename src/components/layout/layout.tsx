@@ -143,7 +143,7 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ")
 }
 
-export default function Example({ children }: Props) {
+export default function Layout({ children }: Props) {
   const [isVisible, setIsVisible] = useState(false)
   const notifButtonRef = useRef(null)
   const router = useRouter()
@@ -264,7 +264,6 @@ export default function Example({ children }: Props) {
             </div>
           </Dialog>
         </Transition.Root>
-
         <div className="flex flex-col flex-1">
           {/* ======== Navbar ======== */}
           <div className="fixed top-0 z-10 flex flex-shrink-0 w-screen h-16 bg-white shadow">

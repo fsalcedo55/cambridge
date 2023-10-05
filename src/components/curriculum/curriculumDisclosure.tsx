@@ -1,6 +1,5 @@
 import { Disclosure } from "@headlessui/react"
-import { BsCheckLg } from "react-icons/bs"
-import { MdDescription, MdUnpublished } from "react-icons/md"
+import { MdDescription } from "react-icons/md"
 import {
   RiDeleteBinLine,
   RiPencilLine,
@@ -12,26 +11,16 @@ import { SiBookstack } from "react-icons/si"
 import Link from "next/link"
 import { PublishedStatus } from "../ui/badges"
 
-// interface Props {
-//   levelsArray: any
-//   handleEditLevelModal: any
-// }
-
-// export default function CurriculumNav({
-//   levelsArray,
-//   handleEditLevelModal,
-// }: Props) {
-//   return <div>hello</div>
-// }
-
 interface CurriculumDisclosureProps {
   levelsArray: any
   admin: boolean
+  studentId?: string
 }
 
 export function CurriculumDisclosure({
   levelsArray,
   admin,
+  studentId,
 }: CurriculumDisclosureProps) {
   interface unitMapProps {
     unitPhoto: string
@@ -77,6 +66,7 @@ export function CurriculumDisclosure({
               lessonList={currentLessonList}
               admin={admin}
               unitPublished={unitPublished}
+              studentId={studentId}
             />
           </Disclosure.Panel>
         </Disclosure>
@@ -205,71 +195,6 @@ export function CurriculumDisclosure({
             </div>
           )
         })}
-      {/* {levelsArray &&
-        levelsArray.map((level: any) => {
-          const publishedUnits = level.Unit.filter(
-            (uniqueUnit: any) => uniqueUnit.published
-          )
-          return (
-            <div key={level.id} className="relative">
-              {
-                <LevelPanel
-                  levelNumber={level.number}
-                  levelTitle={level.title}
-                  levelPublished={level.published}
-                  levelObj={undefined}
-                  admin={admin}
-                  numberOfUnits={level.Unit?.length}
-                  levelId={level.id}
-                />
-              }
-              <ul
-                role="list"
-                className="relative z-0 divide-y divide-neutral-200"
-              >
-                {!admin &&
-                  publishedUnits.map((currentUnit: any) => {
-                    const publishedLessons = currentUnit.Lesson.filter(
-                      (item: any) => item.published
-                    )
-                    return (
-                      <div key={currentUnit.id}>
-                        <UnitMap
-                          unitPhoto={currentUnit.photoUrl}
-                          unitTitle={currentUnit.title}
-                          unitPublished={currentUnit.published}
-                          unitNumber={currentUnit.number}
-                          unitNumberOfLessons={publishedLessons.length}
-                          levelPublished={level.published}
-                          currentLessonList={currentUnit?.Lesson}
-                        />
-                      </div>
-                    )
-                  })}
-
-                {admin &&
-                  level.Unit?.map((currentUnit: any) => {
-                    const publishedLessons = currentUnit.Lesson.filter(
-                      (item: any) => item.published
-                    )
-                    return (
-                      <div key={currentUnit.id}>
-                        <UnitMap
-                          unitPhoto={currentUnit.photoUrl}
-                          unitTitle={currentUnit.title}
-                          unitPublished={currentUnit.published}
-                          unitNumber={currentUnit.number}
-                          unitNumberOfLessons={currentUnit.Lesson.length}
-                          levelPublished={level.published}
-                          currentLessonList={currentUnit?.Lesson}
-                        />
-                      </div>
-                    )
-                  })}
-              </ul>
-            </div>
-          )
-        })} */}
     </nav>
   )
 }
@@ -278,12 +203,14 @@ interface CurrentLessonProps {
   lessonList: []
   admin: boolean
   unitPublished: boolean
+  studentId?: string
 }
 
 export function CurrentLesson({
   lessonList,
   admin,
   unitPublished,
+  studentId,
 }: CurrentLessonProps) {
   interface LessonPanelProps {
     lessonNumber: number
@@ -313,7 +240,13 @@ export function CurrentLesson({
             {lessonNumber}
           </span>
         </div>
-        <Link href={`/admin/curriculum/${lessonId}`}>
+        <Link
+          href={
+            admin
+              ? `/admin/curriculum/${lessonId}`
+              : `/admin/students/${studentId}/${lessonId}`
+          }
+        >
           <div className="flex justify-between flex-1 min-w-0 space-x-4">
             <div className="flex items-center min-w-full space-x-3 bg-white border-2 border-opacity-0 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-primary-500 hover:shadow-lg hover:cursor-pointer">
               <Image
