@@ -135,7 +135,7 @@ export default function LessonPage() {
       </div>
       <div className="flex gap-4">
         <div>
-          <SlideComponent lesson={lesson} />
+          <SlideComponent lesson={lesson} admin={true} />
           <div className="h-4"></div>
           <Container title="Feedback">Feedback goes here</Container>
         </div>
