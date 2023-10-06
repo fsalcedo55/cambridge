@@ -6,6 +6,13 @@ import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcr
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { trpc } from "@src/utils/trpc"
+import {
+  LessonInfo,
+  SlideComponent,
+} from "@src/components/lessonDetails/LessonDetails"
+import Container from "@src/components/ui/Container"
+import { MdDescription } from "react-icons/md"
+import Link from "next/link"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -29,18 +36,20 @@ export default function AdminStudentLessonPage() {
     },
     { enabled: router.isReady }
   )
-  // const entitlement = trpc.entitlement.byLessonId.useQuery(
-  //   {
-  //     id: lessonId as string,
-  //   },
-  //   { enabled: router.isReady }
-  // )
+  const lesson = trpc.lesson.getById.useQuery(
+    { id: lessonId as string },
+    { enabled: router.isReady }
+  )
+  const assignments = trpc.assignment.getById.useQuery(
+    { lessonId: lessonId as string },
+    { enabled: router.isReady }
+  )
 
-  // console.log("entitlement: ", entitlement.data)
-
+  console.log("lesson: ", lesson.data)
+  console.log("assignments: ", assignments.data)
   console.log("student: ", student.data)
-
   console.log("router.query: ", router.query)
+
   const pages = [
     { name: "Students", href: "/admin/students/", current: false },
     {
@@ -60,54 +69,60 @@ export default function AdminStudentLessonPage() {
     <div>
       <PageHeadingWithBreadcrumb
         pages={pages}
-        pageTitle={
-          <div className="flex justify-between flex-1 min-w-0 space-x-4">
-            {student.data?.studentFirstName} {student.data?.studentLastName}
-            {/* <div className="flex items-center gap-4">
-                  <Image
-                    height={138.24}
-                    width={200}
-                    className="rounded"
-                    src={lesson.data?.photoUrl!}
-                    alt=""
-                  />
-                  <div className="flex items-center w-full gap-2">
-                    <p className="text-2xl font-bold text-neutral-900">
-                      {lesson.data?.title}
-                    </p>
-                    <div>
-                      {lesson.data && (
-                        <PublishedStatus
-                          published={lesson.data?.published}
-                          parentPublished={lesson.data?.Unit.published}
-                          draftedBy="Unit"
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div> */}
-          </div>
-        }
-        // loading={lesson.isLoading}
+        pageTitle={<LessonInfo lesson={lesson} />}
+        loading={lesson.isLoading}
       />
-      HELLO
-      {/* <PageHeading pageTitle="Admin Dashboard" />
-      <div className="flex gap-4 text-center">
-        <div className="w-48 text-center rounded-xl h-36 bg-info/75">
-          <div className="flex justify-center p-4 text-4xl">
-            <FaChild />
-          </div>
-          <h1 className="font-bold">Total Active Students</h1>
-          <h2 className="text-4xl font-bold">39</h2>
+      <div className="flex gap-4">
+        <div>
+          <SlideComponent lesson={lesson} admin={false} />
+          <div className="h-4"></div>
+          <Container title="Feedback">Feedback goes here</Container>
         </div>
-        <div className="w-48 rounded-xl h-36 bg-secondary/75">
-          <div className="flex justify-center p-4 text-4xl">
-            <FaChalkboardTeacher />
-          </div>
-          <h1 className="font-bold">Total Teachers</h1>
-          <h2 className="text-4xl font-bold">5</h2>
+        <div className="flex-1">
+          <Container title="Lesson Objective">
+            {lesson?.data?.objective?.length! > 0 ? (
+              lesson.data?.objective
+            ) : (
+              <div className="flex items-center justify-center">
+                <div>
+                  <div className="flex justify-center mb-2 text-5xl opacity-50">
+                    <MdDescription />
+                  </div>
+                  <div>Add an Objective</div>
+                </div>
+              </div>
+            )}
+          </Container>
+          <div className="h-4"></div>
+          <Container title="Assignments">
+            <fieldset>
+              <div>
+                <div className="relative flex items-start"></div>
+                <div className="relative items-start">
+                  {assignments.data?.map((assignment: any) => (
+                    <div
+                      className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
+                      key={assignment.id}
+                    >
+                      <div className="flex items-center justify-between my-1">
+                        <Link href={assignment.url}>
+                          <a target="_blank" rel="noopener noreferrer">
+                            <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
+                              <div className="font-bold">
+                                {assignment.title}
+                              </div>
+                            </div>
+                          </a>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </fieldset>
+          </Container>
         </div>
-      </div> */}
+      </div>
     </div>
   )
 }
