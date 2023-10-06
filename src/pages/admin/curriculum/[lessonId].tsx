@@ -2,7 +2,6 @@
 import { useState, useRef } from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import Image from "next/image"
 
 // Components
 import Layout from "@src/components/layout/layout"
@@ -11,20 +10,21 @@ import AddAssignment from "@src/components/admin/lessons/AddAssignment"
 import EditAssignment from "@src/components/admin/lessons/EditAssignment"
 
 // UI Components
-import Loading from "@ui/loading"
 import Modal from "@ui/modal"
 import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
 import Container from "@ui/Container"
 import { Button } from "@ui/button"
-import { PublishedStatus } from "@ui/badges"
 
 // TRPC Hooks
 import { trpc } from "@src/utils/trpc"
 
 // Icons
-import { RiDeleteBinLine, RiPencilLine, RiSlideshowLine } from "react-icons/ri"
-import { HiOutlineExternalLink } from "react-icons/hi"
+import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
 import { MdDescription } from "react-icons/md"
+import {
+  LessonInfo,
+  SlideComponent,
+} from "@src/components/lessonDetails/LessonDetails"
 
 interface Assignment {
   title: string
@@ -40,82 +40,6 @@ type ModalType =
   | "EDIT_ASSIGNMENT"
   | "DELETE_ASSIGNMENT"
   | null
-
-const LessonInfo = ({ lesson }: any) => (
-  <div className="flex justify-between flex-1 min-w-0 space-x-4">
-    <div className="flex items-center gap-4">
-      <Image
-        height={138.24}
-        width={200}
-        className="rounded"
-        src={lesson.data?.photoUrl!}
-        alt=""
-      />
-      <div className="flex items-center w-full gap-2">
-        <p className="text-2xl font-bold text-neutral-900">
-          {lesson.data?.title}
-        </p>
-        <div>
-          {lesson.data && (
-            <PublishedStatus
-              published={lesson.data?.published}
-              parentPublished={lesson.data?.Unit.published}
-              draftedBy="Unit"
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  </div>
-)
-
-const SlideContent = ({ isLoading, data }: any) => {
-  if (isLoading) return <Loading />
-  if (data?.slidesUrl) {
-    return (
-      <iframe
-        src={`${data?.slidesUrl}/embed?start=false&loop=false&delayms=60000`}
-        width="480"
-        height="299"
-        allowFullScreen={true}
-        className="flex-1"
-      ></iframe>
-    )
-  }
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="opacity-50 text-8xl">
-        <RiSlideshowLine />
-      </div>
-      <div className="font-bold">Add slides URL to see the content</div>
-    </div>
-  )
-}
-
-const SlideComponent = ({ lesson }: any) => (
-  <div>
-    <div className="flex justify-between p-2 bg-white rounded-t-xl">
-      <div className="text-xl font-bold">Slides</div>
-      {lesson.data?.slidesUrl && (
-        <Link href={lesson.data?.slidesUrl!}>
-          <a target="_blank" rel="noopener noreferrer">
-            <Button
-              size="small"
-              intent="secondary"
-              className="flex items-center gap-2"
-            >
-              <span>Edit on Google Slides</span>
-              <HiOutlineExternalLink />
-            </Button>
-          </a>
-        </Link>
-      )}
-    </div>
-    <div className="w-[480px] h-[299px] bg-neutral-200 rounded-b-xl flex items-center justify-center">
-      <SlideContent isLoading={lesson.isLoading} data={lesson.data} />
-    </div>
-  </div>
-)
 
 export default function LessonPage() {
   const router = useRouter()
