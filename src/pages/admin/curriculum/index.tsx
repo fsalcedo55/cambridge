@@ -26,7 +26,7 @@ import {
   CurrentLesson,
   LevelPanel,
   UnitPanel,
-} from "@src/components/curriculum/curriculumNav"
+} from "@src/components/curriculum/curriculumDisclosure"
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)

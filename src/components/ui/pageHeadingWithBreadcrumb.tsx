@@ -25,14 +25,16 @@ export default function PageHeadingWithBreadcrumb({
 }: Props) {
   return (
     <>
-      <Breadcrumbs pages={pages} loading={loading} />
-      <div className="h-2"></div>
-      <PageHeading
-        pageTitle={pageTitle}
-        loading={loading}
-        userCard={userCard}
-        content={content}
-      />
+      <div className="flex flex-col">
+        <Breadcrumbs pages={pages} loading={loading} />
+        <div className="h-2"></div>
+        <PageHeading
+          pageTitle={pageTitle}
+          loading={loading}
+          userCard={userCard}
+          content={content}
+        />
+      </div>
     </>
   )
 }
