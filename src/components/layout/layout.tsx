@@ -1,13 +1,7 @@
 import { Fragment, useRef, useState } from "react"
 import { Dialog, Menu, Transition } from "@headlessui/react"
 import { Bars3BottomLeftIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { AiFillHome } from "react-icons/ai"
-import { HiOutlineCollection, HiTemplate, HiUsers } from "react-icons/hi"
-import { FaChild, FaGoogleDrive } from "react-icons/fa"
 import { TbExternalLink } from "react-icons/tb"
-import { IoCalendar } from "react-icons/io5"
-import { SiGmail } from "react-icons/si"
-import { GrTemplate } from "react-icons/gr"
 
 import { useRouter } from "next/router"
 import { signOut, useSession } from "next-auth/react"
@@ -15,148 +9,32 @@ import Image from "next/image"
 import Footer from "./footer"
 import Link from "next/link"
 import {
-  KnockFeedProvider,
-  NotificationIconButton,
-  NotificationFeedPopover,
-} from "@knocklabs/react-notification-feed"
-import "@knocklabs/react-notification-feed/dist/index.css"
-import { BsFillCameraVideoFill } from "react-icons/bs"
-import { RiGameFill } from "react-icons/ri"
-import Knock from "@knocklabs/client"
-
-// const knockClient = new Knock(process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
-
-// export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-//   const session = await getAuthSession(ctx)
-//   if (!session || session.role != "teacher") {
-//     return { redirect: { destination: "/", permanent: false } }
-//   }
-//   return {
-//     props: {
-//       sessionSSR: await getAuthSession(ctx),
-//     },
-//   }
-// }
+  adminNavigation,
+  adminNavigationExternal,
+  teacherNavigation,
+  userNavigation,
+} from "@src/constants/navigation"
+import Sidebar from "./sidebar"
 
 interface Props {
   children: React.ReactNode
   // sessionSSR: any
 }
 
-const adminNavigation = [
-  {
-    name: "Admin Dashboard",
-    href: "/admin/dashboard",
-    icon: AiFillHome,
-    current: true,
-  },
-  { name: "Users", href: "/admin/users", icon: HiUsers, current: false },
-  { name: "Students", href: "/admin/students", icon: FaChild, current: false },
-  {
-    name: "Curriculum",
-    href: "/admin/curriculum",
-    icon: HiOutlineCollection,
-    current: false,
-  },
-  {
-    name: "Calendar",
-    href: "https://calendar.google.com/",
-    icon: IoCalendar,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Google Drive",
-    href: "https://drive.google.com/",
-    icon: FaGoogleDrive,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Gmail",
-    href: "https://mail.google.com/",
-    icon: SiGmail,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Templates",
-    href: "https://drive.google.com/drive/folders/1L7PEmtkf-sqckMCR3Yin03J_RIyrhmB_",
-    icon: HiTemplate,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Games",
-    href: "https://sites.google.com/view/spanishforusgames/home",
-    icon: RiGameFill,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Zoom",
-    href: "https://zoom.us/signin#/login",
-    icon: BsFillCameraVideoFill,
-    current: false,
-    external: true,
-  },
-]
-const teacherNavigation = [
-  {
-    name: "Students",
-    href: "/teacher/students",
-    icon: FaChild,
-    current: false,
-  },
-  {
-    name: "Calendar",
-    href: "https://calendar.google.com/",
-    icon: IoCalendar,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Google Drive",
-    href: "https://drive.google.com/",
-    icon: FaGoogleDrive,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Games",
-    href: "https://sites.google.com/view/spanishforusgames/home",
-    icon: RiGameFill,
-    current: false,
-    external: true,
-  },
-  {
-    name: "Zoom",
-    href: "https://zoom.us/signin#/login",
-    icon: BsFillCameraVideoFill,
-    current: false,
-    external: true,
-  },
-]
-const userNavigation = [{ name: "Sign out", href: "/api/auth/signout" }]
-
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ")
 }
 
 export default function Layout({ children }: Props) {
-  const [isVisible, setIsVisible] = useState(false)
   const notifButtonRef = useRef(null)
   const router = useRouter()
   const { data: session, status } = useSession()
-  const { data } = useSession()
   const loading = status === "loading"
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
   // Tell Knock to use the users id and the token for the user
   // knockClient.authenticate(session?.user?.email!, session?.knockToken)
-
-  // console.log("knocktokenwww: ", session?.knockToken.knockToken)
 
   return (
     <>
@@ -293,27 +171,6 @@ export default function Layout({ children }: Props) {
                   className="p-1 bg-white rounded-full text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>
-                  {/* <BellIcon className="w-6 h-6" aria-hidden="true" /> */}
-                  {/* {session?.user?.email && session?.knockToken.knockToken && (
-                    <KnockFeedProvider
-                      apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!}
-                      feedId="5fe0ad69-0264-4656-b860-9e64a36a5636"
-                      userId={session?.user?.email}
-                      userToken={session?.knockToken.knockToken}
-                    >
-                      <>
-                        <NotificationIconButton
-                          ref={notifButtonRef}
-                          onClick={(e) => setIsVisible(!isVisible)}
-                        />
-                        <NotificationFeedPopover
-                          buttonRef={notifButtonRef}
-                          isVisible={isVisible}
-                          onClose={() => setIsVisible(false)}
-                        />
-                      </>
-                    </KnockFeedProvider>
-                  )} */}
                 </button>
 
                 {/* ======== Profile dropdown ======== */}
@@ -370,110 +227,9 @@ export default function Layout({ children }: Props) {
             </div>
           </div>
           {/* ======== Static sidebar for desktop ======== */}
-          <div className="z-50 hidden mt-24 md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+          <div className="z-50 hidden mt-24 h-max md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex flex-col ml-8 bg-white shadow rounded-xl">
-              <div className="flex flex-col flex-1 mt-5">
-                <nav className="flex-1 px-2 pb-4 space-y-1">
-                  {session?.role === "admin" &&
-                    adminNavigation.map((item) =>
-                      item.external ? (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          <div
-                            className={classNames(
-                              router.pathname.includes(item.href)
-                                ? "bg-primary-600 text-primary-50"
-                                : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                              "group flex items-center px-2 py-2 text-md font-medium rounded-full cursor-pointer"
-                            )}
-                          >
-                            <item.icon
-                              className="mr-3 text-2xl"
-                              aria-hidden="true"
-                            />
-                            <div className="flex items-center gap-2">
-                              {item.name}
-                              <span className="opacity-50">
-                                <TbExternalLink />
-                              </span>
-                            </div>
-                          </div>
-                        </a>
-                      ) : (
-                        <Link key={item.name} href={item.href}>
-                          <div
-                            className={classNames(
-                              router.pathname.includes(item.href)
-                                ? "bg-primary-600 text-primary-50"
-                                : "text-primary-600 hover:bg-neutral-100 hover:text-primary-700",
-                              "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
-                            )}
-                          >
-                            <item.icon
-                              className="mr-3 text-2xl"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </div>
-                        </Link>
-                      )
-                    )}
-                  {session?.role === "teacher" &&
-                    teacherNavigation.map((item) =>
-                      item.external ? (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          <div
-                            className={classNames(
-                              router.pathname.includes(item.href)
-                                ? "bg-primary-800 text-primary-50"
-                                : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
-                              "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
-                            )}
-                          >
-                            <item.icon
-                              className="mr-3 text-2xl"
-                              aria-hidden="true"
-                            />
-                            <div className="flex items-center gap-2">
-                              {item.name}
-                              <span className="opacity-50">
-                                <TbExternalLink />
-                              </span>
-                            </div>
-                          </div>
-                        </a>
-                      ) : (
-                        <Link key={item.name} href={item.href}>
-                          <div
-                            className={classNames(
-                              router.pathname.includes(item.href)
-                                ? "bg-primary-800 text-primary-50"
-                                : "text-primary-900 hover:bg-primary-600 hover:text-primary-100",
-                              "group flex items-center px-2 py-2 text-md font-bold rounded-full cursor-pointer"
-                            )}
-                          >
-                            <item.icon
-                              className="mr-3 text-2xl"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </div>
-                        </Link>
-                      )
-                    )}
-                </nav>
-              </div>
-            </div>
+            {<Sidebar />}
           </div>
 
           <main className="z-0 min-h-screen md:pl-64">
@@ -488,11 +244,62 @@ export default function Layout({ children }: Props) {
               </div>
             </div>
           </main>
-          <div className="z-50">
+          {/* <div className="z-50">
             <Footer />
-          </div>
+          </div> */}
         </div>
       </div>
     </>
   )
+}
+
+// import {
+//   KnockFeedProvider,
+//   NotificationIconButton,
+//   NotificationFeedPopover,
+// } from "@knocklabs/react-notification-feed"
+// import "@knocklabs/react-notification-feed/dist/index.css"
+// import Knock from "@knocklabs/client"
+
+// const knockClient = new Knock(process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!)
+
+// export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+//   const session = await getAuthSession(ctx)
+//   if (!session || session.role != "teacher") {
+//     return { redirect: { destination: "/", permanent: false } }
+//   }
+//   return {
+//     props: {
+//       sessionSSR: await getAuthSession(ctx),
+//     },
+//   }
+// }
+
+{
+  /* This goes after the span tag that says "View notifications" */
+}
+{
+  /* <BellIcon className="w-6 h-6" aria-hidden="true" /> */
+}
+{
+  /* {session?.user?.email && session?.knockToken.knockToken && (
+                    <KnockFeedProvider
+                      apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY!}
+                      feedId="5fe0ad69-0264-4656-b860-9e64a36a5636"
+                      userId={session?.user?.email}
+                      userToken={session?.knockToken.knockToken}
+                    >
+                      <>
+                        <NotificationIconButton
+                          ref={notifButtonRef}
+                          onClick={(e) => setIsVisible(!isVisible)}
+                        />
+                        <NotificationFeedPopover
+                          buttonRef={notifButtonRef}
+                          isVisible={isVisible}
+                          onClose={() => setIsVisible(false)}
+                        />
+                      </>
+                    </KnockFeedProvider>
+                  )} */
 }
