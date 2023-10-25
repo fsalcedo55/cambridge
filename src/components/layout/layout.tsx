@@ -1,35 +1,75 @@
-import { Fragment, useRef, useState } from "react"
+import { Fragment, useState } from "react"
 import { Dialog, Menu, Transition } from "@headlessui/react"
 import { Bars3BottomLeftIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { TbExternalLink } from "react-icons/tb"
-
-import { useRouter } from "next/router"
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
-import Footer from "./footer"
 import Link from "next/link"
-import {
-  adminNavigation,
-  adminNavigationExternal,
-  teacherNavigation,
-  userNavigation,
-} from "@src/constants/navigation"
+import { userNavigation } from "@src/constants/navigation"
 import Sidebar from "./sidebar"
+import MobileSidebar from "./MobileSidebar"
 
 interface Props {
   children: React.ReactNode
-  // sessionSSR: any
 }
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ")
 }
 
+function ProfileDropdown({ userImage }: { userImage: string }) {
+  return (
+    <Menu as="div" className="relative ml-3">
+      <div>
+        <Menu.Button className="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+          <span className="sr-only">Open user menu</span>
+          <Image
+            src={userImage}
+            alt="user-photo"
+            width={40}
+            height={40}
+            className="w-8 h-8 rounded-full"
+          />
+        </Menu.Button>
+      </div>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          {userNavigation.map((item) => (
+            <Menu.Item key={item.name}>
+              {({ active }) => (
+                <a
+                  href={item.href}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    signOut({
+                      callbackUrl: process.env.NEXTAUTH_URL,
+                    })
+                  }}
+                  className={classNames(
+                    active ? "bg-neutral-100" : "",
+                    "block px-4 py-2 text-sm text-neutral-700"
+                  )}
+                >
+                  {item.name}
+                </a>
+              )}
+            </Menu.Item>
+          ))}
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  )
+}
+
 export default function Layout({ children }: Props) {
-  const notifButtonRef = useRef(null)
-  const router = useRouter()
-  const { data: session, status } = useSession()
-  const loading = status === "loading"
+  const { data: session } = useSession()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // const me = trpc.user.me.useQuery({ email: session?.user?.email! })
 
@@ -91,49 +131,7 @@ export default function Layout({ children }: Props) {
                       </button>
                     </div>
                   </Transition.Child>
-
-                  <div className="flex-1 h-0 mt-5 overflow-y-auto">
-                    <nav className="px-2 space-y-1">
-                      {session?.role === "admin" &&
-                        adminNavigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-primary-800 text-white"
-                                : "text-primary-100 hover:bg-primary-600",
-                              "group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                            )}
-                          >
-                            <item.icon
-                              className="flex-shrink-0 w-6 h-6 mr-4 text-primary-300"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </a>
-                        ))}
-                      {session?.role === "teacher" &&
-                        teacherNavigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-primary-800 text-white"
-                                : "text-primary-100 hover:bg-primary-600",
-                              "group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                            )}
-                          >
-                            <item.icon
-                              className="flex-shrink-0 w-6 h-6 mr-4 text-primary-300"
-                              aria-hidden="true"
-                            />
-                            {item.name} aaa
-                          </a>
-                        ))}
-                    </nav>
-                  </div>
+                  <MobileSidebar />
                 </Dialog.Panel>
               </Transition.Child>
               <div className="flex-shrink-0 w-14" aria-hidden="true">
@@ -155,7 +153,7 @@ export default function Layout({ children }: Props) {
             </button>
 
             <div className="flex justify-between flex-1 px-8">
-              <div className="flex items-center flex-shrink-0 px-4">
+              <div className="flex items-center flex-shrink-0 px-4 gap-2">
                 <Link href="/">
                   <Image
                     src="/Spanish-For-Us-Logo-1080p (2).png"
@@ -164,6 +162,9 @@ export default function Layout({ children }: Props) {
                     height={36}
                   />
                 </Link>
+                <div className="text-sm font-bold">{`${
+                  session?.role === "teacher" ? "Teacher" : "Admin"
+                } Portal`}</div>
               </div>
               <div className="flex items-center ml-4 md:ml-6">
                 <button
@@ -175,53 +176,7 @@ export default function Layout({ children }: Props) {
 
                 {/* ======== Profile dropdown ======== */}
                 {session?.user?.image && (
-                  <Menu as="div" className="relative ml-3">
-                    <div>
-                      <Menu.Button className="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
-                        <span className="sr-only">Open user menu</span>
-                        <Image
-                          src={session?.user?.image}
-                          alt="user-photo"
-                          width={40}
-                          height={40}
-                          className="w-8 h-8 rounded-full"
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <a
-                                href={item.href}
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  signOut({
-                                    callbackUrl: process.env.NEXTAUTH_URL,
-                                  })
-                                }}
-                                className={classNames(
-                                  active ? "bg-neutral-100" : "",
-                                  "block px-4 py-2 text-sm text-neutral-700"
-                                )}
-                              >
-                                {item.name}
-                              </a>
-                            )}
-                          </Menu.Item>
-                        ))}
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
+                  <ProfileDropdown userImage={session?.user?.image} />
                 )}
               </div>
             </div>
@@ -236,17 +191,11 @@ export default function Layout({ children }: Props) {
             <div className="py-6">
               <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
                 {/* ======== Replace with your content ======== */}
-                <div className="py-4 mt-16">
-                  {children}
-                  {/* <div className="border-4 border-dashed rounded-lg border-neutral-200 h-96" /> */}
-                </div>
+                <div className="py-4 mt-16">{children}</div>
                 {/* ======== /End replace ======== */}
               </div>
             </div>
           </main>
-          {/* <div className="z-50">
-            <Footer />
-          </div> */}
         </div>
       </div>
     </>
