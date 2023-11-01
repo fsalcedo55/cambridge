@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import Image from "next/image"
@@ -155,7 +155,8 @@ export default function AdminStudentPage({ sessionSSR }: any) {
             <CurriculumDisclosure
               levelsArray={studentEntitlements?.data}
               studentId={student.data?.id}
-              admin={false}
+              admin={true}
+              edit={false}
             />
           )}
         </div>

@@ -50,6 +50,7 @@ model User {
     students           Student[]
     lessonPlans        LessonPlan[]
     lessonPlanComments LessonPlanComment[]
+    lessonComments     LessonComment[]
 }
 
 model Student {
@@ -115,21 +116,35 @@ model Assignment {
 }
 
 model Lesson {
-    id          String       @id @unique @default(cuid())
+    id          String          @id @unique @default(cuid())
     title       String
     photoUrl    String
     slidesUrl   String?
     number      Int
-    published   Boolean      @default(false)
-    objective   String?      @db.Text
+    published   Boolean         @default(false)
+    objective   String?         @db.Text
     assignments Assignment[]
-    Student     Student?     @relation(fields: [studentId], references: [id])
+    Student     Student?        @relation(fields: [studentId], references: [id])
     studentId   String?
-    Unit        Unit         @relation(fields: [unitId], references: [id])
+    Unit        Unit            @relation(fields: [unitId], references: [id])
     unitId      String
+    comments    LessonComment[]
 
     @@index([studentId])
     @@index([unitId])
+}
+
+model LessonComment {
+    id        String   @id @unique @default(cuid())
+    content   String   @db.Text
+    createdAt DateTime @default(now())
+    Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+    lessonId  String
+    User      User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+    userId    String
+
+    @@index([lessonId])
+    @@index([userId])
 }
 
 model Unit {

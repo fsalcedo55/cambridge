@@ -1,23 +1,19 @@
-// import PageHeading from "../../components/ui/pageHeading"
-
-import { GetServerSidePropsContext } from "next"
-import { getAuthSession } from "@src/server/common/get-server-session"
-import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/router"
-import { trpc } from "@src/utils/trpc"
 import {
   LessonInfo,
   SlideComponent,
 } from "@src/components/lessonDetails/LessonDetails"
 import Container from "@src/components/ui/Container"
-import { MdDescription } from "react-icons/md"
+import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
+import { getAuthSession } from "@src/server/common/get-server-session"
+import { trpc } from "@src/utils/trpc"
+import { GetServerSidePropsContext } from "next"
 import Link from "next/link"
-import Divider from "@src/components/ui/Divider"
+import { useRouter } from "next/router"
+import { MdDescription } from "react-icons/md"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "admin") {
+  if (!session || session.role != "teacher") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -27,7 +23,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default function AdminStudentLessonPage() {
+export default function TeacherStudentLessonPage() {
   const router = useRouter()
   const { lessonId } = router.query
   const { id } = router.query
@@ -53,16 +49,15 @@ export default function AdminStudentLessonPage() {
       current: false,
     },
     {
-      name: `Level ${lesson.data?.Unit?.Level?.number}: ${lesson.data?.Unit?.Level?.title}  / Unit ${lesson.data?.Unit?.number}: ${lesson.data?.Unit?.title} / Lesson ${lesson.data?.number}: ${lesson.data?.title}`,
+      name: `Level ${lesson.data?.Unit?.Level?.number}: ${lesson.data?.Unit?.Level?.title} / Unit ${lesson.data?.Unit?.number}: ${lesson.data?.Unit?.title} / Lesson ${lesson.data?.number}: ${lesson.data?.title}`,
       current: true,
     },
   ]
-
   return (
-    <div>
+    <>
       <PageHeadingWithBreadcrumb
         pages={pages}
-        pageTitle={<LessonInfo lesson={lesson} edit={false} />}
+        pageTitle={<LessonInfo lesson={lesson} />}
         loading={lesson.isLoading}
       />
       <div className="flex gap-4">
@@ -116,8 +111,8 @@ export default function AdminStudentLessonPage() {
       </div>
       <div className="h-4"></div>
       {/* <Container title="Feedback"></Container> */}
-    </div>
+    </>
   )
 }
 
-AdminStudentLessonPage.auth = true
+TeacherStudentLessonPage.auth = true

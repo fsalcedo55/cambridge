@@ -7,26 +7,29 @@ import Modal from "@src/components/ui/modal"
 import PageHeading from "@src/components/ui/pageHeading"
 import { trpc } from "@src/utils/trpc"
 import { useState } from "react"
-import {
-  RiDeleteBinLine,
-  RiPencilLine,
-  RiPencilRulerLine,
-  RiSlideshowLine,
-} from "react-icons/ri"
-import { SiBookstack } from "react-icons/si"
-import Image from "next/image"
-import { BsCheckLg } from "react-icons/bs"
-import { MdDescription, MdError, MdUnpublished } from "react-icons/md"
+import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
+import { MdError } from "react-icons/md"
 import AddLesson from "@src/components/admin/lessons/AddLesson"
-import Link from "next/link"
 import EditLevel from "@src/components/admin/lessons/EditLevel"
 import EditUnit from "@src/components/admin/lessons/EditUnit"
 import Loading from "@src/components/ui/loading"
-import {
-  CurrentLesson,
-  LevelPanel,
-  UnitPanel,
-} from "@src/components/curriculum/curriculumDisclosure"
+import { CurrentLesson } from "@src/components/curriculum/CurrentLesson"
+import { UnitPanel } from "@src/components/curriculum/UnitPanel"
+import { LevelPanel } from "@src/components/curriculum/LevelPanel"
+import { GetServerSidePropsContext } from "next"
+import { getAuthSession } from "@src/server/common/get-server-session"
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getAuthSession(ctx)
+  if (!session || session.role != "admin") {
+    return { redirect: { destination: "/", permanent: false } }
+  }
+  return {
+    props: {
+      sessionSSR: await getAuthSession(ctx),
+    },
+  }
+}
 
 export default function Curriculum() {
   const [isOpenLevelBtn, setIsOpenLevelBtn] = useState(false)
@@ -266,6 +269,7 @@ export default function Curriculum() {
                   }
                   deleteLevelModal={() => handleDeleteLevelModal(level.id)}
                   admin={admin}
+                  edit={true}
                 />
               }
               <ul
@@ -295,23 +299,21 @@ export default function Curriculum() {
                         }
                       </Disclosure.Button>
                       <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
-                        {admin && (
-                          <UnitCrudTabs
-                            editUnit={() => handleEditUnitModal(currentUnit)}
-                            numberOfLessons={currentUnit.Lesson.length}
-                            deleteUnitDisabled={() =>
-                              setIsOpenDisabledDeleteUnitModal(true)
-                            }
-                            deleteUnit={() =>
-                              handleDeleteUnitModal(currentUnit.id)
-                            }
-                          />
-                        )}
-                        {!admin && <div className="h-4"></div>}
+                        <UnitCrudTabs
+                          editUnit={() => handleEditUnitModal(currentUnit)}
+                          numberOfLessons={currentUnit.Lesson.length}
+                          deleteUnitDisabled={() =>
+                            setIsOpenDisabledDeleteUnitModal(true)
+                          }
+                          deleteUnit={() =>
+                            handleDeleteUnitModal(currentUnit.id)
+                          }
+                        />
                         <CurrentLesson
                           lessonList={currentUnit?.Lesson}
                           admin={admin}
                           unitPublished={currentUnit.published}
+                          edit={true}
                         />
                       </Disclosure.Panel>
                     </Disclosure>

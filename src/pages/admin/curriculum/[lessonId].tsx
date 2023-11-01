@@ -110,7 +110,7 @@ export default function LessonPage() {
       <div className="flex items-center justify-between">
         <PageHeadingWithBreadcrumb
           pages={pages}
-          pageTitle={<LessonInfo lesson={lesson} />}
+          pageTitle={<LessonInfo lesson={lesson} edit={true} />}
           loading={lesson.isLoading}
         />
         <div className="flex gap-2">
