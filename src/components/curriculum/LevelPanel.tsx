@@ -25,13 +25,17 @@ export function LevelPanel({
   deleteLevelModal,
   admin,
   edit,
+  levelId,
 }: LevelPanelProps) {
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-1 text-sm font-medium border-t border-b text-neutral-500 border-neutral-200 bg-primary-50">
       <div className="flex gap-2">
-        <h3 className="text-xl font-bold text-primary-800">
+        <a
+          className="text-xl font-bold text-primary-800"
+          href={`#level-${levelNumber}-${levelId}`}
+        >
           Level {levelNumber}: {levelTitle}
-        </h3>
+        </a>
 
         {admin && edit && (
           <div>

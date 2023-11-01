@@ -46,6 +46,7 @@ export default function TeacherStudentLessonPage() {
     { name: "Students", href: "/admin/students/", current: false },
     {
       name: `${student.data?.studentFirstName} ${student.data?.studentLastName}`,
+      href: `/teacher/students/${student.data?.id}`,
       current: false,
     },
     {
