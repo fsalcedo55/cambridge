@@ -41,6 +41,7 @@ export function CurriculumDisclosure({
           <Disclosure.Button
             as="div"
             className="flex items-center justify-between pr-6 cursor-pointer"
+            id={`unit-${unitNumber}-${unitTitle}`}
           >
             {
               <UnitPanel
@@ -91,17 +92,18 @@ export function CurriculumDisclosure({
   }: LevelMapProps) {
     return (
       <div key={levelId} className="relative">
-        <LevelPanel
-          levelNumber={levelNumber}
-          levelTitle={levelTitle}
-          levelPublished={levelPublished}
-          levelObj={undefined}
-          admin={admin}
-          edit={edit}
-          numberOfUnits={numberOfUnits}
-          levelId={levelId}
-        />
-
+        <div id={`level-${levelNumber}-${levelId}`}>
+          <LevelPanel
+            levelNumber={levelNumber}
+            levelTitle={levelTitle}
+            levelPublished={levelPublished}
+            levelObj={undefined}
+            admin={admin}
+            edit={edit}
+            numberOfUnits={numberOfUnits}
+            levelId={levelId}
+          />
+        </div>
         <ul role="list" className="relative z-0 divide-y divide-neutral-200">
           {!admin &&
             publishedUnitsArray.map((currentUnit: any) => {
