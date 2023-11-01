@@ -6,7 +6,12 @@ import Link from "next/link"
 import { Button } from "../ui/button"
 import { HiOutlineExternalLink } from "react-icons/hi"
 
-export function LessonInfo({ lesson }: any) {
+interface LessonInfoProps {
+  lesson: any
+  edit?: boolean
+}
+
+export function LessonInfo({ lesson, edit }: LessonInfoProps) {
   return (
     <div className="flex justify-between flex-1 min-w-0 space-x-4">
       <div className="flex items-center gap-4">
@@ -22,7 +27,7 @@ export function LessonInfo({ lesson }: any) {
             {lesson.data?.title}
           </p>
           <div>
-            {lesson.data && (
+            {lesson.data && edit && (
               <PublishedStatus
                 published={lesson.data?.published}
                 parentPublished={lesson.data?.Unit.published}

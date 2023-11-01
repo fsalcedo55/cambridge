@@ -3,7 +3,7 @@ import PageHeading from "./pageHeading"
 
 interface Page {
   name: string
-  href: string
+  href?: string
   current: boolean
 }
 ;[]
