@@ -295,6 +295,7 @@ export default function Curriculum() {
                             unitNumber={currentUnit.number}
                             numberOfLessons={currentUnit.Lesson.length}
                             admin={admin}
+                            edit={true}
                           />
                         }
                       </Disclosure.Button>
