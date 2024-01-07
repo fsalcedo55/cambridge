@@ -129,6 +129,7 @@ model Lesson {
     Unit        Unit            @relation(fields: [unitId], references: [id])
     unitId      String
     comments    LessonComment[]
+    completed   Boolean?
 
     @@index([studentId])
     @@index([unitId])

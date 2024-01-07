@@ -39,6 +39,7 @@ export const lessonRouter = router({
           published: true,
           slidesUrl: true,
           objective: true,
+          completed: true,
           Unit: {
             select: {
               title: true,
@@ -100,5 +101,23 @@ export const lessonRouter = router({
           objective: input.objective,
         },
       })
+    }),
+  updateCompleted: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        completed: z.boolean(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const updatedLesson = await prisma.lesson.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          completed: input.completed,
+        },
+      })
+      return updatedLesson
     }),
 })
