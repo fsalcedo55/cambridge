@@ -176,14 +176,14 @@ export default function LessonPage() {
                       key={assignment.id}
                     >
                       <div className="flex items-center justify-between my-1">
-                        <Link href={assignment.url} target="_blank" rel="noopener noreferrer">
-
+                        <Link
+                          href={assignment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
-                            <div className="font-bold">
-                              {assignment.title}
-                            </div>
+                            <div className="font-bold">{assignment.title}</div>
                           </div>
-
                         </Link>
 
                         <div className="flex invisible gap-1 px-2 opacity-80 group-hover/assignment:visible">
@@ -292,5 +292,5 @@ export default function LessonPage() {
         closeButton="Cancel"
       />
     </Layout>
-  );
+  )
 }
