@@ -108,7 +108,7 @@ export default function Table({ rows, headers }: TableProps) {
                       className="py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 "
                     >
                       {cell.href ? (
-                        <Link href={cell.href}>
+                        <Link href={cell.href} legacyBehavior>
                           <span className="cursor-pointer hover:underline hover:text-primary-500">
                             {cell.content}
                           </span>
@@ -123,7 +123,7 @@ export default function Table({ rows, headers }: TableProps) {
                       className="hidden py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 sm:table-cell"
                     >
                       {cell.href ? (
-                        <Link href={cell.href}>
+                        <Link href={cell.href} legacyBehavior>
                           <span className="cursor-pointer hover:underline hover:text-primary-500">
                             {cell.content}
                           </span>
@@ -138,7 +138,7 @@ export default function Table({ rows, headers }: TableProps) {
                       className="hidden py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 md:table-cell"
                     >
                       {cell.href ? (
-                        <Link href={cell.href}>
+                        <Link href={cell.href} legacyBehavior>
                           <span className="cursor-pointer hover:underline hover:text-primary-500">
                             {cell.content}
                           </span>
@@ -153,7 +153,7 @@ export default function Table({ rows, headers }: TableProps) {
                       className="hidden py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 lg:table-cell"
                     >
                       {cell.href ? (
-                        <Link href={cell.href}>
+                        <Link href={cell.href} legacyBehavior>
                           <span className="cursor-pointer hover:underline hover:text-primary-500">
                             {cell.content}
                           </span>
@@ -168,7 +168,7 @@ export default function Table({ rows, headers }: TableProps) {
                       className="py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 whitespace-nowrap sm:pl-6 "
                     >
                       {cell.href ? (
-                        <Link href={cell.href}>
+                        <Link href={cell.href} legacyBehavior>
                           <span className="cursor-pointer hover:underline hover:text-primary-500">
                             {cell.content}
                           </span>
@@ -185,7 +185,7 @@ export default function Table({ rows, headers }: TableProps) {
         </table>
       </div>
     </div>
-  )
+  );
 }
 
 // export default function Table({ rows, headers }: TableProps) {

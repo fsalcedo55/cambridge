@@ -61,7 +61,7 @@ export function CurrentLesson({
             {lessonNumber}
           </span>
         </div>
-        <Link href={getLinkHref()}>
+        <Link href={getLinkHref()} legacyBehavior>
           {/* <Link
           href={
             edit
@@ -118,7 +118,7 @@ export function CurrentLesson({
           </div>
         </Link>
       </div>
-    )
+    );
   }
 
   const lessonLine = (
