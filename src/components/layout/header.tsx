@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <div className="flex justify-between w-screen h-16 pr-16 shadow navbar bg-base-100">
       <div className="flex justify-center w-64 gap-2">
-        <Link href="/">
+        <Link href="/" legacyBehavior>
           <Image
             src="/Spanish-For-Us-Logo-1080p (2).png"
             alt="logo"
@@ -80,13 +80,13 @@ export default function Header() {
                   >
                     {session?.role === "admin" ? (
                       <li>
-                        <Link href={`/admin/dashboard`}>
+                        <Link href={`/admin/dashboard`} legacyBehavior>
                           <p>Dashboard</p>
                         </Link>
                       </li>
                     ) : (
                       <li>
-                        <Link href={`/teacher/students`}>
+                        <Link href={`/teacher/students`} legacyBehavior>
                           <p>Students</p>
                         </Link>
                       </li>
@@ -110,5 +110,5 @@ export default function Header() {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -34,7 +34,7 @@ export default function Breadcrumbs({ loading, pages }: Props) {
                   // as="div"
                   href={page?.href}
                   aria-current={page.current ? "page" : undefined}
-                >
+                  legacyBehavior>
                   <div className="text-sm font-bold cursor-pointer text-neutral-500 hover:text-primary-500 hover:underline underline-offset-4">
                     {page.name}
                   </div>
@@ -58,5 +58,5 @@ export default function Breadcrumbs({ loading, pages }: Props) {
         ))}
       </ol>
     </nav>
-  )
+  );
 }
