@@ -60,10 +60,10 @@ const NavItem: FC<NavItemProps> = ({ item, isExternal = false, active }) => {
       {content}
     </a>
   ) : (
-    <Link key={item.name} href={item.href}>
+    <Link key={item.name} href={item.href} legacyBehavior>
       {content}
     </Link>
-  )
+  );
 }
 
 interface NavigationSectionProps {

@@ -178,14 +178,14 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         label={
           <div>
             Photo URL{" "}
-            <Link href="https://unsplash.com/">
-              <a
-                className="cursor-pointer text-primary-400 hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+            <Link
+              href="https://unsplash.com/"
+              className="cursor-pointer text-primary-400 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer">
+              
                 (Unsplash)
-              </a>
+              
             </Link>
           </div>
         }
@@ -320,5 +320,5 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         Save
       </Button>
     </form>
-  )
+  );
 }
