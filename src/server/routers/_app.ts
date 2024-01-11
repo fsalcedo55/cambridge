@@ -9,7 +9,7 @@ import { unitRouter } from "./lessons/unit"
 import { lessonRouter } from "./lessons/lesson"
 import { assignmentRouter } from "./lessons/assignment"
 // import { entitlementRouter } from "./entitlement"
-import { lessonCompletionRouter } from "./LessonCompletion"
+import { lessonCompletionRouter } from "./lessonCompletion"
 
 export const appRouter = router({
   student: studentRouter,
