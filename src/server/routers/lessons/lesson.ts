@@ -102,3 +102,8 @@ export const lessonRouter = router({
       })
     }),
 })
+
+// model LessonsCompleted {
+//   id String @id @unique @default(cuid())
+
+// }

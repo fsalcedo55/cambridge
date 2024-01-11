@@ -9,6 +9,7 @@ import { unitRouter } from "./lessons/unit"
 import { lessonRouter } from "./lessons/lesson"
 import { assignmentRouter } from "./lessons/assignment"
 // import { entitlementRouter } from "./entitlement"
+import { lessonCompletionRouter } from "./lessonCompletion"
 
 export const appRouter = router({
   student: studentRouter,
@@ -20,6 +21,7 @@ export const appRouter = router({
   unit: unitRouter,
   lesson: lessonRouter,
   assignment: assignmentRouter,
+  lessonCompletion: lessonCompletionRouter,
   // entitlement: entitlementRouter,
 })
 
