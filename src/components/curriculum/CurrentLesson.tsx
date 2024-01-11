@@ -10,7 +10,7 @@ interface CurrentLessonProps {
   unitPublished: boolean
   studentId?: string
   edit?: boolean
-  lessonCompletions: any
+  lessonCompletions?: any
 }
 
 export function CurrentLesson({
