@@ -50,6 +50,7 @@ export default function AdminStudentLessonPage() {
     { name: "Students", href: "/admin/students/", current: false },
     {
       name: `${student.data?.studentFirstName} ${student.data?.studentLastName}`,
+      href: `/admin/students/${student.data?.id}`,
       current: false,
     },
     {
@@ -96,14 +97,14 @@ export default function AdminStudentLessonPage() {
                       key={assignment.id}
                     >
                       <div className="flex items-center justify-between my-1">
-                        <Link href={assignment.url} target="_blank" rel="noopener noreferrer">
-
+                        <Link
+                          href={assignment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
-                            <div className="font-bold">
-                              {assignment.title}
-                            </div>
+                            <div className="font-bold">{assignment.title}</div>
                           </div>
-
                         </Link>
                       </div>
                     </div>
@@ -117,7 +118,7 @@ export default function AdminStudentLessonPage() {
       <div className="h-4"></div>
       {/* <Container title="Feedback"></Container> */}
     </div>
-  );
+  )
 }
 
 AdminStudentLessonPage.auth = true
