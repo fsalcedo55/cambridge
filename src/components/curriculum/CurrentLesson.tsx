@@ -3,6 +3,7 @@ import Image from "next/image"
 import { PublishedStatus } from "../ui/badges"
 import { RiPencilRulerLine, RiSlideshowLine } from "react-icons/ri"
 import { MdDescription } from "react-icons/md"
+import { BsFillCheckCircleFill } from "react-icons/bs"
 
 interface CurrentLessonProps {
   lessonList: []
@@ -54,7 +55,7 @@ export function CurrentLesson({
     }
 
     return (
-      <div className="relative flex items-center space-x-3">
+      <div className="relative z-0 flex items-center space-x-3">
         <div>
           <span
             className={
@@ -125,6 +126,11 @@ export function CurrentLesson({
                     </div>
                   ) : null}
                 </div>
+                {lessonCompletions && lessonCompletions.includes(lessonId) && (
+                  <div className="absolute top-0 right-0 z-10 text-2xl transform translate-x-1/2 -translate-y-1/2 bg-white rounded-full opacity-100 text-primary-800">
+                    <BsFillCheckCircleFill />
+                  </div>
+                )}
               </div>
             </div>
           </div>
