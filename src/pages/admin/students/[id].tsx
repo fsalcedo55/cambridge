@@ -73,6 +73,15 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const deleteLessonPlanTRPC = trpc.lessonPlan.delete.useMutation()
   const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
+  const lessonCompletion =
+    trpc.lessonCompletion.getAllLessonCompletionsByStudentId.useQuery(
+      {
+        studentId: id as string,
+      },
+      {
+        enabled: !!id,
+      }
+    )
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -157,6 +166,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
               studentId={student.data?.id}
               admin={true}
               edit={false}
+              lessonCompletions={lessonCompletion.data}
             />
           )}
         </div>

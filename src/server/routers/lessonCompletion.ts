@@ -55,4 +55,22 @@ export const lessonCompletionRouter = router({
         },
       })
     }),
+  getAllLessonCompletionsByStudentId: publicProcedure
+    .input(
+      z.object({
+        studentId: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { studentId } = input
+      const lessonCompletions = await prisma.lessonCompletion.findMany({
+        where: {
+          studentId: studentId,
+        },
+        select: {
+          lessonId: true,
+        },
+      })
+      return lessonCompletions.map((completion) => completion.lessonId)
+    }),
 })

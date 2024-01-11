@@ -8,6 +8,7 @@ interface CurriculumDisclosureProps {
   admin: boolean
   studentId?: string
   edit?: boolean
+  lessonCompletions: any
 }
 
 export function CurriculumDisclosure({
@@ -15,6 +16,7 @@ export function CurriculumDisclosure({
   admin,
   studentId,
   edit,
+  lessonCompletions,
 }: CurriculumDisclosureProps) {
   interface unitMapProps {
     unitPhoto: string
@@ -64,6 +66,7 @@ export function CurriculumDisclosure({
               unitPublished={unitPublished}
               studentId={studentId}
               edit={edit}
+              lessonCompletions={lessonCompletions}
             />
           </Disclosure.Panel>
         </Disclosure>

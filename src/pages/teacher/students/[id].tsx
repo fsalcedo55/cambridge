@@ -36,6 +36,15 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
     },
     { enabled: router.isReady }
   )
+  const lessonCompletion =
+    trpc.lessonCompletion.getAllLessonCompletionsByStudentId.useQuery(
+      {
+        studentId: id as string,
+      },
+      {
+        enabled: !!id,
+      }
+    )
 
   const pages = [
     { name: "Students", href: "/teacher/students", current: false },
@@ -55,6 +64,7 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
               levelsArray={studentEntitlements?.data}
               studentId={student.data?.id}
               admin={false}
+              lessonCompletions={lessonCompletion.data}
             />
           )}
         </div>

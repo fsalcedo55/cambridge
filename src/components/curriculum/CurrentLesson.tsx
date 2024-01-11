@@ -10,6 +10,7 @@ interface CurrentLessonProps {
   unitPublished: boolean
   studentId?: string
   edit?: boolean
+  lessonCompletions: any
 }
 
 export function CurrentLesson({
@@ -18,6 +19,7 @@ export function CurrentLesson({
   unitPublished,
   studentId,
   edit,
+  lessonCompletions,
 }: CurrentLessonProps) {
   interface LessonPanelProps {
     lessonNumber: number
@@ -51,13 +53,16 @@ export function CurrentLesson({
       return `/teacher/students/${studentId}/${lessonId}`
     }
 
-    console.log("linkhref: ", getLinkHref())
-    console.log("admin: ", admin)
-
     return (
       <div className="relative flex items-center space-x-3">
         <div>
-          <span className="inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100">
+          <span
+            className={
+              lessonCompletions && lessonCompletions.includes(lessonId)
+                ? "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100 opacity-30"
+                : "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100"
+            }
+          >
             {lessonNumber}
           </span>
         </div>
@@ -69,7 +74,14 @@ export function CurrentLesson({
               : `/teacher/students/${studentId}/${lessonId}`
           }
         > */}
-          <div className="flex justify-between flex-1 min-w-0 space-x-4">
+
+          <div
+            className={
+              lessonCompletions && lessonCompletions.includes(lessonId)
+                ? "flex justify-between flex-1 min-w-0 space-x-4 opacity-30"
+                : "flex justify-between flex-1 min-w-0 space-x-4"
+            }
+          >
             <div className="flex items-center min-w-full space-x-3 bg-white border-2 border-opacity-0 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:border-primary-500 hover:shadow-lg hover:cursor-pointer">
               <Image
                 height={80}
@@ -118,15 +130,23 @@ export function CurrentLesson({
           </div>
         </Link>
       </div>
-    );
+    )
   }
 
-  const lessonLine = (
-    <span
-      className="absolute top-12 left-6 -ml-px h-24 w-0.5 bg-primary-800"
-      aria-hidden="true"
-    />
-  )
+  const lessonLine = (idParam: string) => {
+    if (lessonCompletions) {
+      return (
+        <span
+          className={
+            lessonCompletions.includes(idParam)
+              ? "absolute top-[67px] left-6 -ml-px h-[74px] w-0.5 bg-primary-800 opacity-10"
+              : "absolute top-12 left-6 -ml-px h-24 w-0.5 bg-primary-800"
+          }
+          aria-hidden="true"
+        />
+      )
+    } else return ""
+  }
 
   const publishedLessons = lessonList.filter((lesson: any) => lesson.published)
 
@@ -141,7 +161,7 @@ export function CurrentLesson({
               <li key={lesson.id}>
                 <div className="relative pb-8">
                   {lessonIdx !== publishedLessons.length - 1
-                    ? lessonLine
+                    ? lessonLine(lesson.id)
                     : null}
                   <LessonPanel
                     lessonNumber={lesson.number}
@@ -162,7 +182,7 @@ export function CurrentLesson({
               <li key={lesson.id}>
                 <div className="relative pb-8">
                   {lessonIdx !== publishedLessons.length - 1
-                    ? lessonLine
+                    ? lessonLine(lesson.id)
                     : null}
                   <LessonPanel
                     lessonNumber={lesson.number}
@@ -182,7 +202,12 @@ export function CurrentLesson({
             lessonList.map((lesson: any, lessonIdx: number) => (
               <li key={lesson.id}>
                 <div className="relative pb-8">
-                  {lessonIdx !== lessonList.length - 1 ? lessonLine : null}
+                  {lessonIdx !== lessonList.length - 1 ? (
+                    <span
+                      className="absolute top-12 left-6 -ml-px h-24 w-0.5 bg-primary-800"
+                      aria-hidden="true"
+                    />
+                  ) : null}
                   <LessonPanel
                     lessonNumber={lesson.number}
                     lessonId={lesson.id}
