@@ -158,6 +158,9 @@ export function CurrentLesson({
 
   const adminEditBoolean = admin !== edit
 
+  const styles = (index: number) =>
+    index !== publishedLessons.length - 1 ? "relative pb-8" : "relative pb-8"
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flow-root">
@@ -165,7 +168,7 @@ export function CurrentLesson({
           {!admin &&
             publishedLessons.map((lesson: any, lessonIdx: number) => (
               <li key={lesson.id}>
-                <div className="relative pb-8">
+                <div className={styles(lessonIdx)}>
                   {lessonIdx !== publishedLessons.length - 1
                     ? lessonLine(lesson.id)
                     : null}
@@ -186,7 +189,7 @@ export function CurrentLesson({
             !edit &&
             publishedLessons.map((lesson: any, lessonIdx: number) => (
               <li key={lesson.id}>
-                <div className="relative pb-8">
+                <div className={styles(lessonIdx)}>
                   {lessonIdx !== publishedLessons.length - 1
                     ? lessonLine(lesson.id)
                     : null}
@@ -207,7 +210,7 @@ export function CurrentLesson({
             edit &&
             lessonList.map((lesson: any, lessonIdx: number) => (
               <li key={lesson.id}>
-                <div className="relative pb-8">
+                <div className={styles(lessonIdx)}>
                   {lessonIdx !== lessonList.length - 1 ? (
                     <span
                       className="absolute top-12 left-6 -ml-px h-24 w-0.5 bg-primary-800"
