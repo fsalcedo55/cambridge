@@ -7,6 +7,7 @@ import { FaExternalLinkAlt } from "react-icons/fa"
 import { ImCalendar } from "react-icons/im"
 import { Fragment } from "react"
 import dayjs from "dayjs"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 interface Props {
   title: string
@@ -35,6 +36,7 @@ export default function LessonPlan({
   slidesUrl,
   homeworkSent,
 }: Props) {
+  const [disclosureRef] = useAutoAnimate()
   return (
     <div className="flex flex-col shadow-lg bg-gradient-to-t from-neutral-50 to-white rounded-xl">
       <div className="flex flex-col justify-between px-4 py-2 bg-white md:py-0 md:flex-row md:items-center rounded-t-xl">
@@ -162,96 +164,100 @@ export default function LessonPlan({
                 </div>
               </div>
             </Disclosure.Button>
-            <Disclosure.Panel className="px-4 pt-2 pb-2 text-sm text-primary-900">
-              <div className="flex justify-between">
-                {/* Avatar and comment */}
-                <div className="w-full px-2 pb-2">
-                  {comments &&
-                    comments.map((comment) => (
-                      <div key={comment.id} className="flex gap-2">
-                        <div>
-                          <div className="h-2"></div>
-                          <div className="flex justify-start w-full gap-2 mb-2 md:gap-4">
-                            <div className="avatar">
-                              <div className="w-8 h-8 rounded-full md:w-10 md:h-10">
-                                <Image
-                                  src={comment.User.image}
-                                  alt="teacher-photo"
-                                  height={40}
-                                  width={40}
-                                />
-                              </div>
-                            </div>
-                            <Menu
-                              as="div"
-                              className="relative flex gap-1 group"
-                            >
-                              <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
-                                <div className="flex items-center gap-2">
-                                  <p className="font-bold">
-                                    {comment.User.name}
-                                  </p>
-                                  <div className="hidden text-xs font-thin opacity-50 md:block">
-                                    {`${dayjs(comment.createdAt).format(
-                                      "MMM D, YYYY h:mma"
-                                    )}`}
-                                  </div>
-                                  <div className="text-xs font-thin opacity-50 md:hidden">
-                                    {`${dayjs(comment.createdAt).format(
-                                      "MMM D, 'YY"
-                                    )}`}
-                                  </div>
+            <div ref={disclosureRef}>
+              <Disclosure.Panel className="px-4 pt-2 pb-2 text-sm text-primary-900">
+                <div className="flex justify-between">
+                  {/* Avatar and comment */}
+                  <div className="w-full px-2 pb-2">
+                    {comments &&
+                      comments.map((comment) => (
+                        <div key={comment.id} className="flex gap-2">
+                          <div>
+                            <div className="h-2"></div>
+                            <div className="flex justify-start w-full gap-2 mb-2 md:gap-4">
+                              <div className="avatar">
+                                <div className="w-8 h-8 rounded-full md:w-10 md:h-10">
+                                  <Image
+                                    src={comment.User.image}
+                                    alt="teacher-photo"
+                                    height={40}
+                                    width={40}
+                                  />
                                 </div>
-                                <p>{comment.content}</p>
                               </div>
-                              <div>
-                                {comment.User.id == currentUserId && (
-                                  <Menu.Button className="invisible h-5 px-2 py-1 rounded-lg shadow cursor-pointer hover:bg-neutral-200 bg-neutral-100 group-hover:visible">
-                                    <TfiMoreAlt />
-                                  </Menu.Button>
-                                )}
-                              </div>
-                              <Transition
-                                as={Fragment}
-                                enter="transition ease-out duration-100"
-                                enterFrom="transform opacity-0 scale-95"
-                                enterTo="transform opacity-100 scale-100"
-                                leave="transition ease-in duration-75"
-                                leaveFrom="transform opacity-100 scale-100"
-                                leaveTo="transform opacity-0 scale-95"
+                              <Menu
+                                as="div"
+                                className="relative flex gap-1 group"
                               >
-                                <Menu.Items className="absolute right-0 z-10 mt-6 origin-top-right rounded-md shadow-lg w-36 bg-base-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                  <div className="py-2">
-                                    <Menu.Item>
-                                      {({ active }) => (
-                                        <div
-                                          onClick={(id) => {
-                                            setCommentId(comment.id)
-                                            return handleDeleteCommentModal()
-                                          }}
-                                          className="flex items-center gap-0.5 hover:bg-base-200 text-base-content rounded cursor-pointer p-3"
-                                        >
-                                          <div className="text-xl">
-                                            <RiDeleteBinLine />
-                                          </div>
-                                          <div className="text-sm">Delete</div>
-                                        </div>
-                                      )}
-                                    </Menu.Item>
+                                <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
+                                  <div className="flex items-center gap-2">
+                                    <p className="font-bold">
+                                      {comment.User.name}
+                                    </p>
+                                    <div className="hidden text-xs font-thin opacity-50 md:block">
+                                      {`${dayjs(comment.createdAt).format(
+                                        "MMM D, YYYY h:mma"
+                                      )}`}
+                                    </div>
+                                    <div className="text-xs font-thin opacity-50 md:hidden">
+                                      {`${dayjs(comment.createdAt).format(
+                                        "MMM D, 'YY"
+                                      )}`}
+                                    </div>
                                   </div>
-                                </Menu.Items>
-                              </Transition>
-                            </Menu>
+                                  <p>{comment.content}</p>
+                                </div>
+                                <div>
+                                  {comment.User.id == currentUserId && (
+                                    <Menu.Button className="invisible h-5 px-2 py-1 rounded-lg shadow cursor-pointer hover:bg-neutral-200 bg-neutral-100 group-hover:visible">
+                                      <TfiMoreAlt />
+                                    </Menu.Button>
+                                  )}
+                                </div>
+                                <Transition
+                                  as={Fragment}
+                                  enter="transition ease-out duration-100"
+                                  enterFrom="transform opacity-0 scale-95"
+                                  enterTo="transform opacity-100 scale-100"
+                                  leave="transition ease-in duration-75"
+                                  leaveFrom="transform opacity-100 scale-100"
+                                  leaveTo="transform opacity-0 scale-95"
+                                >
+                                  <Menu.Items className="absolute right-0 z-10 mt-6 origin-top-right rounded-md shadow-lg w-36 bg-base-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    <div className="py-2">
+                                      <Menu.Item>
+                                        {({ active }) => (
+                                          <div
+                                            onClick={(id) => {
+                                              setCommentId(comment.id)
+                                              return handleDeleteCommentModal()
+                                            }}
+                                            className="flex items-center gap-0.5 hover:bg-base-200 text-base-content rounded cursor-pointer p-3"
+                                          >
+                                            <div className="text-xl">
+                                              <RiDeleteBinLine />
+                                            </div>
+                                            <div className="text-sm">
+                                              Delete
+                                            </div>
+                                          </div>
+                                        )}
+                                      </Menu.Item>
+                                    </div>
+                                  </Menu.Items>
+                                </Transition>
+                              </Menu>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
 
-                  {/* <div>{AddLessonPlanCommentInput}</div> */}
+                    {/* <div>{AddLessonPlanCommentInput}</div> */}
+                  </div>
                 </div>
-              </div>
-              <div>{AddLessonPlanCommentInput}</div>
-            </Disclosure.Panel>
+                <div>{AddLessonPlanCommentInput}</div>
+              </Disclosure.Panel>
+            </div>
           </>
         )}
       </Disclosure>
