@@ -2,6 +2,7 @@ import { Disclosure } from "@headlessui/react"
 import { CurrentLesson } from "./CurrentLesson"
 import { UnitPanel } from "./UnitPanel"
 import { LevelPanel } from "./LevelPanel"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 interface CurriculumDisclosureProps {
   levelsArray: any
@@ -37,6 +38,7 @@ export function CurriculumDisclosure({
     levelPublished,
     currentLessonList,
   }: unitMapProps) {
+    const [lessonPanelRef] = useAutoAnimate()
     return (
       <li className="bg-white hover:bg-neutral-50">
         <Disclosure>
@@ -45,30 +47,30 @@ export function CurriculumDisclosure({
             className="flex items-center justify-between pr-6 cursor-pointer"
             id={`unit-${unitNumber}-${unitTitle}`}
           >
-            {
-              <UnitPanel
-                imageUrl={unitPhoto}
-                title={unitTitle}
-                levelPublished={levelPublished}
-                unitPublished={unitPublished}
-                unitNumber={unitNumber}
-                numberOfLessons={unitNumberOfLessons}
-                admin={admin}
-                edit={edit}
-              />
-            }
-          </Disclosure.Button>
-          <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
-            <div className="h-4"></div>
-            <CurrentLesson
-              lessonList={currentLessonList}
-              admin={admin}
+            <UnitPanel
+              imageUrl={unitPhoto}
+              title={unitTitle}
+              levelPublished={levelPublished}
               unitPublished={unitPublished}
-              studentId={studentId}
+              unitNumber={unitNumber}
+              numberOfLessons={unitNumberOfLessons}
+              admin={admin}
               edit={edit}
-              lessonCompletions={lessonCompletions}
             />
-          </Disclosure.Panel>
+          </Disclosure.Button>
+          <div ref={lessonPanelRef}>
+            <Disclosure.Panel className="h-full px-6 pb-3 overflow-y-hidden shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
+              <div className="h-4"></div>
+              <CurrentLesson
+                lessonList={currentLessonList}
+                admin={admin}
+                unitPublished={unitPublished}
+                studentId={studentId}
+                edit={edit}
+                lessonCompletions={lessonCompletions}
+              />
+            </Disclosure.Panel>
+          </div>
         </Disclosure>
       </li>
     )
@@ -147,7 +149,6 @@ export function CurriculumDisclosure({
                 </div>
               )
             })}
-
           {admin &&
             edit &&
             unitsArray?.map((currentUnit: any) => {
@@ -176,7 +177,7 @@ export function CurriculumDisclosure({
   const publishedLevels = levelsArray.filter((level: any) => level.published)
 
   return (
-    <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
+    <nav className="h-full mt-3" aria-label="Directory">
       {!admin &&
         levelsArray &&
         publishedLevels.map((level: any) => {

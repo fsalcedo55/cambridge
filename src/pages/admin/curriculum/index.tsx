@@ -18,6 +18,7 @@ import { UnitPanel } from "@src/components/curriculum/UnitPanel"
 import { LevelPanel } from "@src/components/curriculum/LevelPanel"
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -50,6 +51,7 @@ export default function Curriculum() {
   const levels = trpc.level.getAll.useQuery()
   const deleteLevel = trpc.level.delete.useMutation()
   const deleteUnit = trpc.unit.deleteById.useMutation()
+  const [lessonPanelRef] = useAutoAnimate()
 
   const handleDeleteLevelModal = async (levelId: string) => {
     setIsOpenDeleteLevelModal(true)
@@ -251,7 +253,7 @@ export default function Curriculum() {
 
   function curriculumDisclosure(levelsArray: any, admin: boolean) {
     return (
-      <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
+      <nav className="h-full mt-3" aria-label="Directory">
         {levelsArray &&
           levelsArray.map((level: any) => (
             <div key={level.id} className="relative">
@@ -299,24 +301,26 @@ export default function Curriculum() {
                           />
                         }
                       </Disclosure.Button>
-                      <Disclosure.Panel className="px-6 pb-3 shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
-                        <UnitCrudTabs
-                          editUnit={() => handleEditUnitModal(currentUnit)}
-                          numberOfLessons={currentUnit.Lesson.length}
-                          deleteUnitDisabled={() =>
-                            setIsOpenDisabledDeleteUnitModal(true)
-                          }
-                          deleteUnit={() =>
-                            handleDeleteUnitModal(currentUnit.id)
-                          }
-                        />
-                        <CurrentLesson
-                          lessonList={currentUnit?.Lesson}
-                          admin={admin}
-                          unitPublished={currentUnit.published}
-                          edit={true}
-                        />
-                      </Disclosure.Panel>
+                      <div ref={lessonPanelRef}>
+                        <Disclosure.Panel className="px-6 pb-3 overflow-y-hidden shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
+                          <UnitCrudTabs
+                            editUnit={() => handleEditUnitModal(currentUnit)}
+                            numberOfLessons={currentUnit.Lesson.length}
+                            deleteUnitDisabled={() =>
+                              setIsOpenDisabledDeleteUnitModal(true)
+                            }
+                            deleteUnit={() =>
+                              handleDeleteUnitModal(currentUnit.id)
+                            }
+                          />
+                          <CurrentLesson
+                            lessonList={currentUnit?.Lesson}
+                            admin={admin}
+                            unitPublished={currentUnit.published}
+                            edit={true}
+                          />
+                        </Disclosure.Panel>
+                      </div>
                     </Disclosure>
                   </li>
                 ))}
