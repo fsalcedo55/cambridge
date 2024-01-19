@@ -220,10 +220,10 @@ model PerformanceLevel {
 }
 
 model FeedbackMetric {
-    id              String             @id @unique @default(cuid())
-    feedbackId      String
-    PerformanceData PerformanceLevel[]
-    Feedback        Feedback[]
+    id               String             @id @unique @default(cuid())
+    feedbackId       String
+    PerformanceLevel PerformanceLevel[]
+    Feedback         Feedback[]
 
     @@index([feedbackId])
 }
