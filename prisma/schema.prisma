@@ -51,6 +51,7 @@ model User {
     lessonPlans        LessonPlan[]
     lessonPlanComments LessonPlanComment[]
     lessonComments     LessonComment[]
+    Feedback           Feedback[]
 }
 
 model Student {
@@ -65,6 +66,7 @@ model Student {
     Lesson             Lesson[]
     entitlements       Entitlements[]
     lessonCompletions  LessonCompletion[]
+    Feedback           Feedback[]
 
     @@index([userId])
 }
@@ -131,6 +133,7 @@ model Lesson {
     unitId            String
     comments          LessonComment[]
     lessonCompletions LessonCompletion[]
+    Feedback          Feedback[]
 
     @@index([studentId])
     @@index([unitId])
@@ -194,4 +197,51 @@ model LessonCompletion {
 
     @@index([lessonId])
     @@index([studentId])
+}
+
+enum PerformanceLevelTitle {
+    Attitude
+    Grammar
+    Reading
+    Speaking
+    Vocabulary
+    Writing
+}
+
+model PerformanceLevel {
+    id               String                @id @unique @default(cuid())
+    title            PerformanceLevelTitle
+    weight           Int
+    feedbackMetricId String
+
+    FeedbackMetric FeedbackMetric @relation(fields: [feedbackMetricId], references: [id])
+
+    @@index([feedbackMetricId])
+}
+
+model FeedbackMetric {
+    id              String             @id @unique @default(cuid())
+    feedbackId      String
+    PerformanceData PerformanceLevel[]
+    Feedback        Feedback[]
+
+    @@index([feedbackId])
+}
+
+model Feedback {
+    id               String @id @unique @default(cuid())
+    studentId        String
+    userId           String
+    lessonId         String
+    feedbackMetricId String
+
+    Student        Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    User           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Lesson         Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+    FeedbackMetric FeedbackMetric @relation(fields: [feedbackMetricId], references: [id])
+
+    @@index([studentId])
+    @@index([userId])
+    @@index([lessonId])
+    @@index([feedbackMetricId])
 }
