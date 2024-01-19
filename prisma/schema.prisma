@@ -187,6 +187,7 @@ model LessonCompletion {
     lessonId    String
     studentId   String
     completedAt DateTime @default(now())
+    comments    String?  @db.Text
 
     Lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
     Student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)

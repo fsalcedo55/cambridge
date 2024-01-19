@@ -14,6 +14,9 @@ import { useRouter } from "next/router"
 import { MdDescription } from "react-icons/md"
 import { BsFillCheckCircleFill } from "react-icons/bs"
 import { useEffect, useState } from "react"
+import { BiCommentCheck } from "react-icons/bi"
+import Modal from "@src/components/ui/modal"
+import AddFeedback from "@src/components/teacher/feedback/AddFeedback"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -27,7 +30,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
+type ModalType = "ADD_FEEDBACK" | null
+
 export default function TeacherStudentLessonPage() {
+  const [currentModal, setCurrentModal] = useState<ModalType>(null)
   const router = useRouter()
   const { lessonId } = router.query
   const { id } = router.query
@@ -157,7 +163,20 @@ export default function TeacherStudentLessonPage() {
         </div>
       </div>
       <div className="h-4"></div>
-      <div className="flex items-center justify-center my-10">
+      <div className="flex flex-col items-center justify-center my-6">
+        {isLessonCompleted && (
+          <Button
+            intent="primary"
+            size="large"
+            className="px-24 mb-6"
+            onClick={() => setCurrentModal("ADD_FEEDBACK")}
+          >
+            <span className="flex items-center gap-2 text-xl">
+              <BiCommentCheck className="text-2xl" />
+              Add Feedback
+            </span>
+          </Button>
+        )}
         {lessonCompletion.isLoading ? (
           <Loading />
         ) : isLessonCompleted ? (
@@ -179,7 +198,14 @@ export default function TeacherStudentLessonPage() {
           </Button>
         )}
       </div>
-      {/* <Container title="Feedback"></Container> */}
+      {/* Add Feedback Modal */}
+      <Modal
+        isOpen={currentModal === "ADD_FEEDBACK"}
+        setIsOpen={setCurrentModal}
+        title={"Add Feedback"}
+        description={<AddFeedback />}
+        closeButton={"Cancel"}
+      />
     </>
   )
 }
