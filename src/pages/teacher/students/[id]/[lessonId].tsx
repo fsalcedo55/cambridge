@@ -118,48 +118,56 @@ export default function TeacherStudentLessonPage() {
           <SlideComponent lesson={lesson} admin={false} />
         </div>
         <div className="flex-1">
-          <Container title="Lesson Objective">
-            {lesson?.data?.objective?.length! > 0 ? (
-              lesson.data?.objective
-            ) : (
-              <div className="flex items-center justify-center">
-                <div>
-                  <div className="flex justify-center mb-2 text-5xl opacity-50">
-                    <MdDescription />
-                  </div>
-                  <div>Add an Objective</div>
-                </div>
-              </div>
-            )}
-          </Container>
-          <div className="h-4"></div>
-          <Container title="Assignments">
-            <fieldset>
-              <div>
-                <div className="relative flex items-start"></div>
-                <div className="relative items-start">
-                  {assignments.data?.map((assignment: any) => (
-                    <div
-                      className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
-                      key={assignment.id}
-                    >
-                      <div className="flex items-center justify-between my-1">
-                        <Link
-                          href={assignment.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
-                            <div className="font-bold">{assignment.title}</div>
-                          </div>
-                        </Link>
+          {lesson.data &&
+            lesson.data.objective &&
+            lesson.data.objective.length > 0 && (
+              <Container title="Lesson Objective">
+                {lesson?.data?.objective?.length! > 0 ? (
+                  lesson.data?.objective
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <div>
+                      <div className="flex justify-center mb-2 text-5xl opacity-50">
+                        <MdDescription />
                       </div>
+                      <div>Add an Objective</div>
                     </div>
-                  ))}
+                  </div>
+                )}
+              </Container>
+            )}
+          <div className="h-4"></div>
+          {assignments.data && assignments.data.length > 0 && (
+            <Container title="Assignments">
+              <fieldset>
+                <div>
+                  <div className="relative flex items-start"></div>
+                  <div className="relative items-start">
+                    {assignments.data?.map((assignment: any) => (
+                      <div
+                        className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
+                        key={assignment.id}
+                      >
+                        <div className="flex items-center justify-between my-1">
+                          <Link
+                            href={assignment.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
+                              <div className="font-bold">
+                                {assignment.title}
+                              </div>
+                            </div>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </fieldset>
-          </Container>
+              </fieldset>
+            </Container>
+          )}
         </div>
       </div>
       <div className="h-4"></div>

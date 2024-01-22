@@ -40,7 +40,7 @@ export function CurriculumDisclosure({
   }: unitMapProps) {
     const [lessonPanelRef] = useAutoAnimate()
     return (
-      <li className="mt-1 bg-white hover:bg-neutral-50 rounded-2xl">
+      <li className="my-1 bg-white hover:bg-neutral-50 rounded-2xl">
         <Disclosure>
           <Disclosure.Button
             as="div"
@@ -109,7 +109,7 @@ export function CurriculumDisclosure({
             levelId={levelId}
           />
         </div>
-        <ul role="list" className="relative z-0 divide-y divide-neutral-200">
+        <ul role="list" className="relative z-0">
           {!admin &&
             publishedUnitsArray.map((currentUnit: any) => {
               const publishedLessons = currentUnit.Lesson.filter(
@@ -178,7 +178,7 @@ export function CurriculumDisclosure({
 
   return (
     <nav
-      className="h-full mt-3 border-8 border-white shadow-2xl rounded-3xl"
+      className="h-full mt-3 bg-white border-8 border-white shadow-2xl rounded-3xl"
       aria-label="Directory"
     >
       {!admin &&
