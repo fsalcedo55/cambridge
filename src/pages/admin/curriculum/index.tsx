@@ -253,10 +253,13 @@ export default function Curriculum() {
 
   function curriculumDisclosure(levelsArray: any, admin: boolean) {
     return (
-      <nav className="h-full mt-3" aria-label="Directory">
+      <nav
+        className="h-full mt-3 bg-white border-8 border-white rounded-3xl"
+        aria-label="Directory"
+      >
         {levelsArray &&
           levelsArray.map((level: any) => (
-            <div key={level.id} className="relative">
+            <div key={level.id} className="relative bg-white">
               {
                 <LevelPanel
                   levelNumber={level.number}
@@ -274,14 +277,11 @@ export default function Curriculum() {
                   edit={true}
                 />
               }
-              <ul
-                role="list"
-                className="relative z-0 divide-y divide-neutral-200"
-              >
+              <ul role="list" className="relative z-0">
                 {level.Unit.map((currentUnit: any) => (
                   <li
                     key={currentUnit.id}
-                    className="bg-white hover:bg-neutral-50"
+                    className="my-1 bg-white hover:bg-neutral-50 rounded-2xl"
                   >
                     <Disclosure>
                       <Disclosure.Button
@@ -302,7 +302,7 @@ export default function Curriculum() {
                         }
                       </Disclosure.Button>
                       <div ref={lessonPanelRef}>
-                        <Disclosure.Panel className="px-6 pb-3 overflow-y-hidden shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
+                        <Disclosure.Panel className="px-6 pb-3 overflow-y-hidden shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500 rounded-b-2xl">
                           <UnitCrudTabs
                             editUnit={() => handleEditUnitModal(currentUnit)}
                             numberOfLessons={currentUnit.Lesson.length}

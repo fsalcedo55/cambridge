@@ -24,7 +24,7 @@ export function UnitPanel({
   edit,
 }: UnitPanelProps) {
   return (
-    <div className="relative flex items-center px-6 py-2 space-x-3">
+    <div className="relative flex items-center px-2 py-2 space-x-3">
       <Image
         height={120}
         width={175}

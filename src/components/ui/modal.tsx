@@ -61,7 +61,7 @@ export default function Modal({
               <Dialog.Description className="mt-4" as="div">
                 {description}
               </Dialog.Description>
-              <div className="flex flex-col gap-2 mt-4">
+              <div className="flex flex-col gap-2">
                 {actionButton && (
                   <Button
                     onClick={() => actionFunction(currentData)}

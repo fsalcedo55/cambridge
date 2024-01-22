@@ -40,7 +40,7 @@ export function CurriculumDisclosure({
   }: unitMapProps) {
     const [lessonPanelRef] = useAutoAnimate()
     return (
-      <li className="bg-white hover:bg-neutral-50">
+      <li className="my-1 bg-white hover:bg-neutral-50 rounded-2xl">
         <Disclosure>
           <Disclosure.Button
             as="div"
@@ -59,7 +59,7 @@ export function CurriculumDisclosure({
             />
           </Disclosure.Button>
           <div ref={lessonPanelRef}>
-            <Disclosure.Panel className="h-full px-6 pb-3 overflow-y-hidden shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
+            <Disclosure.Panel className="h-full px-6 pb-3 overflow-y-hidden shadow-inner rounded-2xl bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
               <div className="h-4"></div>
               <CurrentLesson
                 lessonList={currentLessonList}
@@ -96,8 +96,8 @@ export function CurriculumDisclosure({
     unitsArray,
   }: LevelMapProps) {
     return (
-      <div key={levelId} className="relative">
-        <div id={`level-${levelNumber}-${levelId}`}>
+      <div key={levelId} className="relative bg-white">
+        <div id={`level-${levelNumber}-${levelId}`} className="bg-white">
           <LevelPanel
             levelNumber={levelNumber}
             levelTitle={levelTitle}
@@ -109,7 +109,7 @@ export function CurriculumDisclosure({
             levelId={levelId}
           />
         </div>
-        <ul role="list" className="relative z-0 divide-y divide-neutral-200">
+        <ul role="list" className="relative z-0">
           {!admin &&
             publishedUnitsArray.map((currentUnit: any) => {
               const publishedLessons = currentUnit.Lesson.filter(
@@ -177,7 +177,10 @@ export function CurriculumDisclosure({
   const publishedLevels = levelsArray.filter((level: any) => level.published)
 
   return (
-    <nav className="h-full mt-3" aria-label="Directory">
+    <nav
+      className="h-full mt-3 bg-white border-8 border-white shadow-2xl rounded-3xl"
+      aria-label="Directory"
+    >
       {!admin &&
         levelsArray &&
         publishedLevels.map((level: any) => {
