@@ -57,7 +57,10 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
 
   const tabPanel = (
     <div>
-      <nav className="h-full mt-3 overflow-y-auto" aria-label="Directory">
+      <nav
+        className="h-full mt-3 overflow-y-auto rounded-3xl"
+        aria-label="Directory"
+      >
         <div>
           {studentEntitlements?.data && (
             <CurriculumDisclosure

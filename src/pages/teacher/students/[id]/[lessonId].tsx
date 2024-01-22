@@ -164,7 +164,7 @@ export default function TeacherStudentLessonPage() {
       </div>
       <div className="h-4"></div>
       <div className="flex flex-col items-center justify-center my-6">
-        {isLessonCompleted && (
+        {isLessonCompleted && !lessonCompletion.isLoading && (
           <Button
             intent="primary"
             size="large"

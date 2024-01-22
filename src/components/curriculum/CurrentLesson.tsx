@@ -146,7 +146,7 @@ export function CurrentLesson({
           className={
             lessonCompletions.includes(idParam)
               ? "absolute top-[67px] left-6 -ml-px h-[74px] w-0.5 bg-primary-800 opacity-10"
-              : "absolute top-12 left-6 -ml-px h-24 w-0.5 bg-primary-800"
+              : "absolute top-12 left-6 -ml-px h-[92px] w-0.5 bg-primary-800"
           }
           aria-hidden="true"
         />
