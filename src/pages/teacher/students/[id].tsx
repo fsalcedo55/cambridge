@@ -7,6 +7,8 @@ import LessonPlans from "@src/components/teacher/students/LessonPlans"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
 import CurriculumForStudent from "@src/components/teacher/curriculum/CurriculumForStudent"
 import { CurriculumDisclosure } from "@src/components/curriculum/curriculumDisclosure"
+import { useEffect } from "react"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -22,7 +24,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 export default function TeacherStudentPage({ sessionSSR }: any) {
   const router = useRouter()
-  const { id } = router.query
+  const { id, tab } = router.query
   const student = trpc.student.byId.useQuery(
     {
       id: id as string,
@@ -45,6 +47,32 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
         enabled: !!id,
       }
     )
+
+  console.log("tab: ", tab)
+
+  useEffect(() => {
+    if (!tab) {
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, tab: "lessonPlans" },
+        },
+        undefined,
+        { shallow: true }
+      )
+    }
+  }, [tab, router])
+
+  const handleTabChange = (newTab: string) => {
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: newTab },
+      },
+      undefined,
+      { shallow: true }
+    )
+  }
 
   const pages = [
     { name: "Students", href: "/teacher/students", current: false },
@@ -82,8 +110,11 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
         pageTitle={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
         loading={student.isLoading}
       />
-      {/* <LessonPlans me={me} /> */}
-      <Tabs defaultValue="lessonPlans" className="w-full">
+      <Tabs
+        defaultValue={(tab as string) || "lessonPlans"}
+        className="w-full"
+        onValueChange={handleTabChange}
+      >
         <TabsList>
           <TabsTrigger value="lessonPlans">Lesson Plans</TabsTrigger>
           <TabsTrigger value="curriculum">Curriculum</TabsTrigger>

@@ -56,26 +56,16 @@ export function CurrentLesson({
 
     return (
       <div className="relative z-0 flex items-center space-x-3">
-        <div>
-          <span
-            className={
-              lessonCompletions && lessonCompletions.includes(lessonId)
-                ? "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100 opacity-30"
-                : "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100"
-            }
-          >
-            {lessonNumber}
-          </span>
-        </div>
-        <Link href={getLinkHref()} legacyBehavior>
-          {/* <Link
-          href={
-            edit
-              ? `/admin/curriculum/${lessonId}`
-              : `/teacher/students/${studentId}/${lessonId}`
+        <span
+          className={
+            lessonCompletions && lessonCompletions.includes(lessonId)
+              ? "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100 opacity-30"
+              : "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100"
           }
-        > */}
-
+        >
+          {lessonNumber}
+        </span>
+        <Link href={getLinkHref()} legacyBehavior>
           <div
             className={
               lessonCompletions && lessonCompletions.includes(lessonId)
