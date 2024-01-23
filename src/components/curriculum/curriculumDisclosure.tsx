@@ -3,6 +3,9 @@ import { CurrentLesson } from "./CurrentLesson"
 import { UnitPanel } from "./UnitPanel"
 import { LevelPanel } from "./LevelPanel"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { useRouter } from "next/router"
+import { useEffect, useRef, useState } from "react"
+import autoAnimate from "@formkit/auto-animate"
 
 interface CurriculumDisclosureProps {
   levelsArray: any
@@ -27,6 +30,8 @@ export function CurriculumDisclosure({
     unitNumberOfLessons: number
     levelPublished: boolean
     currentLessonList: any
+    isSelected: boolean
+    unitId: string
   }
 
   function UnitMap({
@@ -37,42 +42,62 @@ export function CurriculumDisclosure({
     unitNumberOfLessons,
     levelPublished,
     currentLessonList,
+    isSelected,
+    unitId,
   }: unitMapProps) {
-    const [lessonPanelRef] = useAutoAnimate()
+    const router = useRouter()
+
+    const handleUnitChange = () => {
+      const newQuery = { ...router.query }
+
+      if (unitId == router.query.unit) {
+        delete newQuery.unit
+      } else {
+        newQuery.unit = unitId
+      }
+
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: newQuery,
+        },
+        undefined,
+        { scroll: false, shallow: true }
+      )
+    }
+
     return (
-      <li className="my-1 bg-white hover:bg-neutral-50 rounded-2xl">
-        <Disclosure>
-          <Disclosure.Button
-            as="div"
-            className="flex items-center justify-between pr-6 cursor-pointer"
-            id={`unit-${unitNumber}-${unitTitle}`}
-          >
-            <UnitPanel
-              imageUrl={unitPhoto}
-              title={unitTitle}
-              levelPublished={levelPublished}
-              unitPublished={unitPublished}
-              unitNumber={unitNumber}
-              numberOfLessons={unitNumberOfLessons}
+      <div className="my-1 bg-white hover:bg-neutral-50 rounded-2xl">
+        <div
+          className="flex items-center justify-between pr-6 cursor-pointer"
+          id={unitId}
+          onClick={handleUnitChange}
+        >
+          <UnitPanel
+            imageUrl={unitPhoto}
+            title={unitTitle}
+            levelPublished={levelPublished}
+            unitPublished={unitPublished}
+            unitNumber={unitNumber}
+            numberOfLessons={unitNumberOfLessons}
+            admin={admin}
+            edit={edit}
+          />
+        </div>
+        {router.query.unit == unitId && (
+          <div className="h-full px-6 pb-3 overflow-y-hidden duration-300 ease-in-out shadow-inner rounded-2xl bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
+            <div className="h-4"></div>
+            <CurrentLesson
+              lessonList={currentLessonList}
               admin={admin}
+              unitPublished={unitPublished}
+              studentId={studentId}
               edit={edit}
+              lessonCompletions={lessonCompletions}
             />
-          </Disclosure.Button>
-          <div ref={lessonPanelRef}>
-            <Disclosure.Panel className="h-full px-6 pb-3 overflow-y-hidden shadow-inner rounded-2xl bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
-              <div className="h-4"></div>
-              <CurrentLesson
-                lessonList={currentLessonList}
-                admin={admin}
-                unitPublished={unitPublished}
-                studentId={studentId}
-                edit={edit}
-                lessonCompletions={lessonCompletions}
-              />
-            </Disclosure.Panel>
           </div>
-        </Disclosure>
-      </li>
+        )}
+      </div>
     )
   }
 
@@ -95,6 +120,13 @@ export function CurriculumDisclosure({
     publishedUnitsArray,
     unitsArray,
   }: LevelMapProps) {
+    const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null)
+
+    const handleUnitSelect = (unitId: string) => {
+      setSelectedUnitId(selectedUnitId === unitId ? null : unitId)
+      // console.log("unitid: ", unitId)
+    }
+    // console.log("selectedUnitId: ", selectedUnitId)
     return (
       <div key={levelId} className="relative bg-white">
         <div id={`level-${levelNumber}-${levelId}`} className="bg-white">
@@ -118,6 +150,7 @@ export function CurriculumDisclosure({
               return (
                 <div key={currentUnit.id}>
                   <UnitMap
+                    unitId={currentUnit.id}
                     unitPhoto={currentUnit.photoUrl}
                     unitTitle={currentUnit.title}
                     unitPublished={currentUnit.published}
@@ -125,6 +158,7 @@ export function CurriculumDisclosure({
                     unitNumberOfLessons={publishedLessons.length}
                     levelPublished={levelPublished}
                     currentLessonList={currentUnit?.Lesson}
+                    isSelected={selectedUnitId === currentUnit.id}
                   />
                 </div>
               )
@@ -138,6 +172,7 @@ export function CurriculumDisclosure({
               return (
                 <div key={currentUnit.id}>
                   <UnitMap
+                    unitId={currentUnit.id}
                     unitPhoto={currentUnit.photoUrl}
                     unitTitle={currentUnit.title}
                     unitPublished={currentUnit.published}
@@ -145,6 +180,7 @@ export function CurriculumDisclosure({
                     unitNumberOfLessons={publishedLessons.length}
                     levelPublished={levelPublished}
                     currentLessonList={currentUnit?.Lesson}
+                    isSelected={selectedUnitId === currentUnit.id}
                   />
                 </div>
               )
@@ -158,6 +194,7 @@ export function CurriculumDisclosure({
               return (
                 <div key={currentUnit.id}>
                   <UnitMap
+                    unitId={currentUnit.id}
                     unitPhoto={currentUnit.photoUrl}
                     unitTitle={currentUnit.title}
                     unitPublished={currentUnit.published}
@@ -165,6 +202,7 @@ export function CurriculumDisclosure({
                     unitNumberOfLessons={currentUnit.Lesson.length}
                     levelPublished={levelPublished}
                     currentLessonList={currentUnit?.Lesson}
+                    isSelected={selectedUnitId === currentUnit.id}
                   />
                 </div>
               )
