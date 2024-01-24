@@ -103,6 +103,5 @@ module.exports = {
     require("daisyui"),
     require("@headlessui/tailwindcss"),
     require("@tailwindcss/forms"),
-    require("tailwindcss-animate"),
   ],
 }
