@@ -17,7 +17,7 @@ import AddLessonPlanCommentInput from "@components/addLessonPlanCommentInput"
 import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { ILessonPlan } from "@src/interfaces/index"
-import { CurriculumDisclosure } from "@src/components/curriculum/curriculumDisclosure"
+import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
 import Breadcrumbs from "@src/components/ui/breadcrumbs"
 
 type Student = {
