@@ -6,6 +6,8 @@ import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import autoAnimate from "@formkit/auto-animate"
+import { AnimatePresence, motion, useIsPresent } from "framer-motion"
+import React from "react"
 
 interface CurriculumDisclosureProps {
   levelsArray: any
@@ -46,6 +48,7 @@ export function CurriculumDisclosure({
     unitId,
   }: unitMapProps) {
     const router = useRouter()
+    const isPresent = useIsPresent()
 
     const handleUnitChange = () => {
       const newQuery = { ...router.query }
@@ -66,11 +69,18 @@ export function CurriculumDisclosure({
       )
     }
 
+    const isOpen = router.query.unit == unitId
+
     return (
-      <div className="my-1 bg-white hover:bg-neutral-50 rounded-2xl">
+      <div
+        className={
+          isOpen
+            ? "my-1 bg-neutral-50 border border-neutral-400 shadow rounded-2xl"
+            : "my-1 bg-white border border-white hover:bg-neutral-50 hover:border-neutral-200 hover:shadow rounded-2xl"
+        }
+      >
         <div
           className="flex items-center justify-between pr-6 cursor-pointer"
-          id={unitId}
           onClick={handleUnitChange}
         >
           <UnitPanel
@@ -84,18 +94,27 @@ export function CurriculumDisclosure({
             edit={edit}
           />
         </div>
-        {router.query.unit == unitId && (
-          <div className="h-full px-6 pb-3 overflow-y-hidden duration-300 ease-in-out shadow-inner rounded-2xl bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500">
-            <div className="h-4"></div>
-            <CurrentLesson
-              lessonList={currentLessonList}
-              admin={admin}
-              unitPublished={unitPublished}
-              studentId={studentId}
-              edit={edit}
-              lessonCompletions={lessonCompletions}
-            />
-          </div>
+        {isOpen && isPresent && (
+          <AnimatePresence>
+            <motion.div
+              key={unitId}
+              initial={{ opacity: 0, maxHeight: 0 }}
+              animate={{ opacity: 1, maxHeight: 1000 }}
+              exit={{ opacity: 0, maxHeight: 0 }}
+              transition={{ duration: 0.5 }}
+              className="h-full px-6 pb-3 overflow-y-hidden shadow-inner rounded-2xl bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500"
+            >
+              <div className="h-4"></div>
+              <CurrentLesson
+                lessonList={currentLessonList}
+                admin={admin}
+                unitPublished={unitPublished}
+                studentId={studentId}
+                edit={edit}
+                lessonCompletions={lessonCompletions}
+              />
+            </motion.div>
+          </AnimatePresence>
         )}
       </div>
     )
