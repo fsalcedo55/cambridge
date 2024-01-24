@@ -50,26 +50,46 @@ export function CurriculumDisclosure({
     const router = useRouter()
     const isPresent = useIsPresent()
 
-    const handleUnitChange = () => {
+    const handleUnitClick = () => {
+      // const newQuery = { ...router.query }
+
+      // if (unitId == router.query.unit) {
+      //   delete newQuery.unit
+      // } else {
+      //   newQuery.unit = unitId
+      // }
+
+      // router.replace(
+      //   {
+      //     pathname: router.pathname,
+      //     query: newQuery,
+      //   },
+      //   undefined,
+      //   { scroll: false, shallow: true }
+      // )
+
       const newQuery = { ...router.query }
 
-      if (unitId == router.query.unit) {
+      if (unitId === router.query.unit) {
         delete newQuery.unit
       } else {
         newQuery.unit = unitId
       }
 
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: newQuery,
-        },
-        undefined,
-        { scroll: false, shallow: true }
-      )
+      const newUrl = {
+        pathname: router.pathname,
+        query: newQuery,
+        hash: unitId,
+      }
+
+      router.push(newUrl, undefined, { scroll: false, shallow: true })
     }
 
     const isOpen = router.query.unit == unitId
+
+    const hashId = `unit-${unitNumber}-${unitTitle
+      .replace(/\s+/g, "-")
+      .toLowerCase()}`
 
     return (
       <div
@@ -81,7 +101,8 @@ export function CurriculumDisclosure({
       >
         <div
           className="flex items-center justify-between pr-6 cursor-pointer"
-          onClick={handleUnitChange}
+          onClick={handleUnitClick}
+          id={unitId}
         >
           <UnitPanel
             imageUrl={unitPhoto}
