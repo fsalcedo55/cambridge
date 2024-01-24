@@ -6,7 +6,7 @@ import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
 import LessonPlans from "@src/components/teacher/students/LessonPlans"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
 import CurriculumForStudent from "@src/components/teacher/curriculum/CurriculumForStudent"
-import { CurriculumDisclosure } from "@src/components/curriculum/curriculumDisclosure"
+import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
 import { useEffect } from "react"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 
