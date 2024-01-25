@@ -4,7 +4,7 @@ import AddStudent from "@components/addStudent"
 import { useState } from "react"
 import Loading from "@ui/loading"
 import Modal from "@ui/modal"
-import Table, { IRows } from "@ui/table"
+import Table from "@ui/table"
 import { RiPencilLine, RiDeleteBinLine } from "react-icons/ri"
 import { useRouter } from "next/router"
 import Image from "next/image"
@@ -45,6 +45,7 @@ const studentTableHeaders = [
 export default function Students() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { status = "active" } = router.query
   const students = trpc.student.getAll.useQuery()
   const teachers = trpc.teacher.getAll.useQuery()
   const addStudent = trpc.student.add.useMutation()
@@ -86,6 +87,17 @@ export default function Students() {
       id: student.id,
     })
     setIsOpenDeleteModal(false)
+  }
+
+  const handleTabChange = (newTab: string) => {
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, status: newTab },
+      },
+      undefined,
+      { shallow: true }
+    )
   }
 
   // Formatted rows for table cells
@@ -312,7 +324,11 @@ export default function Students() {
         {students.isLoading ? (
           <Loading />
         ) : (
-          <Tabs defaultValue="active" className="w-full mt-6">
+          <Tabs
+            defaultValue={status as string}
+            className="w-full mt-6"
+            onValueChange={handleTabChange}
+          >
             <TabsList>
               <TabsTrigger value="active">Active</TabsTrigger>
               <TabsTrigger value="inactive">Inactive</TabsTrigger>

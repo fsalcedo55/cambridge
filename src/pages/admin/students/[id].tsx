@@ -19,6 +19,7 @@ import { getAuthSession } from "@src/server/common/get-server-session"
 import { ILessonPlan } from "@src/interfaces/index"
 import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
 import Breadcrumbs from "@src/components/ui/breadcrumbs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
 
 type Student = {
   studentFirstName: string
@@ -41,7 +42,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 export default function AdminStudentPage({ sessionSSR }: any) {
   const { data: session } = useSession()
   const router = useRouter()
-  const { id } = router.query
+  const { id, tab = "lessonPlans" } = router.query
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
@@ -157,24 +158,22 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   ]
 
   const tabPanel = (
-    <div>
-      <nav
-        className="h-full mt-3 overflow-y-auto rounded-3xl"
-        aria-label="Directory"
-      >
-        <div>
-          {studentEntitlements?.data && (
-            <CurriculumDisclosure
-              levelsArray={studentEntitlements?.data}
-              studentId={student.data?.id}
-              admin={true}
-              edit={false}
-              lessonCompletions={lessonCompletion.data}
-            />
-          )}
-        </div>
-      </nav>
-    </div>
+    <nav
+      className="h-full mt-3 overflow-y-auto rounded-3xl"
+      aria-label="Directory"
+    >
+      <div>
+        {studentEntitlements?.data && (
+          <CurriculumDisclosure
+            levelsArray={studentEntitlements?.data}
+            studentId={student.data?.id}
+            admin={true}
+            edit={false}
+            lessonCompletions={lessonCompletion.data}
+          />
+        )}
+      </div>
+    </nav>
   )
 
   const lessonPlans = (
@@ -226,6 +225,30 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     return classes.filter(Boolean).join(" ")
   }
 
+  const tabsTriggerData = [
+    {
+      id: 1,
+      value: "lessonPlans",
+      label: "Lesson Plans",
+    },
+    {
+      id: 2,
+      value: "curriculum",
+      label: "Curriculum",
+    },
+  ]
+
+  const handleTabChange = (newTab: string) => {
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: newTab },
+      },
+      undefined,
+      { shallow: true }
+    )
+  }
+
   return (
     <div>
       <div>
@@ -271,24 +294,21 @@ export default function AdminStudentPage({ sessionSSR }: any) {
       {student.isLoading ? (
         <Loading />
       ) : (
-        <div>
-          <Tab.Group>
-            <div className="flex items-center justify-between mb-4">
-              <Tab.List className="tabs">
-                <Tab className="pl-0 pr-8 tab tab-md tab-bordered ui-selected:tab-active ui-selected:font-semibold">
-                  Lesson Plans
-                </Tab>
-                <Tab className="pl-0 pr-8 tab tab-md tab-bordered ui-selected:tab-active ui-selected:font-semibold">
-                  Lessons
-                </Tab>
-              </Tab.List>
-            </div>
-            <Tab.Panels>
-              <Tab.Panel className="flex flex-col">{lessonPlans}</Tab.Panel>
-              <Tab.Panel>{tabPanel}</Tab.Panel>
-            </Tab.Panels>
-          </Tab.Group>
-        </div>
+        <Tabs
+          defaultValue={tab as string}
+          className="w-full"
+          onValueChange={handleTabChange}
+        >
+          <TabsList>
+            {tabsTriggerData.map((trigger) => (
+              <TabsTrigger key={trigger.id} value={trigger.value}>
+                {trigger.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <TabsContent value="lessonPlans">{lessonPlans}</TabsContent>
+          <TabsContent value="curriculum">{tabPanel}</TabsContent>
+        </Tabs>
       )}
       {/* Edit Modal */}
       <Modal

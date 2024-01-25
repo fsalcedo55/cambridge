@@ -78,8 +78,8 @@ const CurriculumDisclosure = memo(
           id={unitId}
         >
           <div
-            className="flex items-center justify-between pr-6 cursor-pointer"
             onClick={handleUnitClick}
+            className="flex items-center justify-between pr-6 cursor-pointer"
           >
             <UnitPanel
               imageUrl={unitPhoto}
