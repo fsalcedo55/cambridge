@@ -5,10 +5,8 @@ import { getAuthSession } from "@src/server/common/get-server-session"
 import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
 import LessonPlans from "@src/components/teacher/students/LessonPlans"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
-import CurriculumForStudent from "@src/components/teacher/curriculum/CurriculumForStudent"
 import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
-import { useEffect } from "react"
-import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { AnimatePresence, motion } from "framer-motion"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -24,7 +22,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 export default function TeacherStudentPage({ sessionSSR }: any) {
   const router = useRouter()
-  const { id, tab } = router.query
+  const { id, tab = "lessonPlans" } = router.query
   const student = trpc.student.byId.useQuery(
     {
       id: id as string,
@@ -48,21 +46,6 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
       }
     )
 
-  console.log("tab: ", tab)
-
-  useEffect(() => {
-    if (!tab) {
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, tab: "lessonPlans" },
-        },
-        undefined,
-        { shallow: true }
-      )
-    }
-  }, [tab, router])
-
   const handleTabChange = (newTab: string) => {
     router.replace(
       {
@@ -83,25 +66,18 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
     },
   ]
 
-  const tabPanel = (
-    <div>
-      <nav
-        className="h-full mt-3 overflow-y-auto rounded-3xl"
-        aria-label="Directory"
-      >
-        <div>
-          {studentEntitlements?.data && (
-            <CurriculumDisclosure
-              levelsArray={studentEntitlements?.data}
-              studentId={student.data?.id}
-              admin={false}
-              lessonCompletions={lessonCompletion.data}
-            />
-          )}
-        </div>
-      </nav>
-    </div>
-  )
+  const tabsTriggerData = [
+    {
+      id: 1,
+      value: "lessonPlans",
+      label: "Lesson Plans",
+    },
+    {
+      id: 2,
+      value: "curriculum",
+      label: "Curriculum",
+    },
+  ]
 
   return (
     <div>
@@ -111,20 +87,38 @@ export default function TeacherStudentPage({ sessionSSR }: any) {
         loading={student.isLoading}
       />
       <Tabs
-        defaultValue={(tab as string) || "lessonPlans"}
+        defaultValue={tab as string}
         className="w-full"
         onValueChange={handleTabChange}
       >
         <TabsList>
-          <TabsTrigger value="lessonPlans">Lesson Plans</TabsTrigger>
-          <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
+          {tabsTriggerData.map((trigger) => (
+            <TabsTrigger key={trigger.id} value={trigger.value}>
+              {trigger.label}
+            </TabsTrigger>
+          ))}
         </TabsList>
+
         <TabsContent value="lessonPlans">
           <LessonPlans me={me} />
         </TabsContent>
+
         <TabsContent value="curriculum">
-          {tabPanel}
-          {/* <CurriculumForStudent /> */}
+          <nav
+            className="h-full mt-3 overflow-y-auto rounded-3xl"
+            aria-label="Directory"
+          >
+            <div>
+              {studentEntitlements?.data && (
+                <CurriculumDisclosure
+                  levelsArray={studentEntitlements?.data}
+                  studentId={student.data?.id}
+                  admin={false}
+                  lessonCompletions={lessonCompletion.data}
+                />
+              )}
+            </div>
+          </nav>
         </TabsContent>
       </Tabs>
     </div>
