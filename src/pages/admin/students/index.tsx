@@ -20,6 +20,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@src/components/ui/tabs"
+import { Badge } from "@src/components/ui/badges"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -47,6 +48,8 @@ export default function Students() {
   const router = useRouter()
   const { status = "active" } = router.query
   const students = trpc.student.getAll.useQuery()
+  const activeStudents = trpc.student.getActiveStudents.useQuery()
+  const inactiveStudents = trpc.student.getInactiveStudents.useQuery()
   const teachers = trpc.teacher.getAll.useQuery()
   const addStudent = trpc.student.add.useMutation()
   const deleteStudent = trpc.student.deleteStudent.useMutation()
@@ -55,6 +58,9 @@ export default function Students() {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
+  const [numOfActiveStudents, setNumOfActiveStudents] = useState(0)
+
+  console.log("activestudents: ", activeStudents.data)
 
   const handleAddStudentModal = async (values: any) => {
     try {
@@ -239,6 +245,8 @@ export default function Students() {
   }
 
   if (session?.role === "admin") {
+    console.log(students.data)
+    console.log("formattedrows: ", formattedRows(true))
     return (
       <div>
         <div className="flex flex-col items-end justify-between md:flex-row">
@@ -330,8 +338,26 @@ export default function Students() {
             onValueChange={handleTabChange}
           >
             <TabsList>
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="inactive">Inactive</TabsTrigger>
+              <TabsTrigger value="active">
+                <div className="flex items-center gap-2">
+                  Active
+                  <Badge
+                    label={activeStudents?.data?.length}
+                    backgroundColor={"bg-neutral-50"}
+                    textColor={"text-neutral-500"}
+                  />
+                </div>
+              </TabsTrigger>
+              <TabsTrigger value="inactive">
+                <div className="flex items-center gap-2">
+                  Inactive
+                  <Badge
+                    label={inactiveStudents?.data?.length}
+                    backgroundColor={"bg-neutral-50"}
+                    textColor={"text-neutral-500"}
+                  />
+                </div>
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="active">
               <Table headers={studentTableHeaders} rows={formattedRows(true)} />

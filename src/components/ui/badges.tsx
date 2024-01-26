@@ -38,3 +38,35 @@ export function PublishedStatus({
     </div>
   )
 }
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ")
+}
+
+interface BadgeProps {
+  label: string | number | undefined
+  backgroundColor: string
+  textColor: string
+}
+
+export function Badge({
+  label,
+  backgroundColor = "bg-gray-50",
+  textColor = "text-gray-600",
+}: BadgeProps) {
+  const ringColor = textColor.replace("text", "ring")
+  return (
+    <>
+      <span
+        className={classNames(
+          "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset",
+          textColor,
+          backgroundColor,
+          ringColor
+        )}
+      >
+        {label}
+      </span>
+    </>
+  )
+}
