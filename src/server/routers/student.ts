@@ -36,6 +36,22 @@ export const studentRouter = router({
       select: defaultStudentSelect,
     })
   }),
+  getActiveStudents: publicProcedure.query(() => {
+    return prisma.student.findMany({
+      where: {
+        status: "Active",
+      },
+      select: { id: true },
+    })
+  }),
+  getInactiveStudents: publicProcedure.query(() => {
+    return prisma.student.findMany({
+      where: {
+        status: "Inactive",
+      },
+      select: { id: true },
+    })
+  }),
   byId: publicProcedure
     .input(
       z.object({
