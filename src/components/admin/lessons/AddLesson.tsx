@@ -5,6 +5,7 @@ import { trpc } from "@src/utils/trpc"
 import { useEffect, useState } from "react"
 import { ErrorMessage } from "@hookform/error-message"
 import { FormErrorMessage } from "@src/components/ui/form/formErrorMessage"
+import Link from "next/link"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -73,7 +74,7 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
           <option disabled selected value="" />
           {levelsArray?.map((level: any) => (
             <option value={level.id} key={level.id}>
-              {level.title}
+              {level.number}: {level.title}
             </option>
           ))}
         </select>
@@ -127,7 +128,19 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
         id="photoUrl"
         type="text"
         name="photoUrl"
-        label="Photo URL"
+        label={
+          <div>
+            Photo URL{" "}
+            <Link
+              href="https://unsplash.com/"
+              className="cursor-pointer text-primary-400 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              (Unsplash)
+            </Link>
+          </div>
+        }
         register={register}
         rules={{ required: "You must enter a photo URL." }}
         errors={errors}
