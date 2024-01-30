@@ -229,7 +229,6 @@ const CurriculumDisclosure = memo(
                 )
                 return (
                   <div key={currentUnit.id}>
-                    {/* <div className="h-2 bg-red-500" id={currentUnit.id}></div> */}
                     <UnitMap
                       unitId={currentUnit.id}
                       unitPhoto={currentUnit.photoUrl}
@@ -252,7 +251,6 @@ const CurriculumDisclosure = memo(
                 )
                 return (
                   <div key={currentUnit.id}>
-                    {/* <div className="h-2 bg-red-500" id={currentUnit.id}></div> */}
                     <UnitMap
                       unitId={currentUnit.id}
                       unitPhoto={currentUnit.photoUrl}
