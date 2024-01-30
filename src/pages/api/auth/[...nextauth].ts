@@ -1,8 +1,9 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
+import NextAuth, { NextAuthOptions, getServerSession } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "../../../../lib/prismadb"
 import { Knock } from "@knocklabs/node"
+import { GetServerSidePropsContext } from "next"
 const knock = new Knock(process.env.KNOCK_API_KEY)
 const jwt = require("jsonwebtoken")
 // import jwt from "jsonwebtoken"
@@ -25,40 +26,40 @@ export const authOptions: NextAuthOptions = {
     buttonText: "#0175BC",
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      await knock.users.identify(user.email!, {
-        name: user.name!,
-        email: user.email!,
-      })
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   await knock.users.identify(user.email!, {
+    //     name: user.name!,
+    //     email: user.email!,
+    //   })
 
-      return true
-    },
+    //   return true
+    // },
     async session({ session, token, user }) {
       // ....We decode the JSON here and grab the key.
-      if (process.env.KNOCK_SIGNING_KEY) {
-        // const signingKey = JSON.parse(process.env.KNOCK_SIGNING_KEY).key
-        // JWT NumericDates specified in seconds:
-        // const currentTime = Math.floor(Date.now() / 1000)
-        // session.knockToken = JSON.stringify({
-        //     token: 'hello'
-        //   })
-        // session.knockToken = {
-        //   knockToken: jwt.sign(
-        //     {
-        //       // The user that you're signing the token for
-        //       sub: user.email,
-        //       // When the token was issued
-        //       iat: currentTime,
-        //       // Expiry timestamp
-        //       exp: currentTime + 60 * 60, // 1 hour from now
-        //     },
-        //     signingKey,
-        //     {
-        //       algorithm: "RS256",
-        //     },
-        //     )
-        //   }
-      }
+      // if (process.env.KNOCK_SIGNING_KEY) {
+      //   // const signingKey = JSON.parse(process.env.KNOCK_SIGNING_KEY).key
+      //   // JWT NumericDates specified in seconds:
+      //   // const currentTime = Math.floor(Date.now() / 1000)
+      //   // session.knockToken = JSON.stringify({
+      //   //     token: 'hello'
+      //   //   })
+      //   // session.knockToken = {
+      //   //   knockToken: jwt.sign(
+      //   //     {
+      //   //       // The user that you're signing the token for
+      //   //       sub: user.email,
+      //   //       // When the token was issued
+      //   //       iat: currentTime,
+      //   //       // Expiry timestamp
+      //   //       exp: currentTime + 60 * 60, // 1 hour from now
+      //   //     },
+      //   //     signingKey,
+      //   //     {
+      //   //       algorithm: "RS256",
+      //   //     },
+      //   //     )
+      //   //   }
+      // }
 
       if (user.email == process.env.ADMIN_EMAILS) {
         session.role = "admin"
@@ -71,3 +72,10 @@ export const authOptions: NextAuthOptions = {
 }
 
 export default NextAuth(authOptions)
+
+export const getServerAuthSession = (ctx: {
+  req: GetServerSidePropsContext["req"]
+  res: GetServerSidePropsContext["res"]
+}) => {
+  return getServerSession(ctx.req, ctx.res, authOptions)
+}

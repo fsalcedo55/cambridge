@@ -1,11 +1,11 @@
-import { router, publicProcedure } from "@src/server/trpc"
+import { router, publicProcedure, adminProcedure } from "@src/server/trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 export const levelRouter = router({
-  add: publicProcedure
+  add: adminProcedure
     .input(
       z.object({
         title: z.string(),
@@ -18,7 +18,7 @@ export const levelRouter = router({
       })
       return level
     }),
-  getAll: publicProcedure.query(() => {
+  getAll: adminProcedure.query(() => {
     return prisma.level.findMany({
       orderBy: {
         number: "asc",
@@ -64,7 +64,7 @@ export const levelRouter = router({
       },
     })
   }),
-  getLevelsReduced: publicProcedure.query(() => {
+  getLevelsReduced: adminProcedure.query(() => {
     return prisma.level.findMany({
       orderBy: {
         number: "asc",
@@ -81,7 +81,7 @@ export const levelRouter = router({
       },
     })
   }),
-  byId: publicProcedure
+  byId: adminProcedure
     .input(z.object({ id: z.array(z.string()) }))
     .query(({ input }) => {
       return prisma.level.findMany({
@@ -130,14 +130,14 @@ export const levelRouter = router({
         },
       })
     }),
-  delete: publicProcedure
+  delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       const level = await prisma.level.delete({
         where: input,
       })
     }),
-  edit: publicProcedure
+  edit: adminProcedure
     .input(
       z.object({
         id: z.string(),

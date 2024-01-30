@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "@src/server/trpc"
+import { router, publicProcedure, protectedProcedure } from "@src/server/trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 export const lessonCompletionRouter = router({
   // Procedure to create a LessonCompletion entry
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         lessonId: z.string(),
@@ -25,7 +25,7 @@ export const lessonCompletionRouter = router({
     }),
 
   // Procedure to delete a LessonCompletion entry
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -39,7 +39,7 @@ export const lessonCompletionRouter = router({
         },
       })
     }),
-  getByStudentAndLesson: publicProcedure
+  getByStudentAndLesson: protectedProcedure
     .input(
       z.object({
         studentId: z.string(),
@@ -55,7 +55,7 @@ export const lessonCompletionRouter = router({
         },
       })
     }),
-  getAllLessonCompletionsByStudentId: publicProcedure
+  getAllLessonCompletionsByStudentId: protectedProcedure
     .input(
       z.object({
         studentId: z.string(),

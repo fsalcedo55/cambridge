@@ -1,11 +1,16 @@
-import { router, publicProcedure } from "../trpc"
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+  adminProcedure,
+} from "../trpc"
 import { string, z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 export const userRouter = router({
-  me: publicProcedure
+  me: protectedProcedure
     .input(
       z.object({
         email: z.string().optional(),
@@ -19,10 +24,9 @@ export const userRouter = router({
           image: true,
           id: true,
         },
-        
       })
     }),
-  getAll: publicProcedure.query(() => {
+  getAll: adminProcedure.query(() => {
     return prisma.user.findMany({
       select: {
         name: true,
@@ -32,11 +36,11 @@ export const userRouter = router({
         id: true,
       },
       orderBy: {
-          role: "asc"
+        role: "asc",
       },
     })
   }),
-  editUser: publicProcedure
+  editUser: adminProcedure
     .input(
       z.object({
         role: z.string(),
