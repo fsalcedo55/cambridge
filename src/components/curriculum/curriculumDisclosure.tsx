@@ -4,6 +4,8 @@ import { UnitPanel } from "./UnitPanel"
 import { LevelPanel } from "./LevelPanel"
 import { useRouter } from "next/router"
 import { AnimatePresence, motion, useIsPresent } from "framer-motion"
+import { Progress } from "../ui/progress"
+import { trpc } from "@src/utils/trpc"
 
 interface CurriculumDisclosureProps {
   levelsArray: any
@@ -47,7 +49,18 @@ const CurriculumDisclosure = memo(
     }: unitMapProps) {
       const router = useRouter()
       const isPresent = useIsPresent()
+      const numOfLessonsCompleted: any =
+        trpc.unit.getCompletedLessonsPerUnit.useQuery(
+          {
+            unitId,
+            studentId: router.query.id as string,
+          },
+          {
+            enabled: router.isReady,
+          }
+        )
 
+      console.log("numOfLessonsCompleted: ", numOfLessonsCompleted)
       const handleUnitClick = () => {
         const newQuery = { ...router.query }
 
@@ -68,13 +81,20 @@ const CurriculumDisclosure = memo(
 
       const isOpen = router.query.unit == unitId
 
+      function percentage(completed: number, totalLessons: number) {
+        if (totalLessons == 0) return 0
+
+        const divided = completed / totalLessons
+        return divided * 100
+      }
+
       return (
         <div
-          className={
+          className={`scroll-target ${
             isOpen
               ? "my-1 bg-neutral-50 border border-neutral-400 shadow rounded-2xl"
               : "my-1 bg-white border border-white hover:bg-neutral-50 hover:border-neutral-200 hover:shadow rounded-2xl"
-          }
+          }`}
           id={unitId}
         >
           <div
@@ -91,6 +111,32 @@ const CurriculumDisclosure = memo(
               admin={admin}
               edit={edit}
             />
+            <div className="w-60">
+              <Progress
+                value={
+                  numOfLessonsCompleted.data != undefined
+                    ? percentage(
+                        numOfLessonsCompleted.data,
+                        unitNumberOfLessons
+                      )
+                    : 0
+                }
+              />
+              <div className="flex justify-between py-1 text-xs">
+                <div className="font-bold text-neutral-500">
+                  {numOfLessonsCompleted.data != undefined
+                    ? percentage(
+                        numOfLessonsCompleted.data,
+                        unitNumberOfLessons
+                      )
+                    : 0}
+                  % Complete
+                </div>
+                <div className="text-neutral-400">
+                  {numOfLessonsCompleted.data} of {unitNumberOfLessons}
+                </div>
+              </div>
+            </div>
           </div>
           {isOpen && isPresent && (
             <AnimatePresence>
@@ -141,7 +187,7 @@ const CurriculumDisclosure = memo(
 
       return (
         <div key={levelId} className="relative bg-white">
-          <div id={`level-${levelNumber}-${levelId}`} className="bg-white">
+          <div className="bg-white">
             <LevelPanel
               levelNumber={levelNumber}
               levelTitle={levelTitle}

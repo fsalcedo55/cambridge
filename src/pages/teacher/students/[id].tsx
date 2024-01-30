@@ -6,7 +6,6 @@ import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
 import LessonPlans from "@src/components/teacher/students/LessonPlans"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
 import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
-import { AnimatePresence, motion } from "framer-motion"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)

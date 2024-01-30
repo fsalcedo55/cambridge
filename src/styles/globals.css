@@ -25,3 +25,7 @@ input:-webkit-autofill {
 .height-at-bottom {
   height: calc(100vh - 185px);
 }
+
+.scroll-target {
+  scroll-margin-top: 70px; /* Adjust this value to match the height of your navbar */
+}
