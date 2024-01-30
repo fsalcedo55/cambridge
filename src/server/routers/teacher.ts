@@ -1,11 +1,11 @@
-import { router, publicProcedure } from "../trpc"
+import { router, publicProcedure, adminProcedure } from "../trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 export const teacherRouter = router({
-  getAll: publicProcedure.query(() => {
+  getAll: adminProcedure.query(() => {
     return prisma.user.findMany({
       where: { role: "teacher" },
     })

@@ -1,11 +1,16 @@
-import { router, publicProcedure } from "@src/server/trpc"
+import {
+  router,
+  publicProcedure,
+  adminProcedure,
+  protectedProcedure,
+} from "@src/server/trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 export const lessonRouter = router({
-  add: publicProcedure
+  add: adminProcedure
     .input(
       z.object({
         title: z.string(),
@@ -20,7 +25,7 @@ export const lessonRouter = router({
       })
       return lesson
     }),
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -58,7 +63,7 @@ export const lessonRouter = router({
       })
       return lesson
     }),
-  delete: publicProcedure
+  delete: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -71,7 +76,7 @@ export const lessonRouter = router({
         },
       })
     }),
-  edit: publicProcedure
+  edit: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -102,8 +107,3 @@ export const lessonRouter = router({
       })
     }),
 })
-
-// model LessonsCompleted {
-//   id String @id @unique @default(cuid())
-
-// }

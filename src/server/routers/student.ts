@@ -1,4 +1,9 @@
-import { router, publicProcedure } from "../trpc"
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+  adminProcedure,
+} from "../trpc"
 import { z } from "zod"
 import { PrismaClient, Prisma } from "@prisma/client"
 
@@ -28,7 +33,7 @@ const defaultStudentSelect = Prisma.validator<Prisma.StudentSelect>()({
 })
 
 export const studentRouter = router({
-  getAll: publicProcedure.query(() => {
+  getAll: adminProcedure.query(() => {
     return prisma.student.findMany({
       orderBy: {
         studentFirstName: "asc",
@@ -36,7 +41,7 @@ export const studentRouter = router({
       select: defaultStudentSelect,
     })
   }),
-  getActiveStudents: publicProcedure.query(() => {
+  getActiveStudents: adminProcedure.query(() => {
     return prisma.student.findMany({
       where: {
         status: "Active",
@@ -44,7 +49,7 @@ export const studentRouter = router({
       select: { id: true },
     })
   }),
-  getInactiveStudents: publicProcedure.query(() => {
+  getInactiveStudents: adminProcedure.query(() => {
     return prisma.student.findMany({
       where: {
         status: "Inactive",
@@ -52,7 +57,7 @@ export const studentRouter = router({
       select: { id: true },
     })
   }),
-  byId: publicProcedure
+  byId: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -138,7 +143,7 @@ export const studentRouter = router({
         },
       })
     }),
-  byTeacherId: publicProcedure
+  byTeacherId: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -156,7 +161,7 @@ export const studentRouter = router({
       })
       return students
     }),
-  add: publicProcedure
+  add: adminProcedure
     .input(
       z.object({
         studentFirstName: z.string(),
@@ -190,7 +195,7 @@ export const studentRouter = router({
       )
       return true
     }),
-  deleteStudent: publicProcedure
+  deleteStudent: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -201,7 +206,7 @@ export const studentRouter = router({
         where: input,
       })
     }),
-  editStudent: publicProcedure
+  editStudent: adminProcedure
     .input(
       z.object({
         studentFirstName: z.string(),
@@ -260,7 +265,7 @@ export const studentRouter = router({
 
       return student
     }),
-  getEntitlementsByStudentId: publicProcedure
+  getEntitlementsByStudentId: protectedProcedure
     .input(
       z.object({
         id: z.string().nullable(),
