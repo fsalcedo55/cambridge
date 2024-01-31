@@ -8,7 +8,7 @@ export default function Header() {
   const loading = status === "loading"
 
   return (
-    <div className="flex justify-between w-screen h-16 pr-16 shadow navbar bg-base-100">
+    <div className="flex justify-between h-16 pr-16 shadow max-w-screen navbar bg-base-100">
       <div className="flex justify-center w-64 gap-2">
         <Link href="/" legacyBehavior>
           <Image
