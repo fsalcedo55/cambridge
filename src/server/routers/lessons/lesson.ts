@@ -25,6 +25,17 @@ export const lessonRouter = router({
       })
       return lesson
     }),
+  getAllPublishedLessons: adminProcedure.query(async () => {
+    const lessons = await prisma.lesson.findMany({
+      where: {
+        published: true,
+      },
+      select: {
+        id: true,
+      },
+    })
+    return lessons.length
+  }),
   getById: protectedProcedure
     .input(
       z.object({
