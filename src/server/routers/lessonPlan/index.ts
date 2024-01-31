@@ -1,4 +1,9 @@
-import { router, publicProcedure, protectedProcedure } from "../../trpc"
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+  adminProcedure,
+} from "../../trpc"
 import { z } from "zod"
 import { Prisma, PrismaClient } from "@prisma/client"
 
@@ -50,4 +55,17 @@ export const lessonPlanRouter = router({
         where: input,
       })
     }),
+  getTotalNumberOfLessonPlans: adminProcedure.query(async () => {
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+    const lessonPlans = await prisma.lessonPlan.findMany({
+      where: {
+        date: {
+          gte: sevenDaysAgo.toISOString().split("T")[0],
+        },
+      },
+    })
+    return lessonPlans.length
+  }),
 })
