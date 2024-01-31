@@ -60,7 +60,6 @@ const CurriculumDisclosure = memo(
           }
         )
 
-      console.log("numOfLessonsCompleted: ", numOfLessonsCompleted)
       const handleUnitClick = () => {
         const newQuery = { ...router.query }
 
@@ -122,7 +121,7 @@ const CurriculumDisclosure = memo(
                     : 0
                 }
               />
-              <div className="flex justify-between py-1 text-xs">
+              <div className="flex justify-between py-1">
                 <div className="font-bold text-neutral-500">
                   {numOfLessonsCompleted.data != undefined
                     ? percentage(
