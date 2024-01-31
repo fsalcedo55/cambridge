@@ -30,7 +30,13 @@ export default function IndexPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen gap-8">
+        <Image
+          src="/Spanish-For-Us-Logo-1080p (2).png"
+          alt="logo"
+          width={391}
+          height={117}
+        />
         <Loading />
       </div>
     )
