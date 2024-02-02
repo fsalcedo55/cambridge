@@ -154,8 +154,8 @@ function RadioButton({ label, description }: RadioButtonProps) {
             className={({ checked, active }) =>
               classNames(
                 active ? "border-primary-600" : "border-neutral-100",
-                checked ? "bg-primary-500" : "bg-transparent",
-                "transition-all duration-300 flex cursor-pointer border bg-white p-2 shadow first:rounded-l-full last:rounded-r-full focus:outline-none focus:z-50 focus:ring focus:ring-primary-300"
+                checked ? "bg-primary-500" : "bg-white",
+                "transition-all duration-300 flex cursor-pointer border p-2 shadow first:rounded-l-full last:rounded-r-full focus:outline-none focus:z-50 focus:ring focus:ring-primary-300"
               )
             }
           >
