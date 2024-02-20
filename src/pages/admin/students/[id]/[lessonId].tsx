@@ -116,7 +116,7 @@ export default function AdminStudentLessonPage() {
         </div>
       </div>
       <div className="h-4"></div>
-      {/* <Container title="Feedback"></Container> */}
+      <Container title="Feedback"></Container>
     </div>
   )
 }

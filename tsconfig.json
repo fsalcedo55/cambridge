@@ -20,7 +20,8 @@
       "@components/*": ["./src/components/*"],
       "@ui/*": ["./src/components/ui/*"],
       "@services/*": ["./src/services/*"],
-      "@interfaces/*": ["./src/interfaces/*"]
+      "@interfaces/*": ["./src/interfaces/*"],
+      "@lib/*": ["./src/lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/lib/utils.js"],

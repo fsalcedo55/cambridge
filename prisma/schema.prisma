@@ -67,6 +67,7 @@ model Student {
     entitlements       Entitlements[]
     lessonCompletions  LessonCompletion[]
     Feedback           Feedback[]
+    LessonComment      LessonComment[]
 
     @@index([userId])
 }
@@ -143,13 +144,17 @@ model LessonComment {
     id        String   @id @unique @default(cuid())
     content   String   @db.Text
     createdAt DateTime @default(now())
-    Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
     lessonId  String
-    User      User     @relation(fields: [userId], references: [id], onDelete: NoAction)
     userId    String
+    studentId String
+
+    Lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+    User    User    @relation(fields: [userId], references: [id], onDelete: NoAction)
+    Student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
     @@index([lessonId])
     @@index([userId])
+    @@index([studentId])
 }
 
 model Unit {
@@ -199,33 +204,8 @@ model LessonCompletion {
     @@index([studentId])
 }
 
-enum PerformanceLevelTitle {
-    Attitude
-    Grammar
-    Reading
-    Speaking
-    Vocabulary
-    Writing
-}
-
-model PerformanceLevel {
-    id               String                @id @unique @default(cuid())
-    title            PerformanceLevelTitle
-    weight           Int
-    feedbackMetricId String
-
-    FeedbackMetric FeedbackMetric @relation(fields: [feedbackMetricId], references: [id])
-
-    @@index([feedbackMetricId])
-}
-
 model FeedbackMetric {
-    id               String             @id @unique @default(cuid())
-    feedbackId       String
-    PerformanceLevel PerformanceLevel[]
-    Feedback         Feedback[]
-
-    @@index([feedbackId])
+    id String @id @unique @default(cuid())
 }
 
 model Feedback {
@@ -235,10 +215,9 @@ model Feedback {
     lessonId         String
     feedbackMetricId String
 
-    Student        Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    User           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-    Lesson         Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-    FeedbackMetric FeedbackMetric @relation(fields: [feedbackMetricId], references: [id])
+    Student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    User    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
     @@index([studentId])
     @@index([userId])

@@ -178,7 +178,7 @@ export default function LessonPlan({
                               <div className="avatar">
                                 <div className="w-8 h-8 rounded-full md:w-10 md:h-10">
                                   <Image
-                                    src={comment.User.image}
+                                    src={comment.User.image ?? ""}
                                     alt="teacher-photo"
                                     height={40}
                                     width={40}
