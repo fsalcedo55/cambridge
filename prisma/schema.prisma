@@ -67,6 +67,7 @@ model Student {
     entitlements       Entitlements[]
     lessonCompletions  LessonCompletion[]
     Feedback           Feedback[]
+    LessonComment      LessonComment[]
 
     @@index([userId])
 }
@@ -140,19 +141,20 @@ model Lesson {
 }
 
 model LessonComment {
-    id            String        @id @unique @default(cuid())
-    content       String        @db.Text
-    createdAt     DateTime      @default(now())
-    Lesson        Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-    lessonId      String
-    User          User          @relation(fields: [userId], references: [id], onDelete: NoAction)
-    userId        String
-    entitlementId String?
-    Entitlements  Entitlements? @relation(fields: [entitlementId], references: [id], onDelete: Cascade)
+    id        String   @id @unique @default(cuid())
+    content   String   @db.Text
+    createdAt DateTime @default(now())
+    lessonId  String
+    userId    String
+    studentId String
 
-    @@index([entitlementId])
+    Lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+    User    User    @relation(fields: [userId], references: [id], onDelete: NoAction)
+    Student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
     @@index([lessonId])
     @@index([userId])
+    @@index([studentId])
 }
 
 model Unit {
@@ -178,12 +180,11 @@ model Level {
 }
 
 model Entitlements {
-    id             String          @id @unique @default(cuid())
-    Level          Level?          @relation(fields: [levelId], references: [id], onDelete: Cascade)
-    levelId        String?
-    Student        Student?        @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    studentId      String?
-    LessonComments LessonComment[]
+    id        String   @id @unique @default(cuid())
+    Level     Level?   @relation(fields: [levelId], references: [id], onDelete: Cascade)
+    levelId   String?
+    Student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    studentId String?
 
     @@index([levelId])
     @@index([studentId])

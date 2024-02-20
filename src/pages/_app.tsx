@@ -7,6 +7,7 @@ import type { Session } from "next-auth"
 import Layout from "../components/layout/layout"
 import { trpc } from "../utils/trpc"
 import type { NextComponentType } from "next"
+import { Toaster } from "sonner"
 
 // Use of the <SessionProvider> is mandatory to allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
@@ -31,6 +32,7 @@ const MyApp: AppType<{ session: Session }> = ({
         <Component {...pageProps} />
       )}
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      <Toaster />
     </SessionProvider>
   )
 }

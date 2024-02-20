@@ -4,20 +4,65 @@ import { IoMdInformationCircleOutline } from "react-icons/io"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { useForm } from "react-hook-form"
 import { Button } from "@src/components/ui/button"
+import { trpc } from "@src/utils/trpc"
+import { useRouter } from "next/router"
+import { useSession } from "next-auth/react"
+
+interface Props {
+  studentId: string
+  lessonId: string
+  closeModal: () => void
+}
 
 export type FormFields = {
   feedback: string
 }
 
-export default function AddFeedback() {
+export default function AddFeedback({
+  studentId,
+  lessonId,
+  closeModal,
+}: Props) {
+  const { data: session } = useSession()
+
+  const router = useRouter()
+  const { id } = router.query
+
+  console.log("id: ", id)
+
+  const addLessonComment = trpc.lessonComment.addComment.useMutation({
+    onMutate: () => {
+      reset()
+    },
+  })
+  const me = trpc.user.me.useQuery(
+    { email: session?.user?.email || undefined },
+    { enabled: !!session }
+  )
+
+  console.log("me: ", me.data?.id)
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormFields>()
-  const onSubmit = () => {
-    console.log("submitted...")
-  }
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await addLessonComment.mutateAsync({
+        userId: me?.data?.id ?? "",
+        content: data.feedback,
+        createdAt: new Date().toISOString(),
+        lessonId: lessonId,
+        studentId: studentId,
+      })
+    } catch (error) {
+      console.error("Error adding comment.", error)
+    }
+    closeModal()
+  })
 
   const metrics = [
     {
@@ -60,7 +105,7 @@ export default function AddFeedback() {
 
   return (
     <form onSubmit={onSubmit}>
-      <div className="flex flex-col gap-4 mb-2">
+      {/* <div className="flex flex-col gap-4 mb-2">
         <div className="flex flex-col gap-4">
           {metrics.map((metric) => (
             <RadioButton
@@ -70,9 +115,9 @@ export default function AddFeedback() {
             />
           ))}
         </div>
-      </div>
+      </div> */}
 
-      <div className="my-8">
+      <div className="my-4">
         <label
           htmlFor="objective"
           className="block text-sm font-medium text-gray-700"
@@ -81,6 +126,7 @@ export default function AddFeedback() {
         </label>
         <div className="mb-2">
           <textarea
+            placeholder="Reflexiones o sugerencias sobre la clase de hoy, escríbelas aquí. ¿Que tareas quieres que le enviemos a tu estudiante?"
             rows={5}
             id="objective"
             className="block w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
@@ -89,17 +135,19 @@ export default function AddFeedback() {
           />
         </div>
       </div>
-
-      <Button
-        type="submit"
-        intent="primary"
-        size="medium"
-        className="my-2"
-        loadingLabel="Saving..."
-        fullWidth
-      >
-        Submit Feedback
-      </Button>
+      {me.data && (
+        <Button
+          type="submit"
+          intent="primary"
+          size="medium"
+          className="my-2"
+          loadingLabel="Submitting Feedback..."
+          fullWidth
+          loading={addLessonComment.isLoading}
+        >
+          Submit Feedback
+        </Button>
+      )}
     </form>
   )
 }

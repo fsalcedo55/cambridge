@@ -9,14 +9,12 @@ import AddLessonPlan from "@src/components/addLessonPlan"
 import Loading from "@ui/loading"
 import { HiOutlineFolderAdd } from "react-icons/hi"
 import EditLessonPlan from "@src/components/editLessonPlan"
-import { useSession } from "next-auth/react"
 
 interface Props {
   me: any
 }
 
 export default function LessonPlans({ me }: Props) {
-  //   const { data: session } = useSession()
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
