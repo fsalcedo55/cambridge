@@ -18,6 +18,7 @@
     "@knocklabs/react-notification-feed": "^0.8.2",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^4.8.0",
+    "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-progress": "^1.0.3",
     "@radix-ui/react-tabs": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.5",

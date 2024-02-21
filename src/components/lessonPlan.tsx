@@ -19,8 +19,8 @@ interface Props {
   AddLessonPlanCommentInput: any
   currentUserId: string
   setCommentId: any
-  slidesUrl: string | null
-  homeworkSent: boolean | null
+  slidesUrl?: string | null
+  homeworkSent?: boolean | null
 }
 
 export default function LessonPlan({
