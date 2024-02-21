@@ -80,6 +80,19 @@ export const lessonPlanRouter = router({
         date: true,
         slidesUrl: true,
         homeworkSent: true,
+        comments: {
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            User: {
+              select: {
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
         Student: {
           select: {
             id: true,
