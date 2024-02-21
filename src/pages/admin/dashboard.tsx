@@ -117,10 +117,6 @@ export default function AdminDashboard() {
     },
   ]
 
-  function getMoreLessons() {
-    trpc.lessonPlan.getRecentLessonPlans.useQuery()
-  }
-
   return (
     <div>
       <PageHeading pageTitle="Admin Dashboard" />
@@ -151,14 +147,15 @@ export default function AdminDashboard() {
         )}
       </div>
       <div className="h-4"></div>
+      <div className="my-2 font-bold">Recent Lesson Plans</div>
       {recentLessonPlans.data &&
-        recentLessonPlans.data.map((lesson) => {
+        recentLessonPlans.data.map((lesson, index) => {
           let str = lesson.User.name as string
           let teacherInitials = str
             .split(/\s/)
             .reduce((response, word) => (response += word.slice(0, 1)), "")
           return (
-            <div key={lesson.id} className="my-2">
+            <div key={lesson.id}>
               <RecentLessonPlanComponent
                 title={lesson.title}
                 image={lesson.User.image as string}
@@ -168,11 +165,11 @@ export default function AdminDashboard() {
                 homeworkSent={lesson.homeworkSent ?? false}
                 studentId={lesson.Student.id}
                 slidesUrl={lesson.slidesUrl ?? ""}
+                teacherName={lesson.User.name ?? "Teacher"}
               />
             </div>
           )
         })}
-      <Button onClick={getMoreLessons}>Get more lessons</Button>
     </div>
   )
 }
@@ -186,6 +183,7 @@ interface RecentLessonPlanProps {
   homeworkSent: boolean
   studentId: string
   slidesUrl: string
+  teacherName: string
 }
 
 function RecentLessonPlanComponent({
@@ -197,30 +195,27 @@ function RecentLessonPlanComponent({
   homeworkSent,
   studentId,
   slidesUrl,
+  teacherName,
 }: RecentLessonPlanProps) {
-  console.log("image: ", typeof image)
-  console.log("image githsub: ", typeof "https://github.com/shadcn.png")
   return (
-    <div className="my-6">
-      {date && (
-        <div className="flex items-center gap-1 mb-1 text-sm text-neutral-400 md:text-md">
-          <span>
-            <ImCalendar />
-          </span>
-          <span>{dayjs(date).format("dddd, MMMM D, YYYY")}</span>
-        </div>
-      )}
-      <div className="flex items-center justify-between w-full p-2 bg-white rounded-lg shadow">
-        <div className="flex items-center gap-2 ">
-          <Avatar>
-            <AvatarImage src={`${image}`} />
-            <AvatarFallback>{teacherInitials}</AvatarFallback>
-          </Avatar>
-          <div>
+    <div className="px-2 py-4 bg-white border-b">
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-6">
+          <div className="flex flex-col items-center w-28">
+            <Avatar>
+              <AvatarImage src={`${image}`} />
+              <AvatarFallback>{teacherInitials}</AvatarFallback>
+            </Avatar>
+            <div className="text-[12px]">{teacherName}</div>
+          </div>
+          <div className="w-[500px]">
             <Link
-              className="text-xl font-extrabold cursor-pointer hover:underline hover:text-primary-500"
+              className="flex items-center gap-2 text-lg font-extrabold cursor-pointer hover:underline hover:text-primary-500"
               href={`/admin/students/${studentId}`}
             >
+              <span className="text-base opacity-45">
+                <FaChild />
+              </span>
               {studentName}
             </Link>
             <div>
@@ -233,8 +228,10 @@ function RecentLessonPlanComponent({
                       href={slidesUrl}
                       className="flex items-center gap-2 text-xs md:text-base"
                     >
-                      <span>{title}</span>
-                      <FaExternalLinkAlt />
+                      <span className="text-sm">{title}</span>
+                      <span className="text-xs opacity-30">
+                        <FaExternalLinkAlt />
+                      </span>
                     </a>
                   ) : (
                     <a
@@ -249,10 +246,17 @@ function RecentLessonPlanComponent({
                   )}
                 </div>
               )}
-
               {!slidesUrl && title}
             </div>
           </div>
+          {date && (
+            <div className="flex items-center gap-1 mb-1 text-sm text-neutral-400 md:text-md">
+              {/* <span>
+                <ImCalendar />
+              </span> */}
+              <span>{dayjs(date).format("dddd, MMMM D, YYYY")}</span>
+            </div>
+          )}
         </div>
         <div>
           {homeworkSent && (
