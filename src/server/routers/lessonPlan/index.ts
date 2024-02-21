@@ -68,4 +68,33 @@ export const lessonPlanRouter = router({
     })
     return lessonPlans.length
   }),
+  getRecentLessonPlans: adminProcedure.query(async () => {
+    const lessonPlans = await prisma.lessonPlan.findMany({
+      take: 10,
+      orderBy: {
+        date: "desc",
+      },
+      select: {
+        id: true,
+        title: true,
+        date: true,
+        slidesUrl: true,
+        homeworkSent: true,
+        Student: {
+          select: {
+            id: true,
+            studentFirstName: true,
+            studentLastName: true,
+          },
+        },
+        User: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+      },
+    })
+    return lessonPlans
+  }),
 })

@@ -50,7 +50,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     useState(false)
   const [commentId, setCommentId] = useState<string>()
   const [levelIds, setLevelIds] = useState<string[]>([])
-  const [assignedLevels, setAssignedLevels] = useState<any>([])
   const lessonId = useRef("")
   const currentLessonPlan = useRef({})
   const student = trpc.student.byId.useQuery(
