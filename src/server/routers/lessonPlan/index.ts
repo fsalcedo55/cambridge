@@ -70,7 +70,7 @@ export const lessonPlanRouter = router({
   }),
   getRecentLessonPlans: adminProcedure.query(async () => {
     const lessonPlans = await prisma.lessonPlan.findMany({
-      take: 10,
+      take: 20,
       orderBy: {
         date: "desc",
       },
