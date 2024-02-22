@@ -12,6 +12,7 @@ import dayjs from "dayjs"
 import { RiMailSendLine } from "react-icons/ri"
 import Link from "next/link"
 import { LessonPlanComment } from "@prisma/client"
+import { ImCalendar } from "react-icons/im"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -197,7 +198,7 @@ function RecentLessonPlanComponent({
   comments,
 }: RecentLessonPlanProps) {
   return (
-    <div className="mb-2 bg-white border shadow rounded-3xl border-neutral-300">
+    <div className="mb-3 bg-white border shadow rounded-3xl border-neutral-300">
       <div className="py-4 pl-2 pr-4">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-6">
@@ -210,7 +211,7 @@ function RecentLessonPlanComponent({
             </div>
             <div className="w-[500px]">
               <Link
-                className="flex items-center gap-2 text-lg font-bold cursor-pointer hover:underline hover:text-primary-500"
+                className="flex items-center gap-2 text-lg font-bold cursor-pointer hover:underline hover:text-primary-500 max-w-fit"
                 href={`/admin/students/${studentId}`}
               >
                 <span className="text-base opacity-70">
@@ -220,15 +221,15 @@ function RecentLessonPlanComponent({
               </Link>
               <div>
                 {slidesUrl && (
-                  <div className="h-full cursor-pointer hover:underline">
+                  <div className="h-full">
                     {slidesUrl?.startsWith("http") ? (
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={slidesUrl}
-                        className="flex items-center gap-2 text-xs md:text-base"
+                        className="flex items-center gap-2 text-xs cursor-pointer hover:text-primary-500 hover:underline md:text-base max-w-fit"
                       >
-                        <span className="text-sm">{title}</span>
+                        <span>{title}</span>
                         <span className="text-xs opacity-30">
                           <FaExternalLinkAlt />
                         </span>
@@ -238,9 +239,9 @@ function RecentLessonPlanComponent({
                         target="_blank"
                         rel="noopener noreferrer"
                         href={`https://${slidesUrl}`}
-                        className="flex items-center gap-2 text-xs md:text-base"
+                        className="flex items-center gap-2 text-xs cursor-pointer md:text-base hover:text-primary-500 hover:underline"
                       >
-                        <span className="text-sm">{title}</span>
+                        <span>{title}</span>
                         <span className="text-xs opacity-30">
                           <FaExternalLinkAlt />
                         </span>
@@ -248,10 +249,19 @@ function RecentLessonPlanComponent({
                     )}
                   </div>
                 )}
-                {!slidesUrl && <div className="text-sm">{title}</div>}
+                {!slidesUrl && <div>{title}</div>}
               </div>
             </div>
-            {date && <span>{dayjs(date).format("dddd, MMMM D, YYYY")}</span>}
+            {date && (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">
+                  <ImCalendar />
+                </span>
+                <span className="text-lg font-bold">
+                  {dayjs(date).format("dddd, MMMM D, YYYY")}
+                </span>
+              </div>
+            )}
           </div>
           <div>
             {homeworkSent && (
@@ -263,33 +273,67 @@ function RecentLessonPlanComponent({
           </div>
         </div>
       </div>
-      {comments &&
-        comments.length > 0 &&
-        comments.map((comment) => (
-          <div key={comment.id}>
-            <div className="px-4">
-              <Divider />
-            </div>
-            <div className="flex gap-2 px-12 py-4">
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={`${comment.User.image}`} />
-                <AvatarFallback>{teacherInitials}</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
-                <div className="flex items-center gap-2">
-                  <p className="font-bold">{comment.User.name}</p>
-                  <div className="hidden text-xs font-thin opacity-50 md:block">
-                    {`${dayjs(comment.createdAt).format("MMM D, YYYY h:mma")}`}
+      {comments && comments.length > 0 && (
+        <div className="px-4">
+          <Divider />
+        </div>
+      )}
+      {comments && comments.length > 0 && (
+        <div className="py-4">
+          {comments.map((comment) => (
+            <div key={comment.id}>
+              <div className="flex gap-2 px-12 py-[5px]">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={`${comment.User.image}`} />
+                  <AvatarFallback>{teacherInitials}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold">{comment.User.name}</p>
+                    <div className="hidden text-xs font-thin opacity-50 md:block">
+                      {`${dayjs(comment.createdAt).format(
+                        "MMM D, YYYY h:mma"
+                      )}`}
+                    </div>
+                    <div className="text-xs font-thin opacity-50 md:hidden">
+                      {`${dayjs(comment.createdAt).format("MMM D, 'YY")}`}
+                    </div>
                   </div>
-                  <div className="text-xs font-thin opacity-50 md:hidden">
-                    {`${dayjs(comment.createdAt).format("MMM D, 'YY")}`}
-                  </div>
+                  <p>{comment.content}</p>
                 </div>
-                <p>{comment.content}</p>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+      )}
+      {/* <div className="py-4">
+        {comments &&
+          comments.length > 0 &&
+          comments.map((comment) => (
+            <div key={comment.id}>
+              <div className="flex gap-2 px-12 py-[5px]">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={`${comment.User.image}`} />
+                  <AvatarFallback>{teacherInitials}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold">{comment.User.name}</p>
+                    <div className="hidden text-xs font-thin opacity-50 md:block">
+                      {`${dayjs(comment.createdAt).format(
+                        "MMM D, YYYY h:mma"
+                      )}`}
+                    </div>
+                    <div className="text-xs font-thin opacity-50 md:hidden">
+                      {`${dayjs(comment.createdAt).format("MMM D, 'YY")}`}
+                    </div>
+                  </div>
+                  <p>{comment.content}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+      </div> */}
     </div>
   )
 }
