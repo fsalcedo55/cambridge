@@ -41,7 +41,7 @@ export function LessonInfo({ lesson, edit }: LessonInfoProps) {
   )
 }
 
-export function SlideContent({ isLoading, data }: any) {
+function SlideContent({ isLoading, data }: any) {
   if (isLoading) return <Loading />
   if (data?.slidesUrl) {
     return (
@@ -75,8 +75,11 @@ export function SlideComponent({ lesson, admin }: SlideComponentProps) {
       <div className="flex justify-between p-2 bg-white rounded-t-xl">
         <div className="text-xl font-bold">Slides</div>
         {admin && lesson.data?.slidesUrl && (
-          (<Link href={lesson.data?.slidesUrl!} target="_blank" rel="noopener noreferrer">
-
+          <Link
+            href={lesson.data?.slidesUrl!}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button
               size="small"
               intent="secondary"
@@ -85,13 +88,12 @@ export function SlideComponent({ lesson, admin }: SlideComponentProps) {
               <span>Edit on Google Slides</span>
               <HiOutlineExternalLink />
             </Button>
-
-          </Link>)
+          </Link>
         )}
       </div>
       <div className="w-[480px] h-[299px] bg-neutral-200 rounded-b-xl flex items-center justify-center">
         <SlideContent isLoading={lesson.isLoading} data={lesson.data} />
       </div>
     </div>
-  );
+  )
 }
