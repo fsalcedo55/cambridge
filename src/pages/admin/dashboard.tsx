@@ -197,7 +197,7 @@ function RecentLessonPlanComponent({
   comments,
 }: RecentLessonPlanProps) {
   return (
-    <div className="mb-1 bg-white rounded-lg shadow">
+    <div className="mb-2 bg-white border shadow rounded-3xl border-neutral-300">
       <div className="py-4 pl-2 pr-4">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-6">
@@ -248,14 +248,10 @@ function RecentLessonPlanComponent({
                     )}
                   </div>
                 )}
-                {!slidesUrl && title}
+                {!slidesUrl && <div className="text-sm">{title}</div>}
               </div>
             </div>
-            {date && (
-              <div className="flex items-center gap-1 mb-1 text-sm text-neutral-400 md:text-md">
-                <span>{dayjs(date).format("dddd, MMMM D, YYYY")}</span>
-              </div>
-            )}
+            {date && <span>{dayjs(date).format("dddd, MMMM D, YYYY")}</span>}
           </div>
           <div>
             {homeworkSent && (
