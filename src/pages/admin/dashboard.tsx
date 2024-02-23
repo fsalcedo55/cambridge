@@ -11,7 +11,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@src/components/ui/avatar"
 import dayjs from "dayjs"
 import { RiMailSendLine } from "react-icons/ri"
 import Link from "next/link"
-import { LessonPlanComment } from "@prisma/client"
 import { ImCalendar } from "react-icons/im"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -35,19 +34,11 @@ interface CardProps {
 
 function Card({ stat, label, icon, color }: CardProps) {
   return (
-    <div className="flex items-center w-full gap-4 p-4 bg-white shadow rounded-xl">
-      <div
-        className={`flex items-center justify-center p-1 rounded h-14 w-14 ${
-          color === "primary" ? "bg-primary-500 text-primary-50" : ""
-        } ${color === "accent" ? "bg-accent-500 text-accent-50" : ""} ${
-          color === "violet" ? "bg-violet-500 text-violet-50" : ""
-        }`}
-      >
-        <div className="text-4xl">{icon}</div>
-      </div>
+    <div className="flex items-center w-full gap-4 p-4 border-r border-neutral-50">
+      <div className="text-5xl text-primary-50">{icon}</div>
       <div className="h-14">
-        <h1 className="text-base leading-6">{label}</h1>
-        <h2 className="text-4xl font-black">{stat}</h2>
+        <h1 className="text-base leading-6 text-primary-50">{label}</h1>
+        <h2 className="text-4xl font-black text-primary-50">{stat}</h2>
       </div>
     </div>
   )
@@ -58,8 +49,6 @@ export default function AdminDashboard() {
   const publishedLessons = trpc.lesson.getAllPublishedLessons.useQuery()
   const lessonPlans = trpc.lessonPlan.getTotalNumberOfLessonPlans.useQuery()
   const recentLessonPlans = trpc.lessonPlan.getRecentLessonPlans.useQuery()
-
-  console.log("recentLessonPlans: ", recentLessonPlans.data)
 
   const tableHeaders = [
     { label: "Date", importance: 1 },
@@ -117,7 +106,7 @@ export default function AdminDashboard() {
   return (
     <div>
       <PageHeading pageTitle="Admin Dashboard" />
-      <div className="flex gap-4">
+      <div className="flex gap-4 rounded-xl bg-primary-500">
         {activeStudents.data && (
           <Card
             stat={activeStudents.data.length}
@@ -134,6 +123,7 @@ export default function AdminDashboard() {
             color="accent"
           />
         )}
+
         {lessonPlans.data != undefined && (
           <Card
             stat={lessonPlans.data}
@@ -306,34 +296,6 @@ function RecentLessonPlanComponent({
           ))}
         </div>
       )}
-      {/* <div className="py-4">
-        {comments &&
-          comments.length > 0 &&
-          comments.map((comment) => (
-            <div key={comment.id}>
-              <div className="flex gap-2 px-12 py-[5px]">
-                <Avatar className="w-8 h-8">
-                  <AvatarImage src={`${comment.User.image}`} />
-                  <AvatarFallback>{teacherInitials}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
-                  <div className="flex items-center gap-2">
-                    <p className="font-bold">{comment.User.name}</p>
-                    <div className="hidden text-xs font-thin opacity-50 md:block">
-                      {`${dayjs(comment.createdAt).format(
-                        "MMM D, YYYY h:mma"
-                      )}`}
-                    </div>
-                    <div className="text-xs font-thin opacity-50 md:hidden">
-                      {`${dayjs(comment.createdAt).format("MMM D, 'YY")}`}
-                    </div>
-                  </div>
-                  <p>{comment.content}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div> */}
     </div>
   )
 }
