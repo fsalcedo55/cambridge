@@ -5,13 +5,19 @@ import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { HiOutlineCollection } from "react-icons/hi"
 import { IoIosPaper } from "react-icons/io"
-import { ReactElement } from "react"
+import { ReactElement, useState } from "react"
 import Divider from "@src/components/ui/Divider"
 import { Avatar, AvatarFallback, AvatarImage } from "@src/components/ui/avatar"
 import dayjs from "dayjs"
 import { RiMailSendLine } from "react-icons/ri"
 import Link from "next/link"
 import { ImCalendar } from "react-icons/im"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@src/components/ui/tabs"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -45,63 +51,26 @@ function Card({ stat, label, icon, color }: CardProps) {
 }
 
 export default function AdminDashboard() {
+  const [teacherId, setTeacherId] = useState<string>("")
   const activeStudents = trpc.student.getActiveStudents.useQuery()
   const publishedLessons = trpc.lesson.getAllPublishedLessons.useQuery()
   const lessonPlans = trpc.lessonPlan.getTotalNumberOfLessonPlans.useQuery()
   const recentLessonPlans = trpc.lessonPlan.getRecentLessonPlans.useQuery()
+  const teachers = trpc.teacher.getAll.useQuery()
+  const recentLessonPlansByTeacherId =
+    trpc.lessonPlan.getRecentLessonPlansByTeacherId.useQuery({
+      teacherId,
+    })
 
-  const tableHeaders = [
-    { label: "Date", importance: 1 },
-    { label: "Student", importance: 2 },
-    { label: "Class", importance: 3 },
-    { label: "Teacher", importance: 4 },
-    { label: "Comments", importance: 5 },
-  ]
+  console.log("teacherId: ", teacherId)
+  console.log(
+    "recentLessonPlansByTeacherId: ",
+    recentLessonPlansByTeacherId.data
+  )
 
-  const tableRows = [
-    {
-      date: "2021-10-01",
-      student: "John Doe",
-      class: "Math",
-      teacher: "Mr. Smith",
-      comments: "Good job",
-    },
-    {
-      date: "2021-10-02",
-      student: "Jane Doe",
-      class: "Science",
-      teacher: "Ms. Smith",
-      comments: "Good job",
-    },
-    {
-      date: "2021-10-03",
-      student: "John Doe",
-      class: "Math",
-      teacher: "Mr. Smith",
-      comments: "Good job",
-    },
-    {
-      date: "2021-10-04",
-      student: "Jane Doe",
-      class: "Science",
-      teacher: "Ms. Smith",
-      comments: "Good job",
-    },
-    {
-      date: "2021-10-05",
-      student: "John Doe",
-      class: "Math",
-      teacher: "Mr. Smith",
-      comments: "Good job",
-    },
-    {
-      date: "2021-10-06",
-      student: "Jane Doe",
-      class: "Science",
-      teacher: "Ms. Smith",
-      comments: "Good job",
-    },
-  ]
+  const handleTabChange = (teacherId: string) => {
+    setTeacherId(teacherId)
+  }
 
   return (
     <div>
@@ -133,31 +102,104 @@ export default function AdminDashboard() {
           />
         )}
       </div>
-      <div className="h-4"></div>
-      <div className="my-2 font-bold">Recent Lesson Plans</div>
-      {recentLessonPlans.data &&
-        recentLessonPlans.data.map((lesson, index) => {
-          let str = lesson.User.name as string
-          let teacherInitials = str
-            .split(/\s/)
-            .reduce((response, word) => (response += word.slice(0, 1)), "")
-          return (
-            <div key={lesson.id}>
-              <RecentLessonPlanComponent
-                title={lesson.title}
-                image={lesson.User.image as string}
-                teacherInitials={teacherInitials ?? "IMG"}
-                studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
-                date={lesson.date}
-                homeworkSent={lesson.homeworkSent ?? false}
-                studentId={lesson.Student.id}
-                slidesUrl={lesson.slidesUrl ?? ""}
-                teacherName={lesson.User.name ?? "Teacher"}
-                comments={lesson.comments}
-              />
-            </div>
-          )
-        })}
+      <div className="h-8"></div>
+      <div className="font-bold">Recent Lesson Plans</div>
+
+      <Tabs
+        defaultValue="all"
+        className="w-full"
+        onValueChange={handleTabChange}
+      >
+        <TabsList>
+          <TabsTrigger value="all">
+            <div className="flex items-center gap-2">All</div>
+          </TabsTrigger>
+          {teachers.data &&
+            teachers.data.map((teacher) => {
+              const teacherId = teacher.id
+
+              if (teacherId) {
+                return (
+                  <TabsTrigger value={teacherId}>
+                    <div className="flex items-center gap-1">
+                      <Avatar className="w-6 h-6">
+                        <AvatarImage src={`${teacher.image}`} />
+                        <AvatarFallback>{teacher.name}</AvatarFallback>
+                      </Avatar>
+                      {teacher.name}
+                    </div>
+                  </TabsTrigger>
+                )
+              }
+            })}
+        </TabsList>
+        <TabsContent value="all">
+          <div className="h-4"></div>
+          {recentLessonPlans.data &&
+            recentLessonPlans.data.map((lesson, index) => {
+              let str = lesson.User.name as string
+              let teacherInitials = str
+                .split(/\s/)
+                .reduce((response, word) => (response += word.slice(0, 1)), "")
+              return (
+                <div key={lesson.id}>
+                  <RecentLessonPlanComponent
+                    title={lesson.title}
+                    image={lesson.User.image as string}
+                    teacherInitials={teacherInitials ?? "IMG"}
+                    studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
+                    date={lesson.date}
+                    homeworkSent={lesson.homeworkSent ?? false}
+                    studentId={lesson.Student.id}
+                    slidesUrl={lesson.slidesUrl ?? ""}
+                    teacherName={lesson.User.name ?? "Teacher"}
+                    comments={lesson.comments}
+                  />
+                </div>
+              )
+            })}
+        </TabsContent>
+
+        {teachers.data &&
+          teachers.data.map((teacher) => {
+            const teacherId = teacher.id
+
+            if (teacherId) {
+              return (
+                <TabsContent value={teacherId}>
+                  <div className="h-4"></div>
+
+                  {recentLessonPlansByTeacherId.data &&
+                    recentLessonPlansByTeacherId.data.map((lesson, index) => {
+                      let str = lesson.User.name as string
+                      let teacherInitials = str
+                        .split(/\s/)
+                        .reduce(
+                          (response, word) => (response += word.slice(0, 1)),
+                          ""
+                        )
+                      return (
+                        <div key={lesson.id}>
+                          <RecentLessonPlanComponent
+                            title={lesson.title}
+                            image={lesson.User.image as string}
+                            teacherInitials={teacherInitials ?? "IMG"}
+                            studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
+                            date={lesson.date}
+                            homeworkSent={lesson.homeworkSent ?? false}
+                            studentId={lesson.Student.id}
+                            slidesUrl={lesson.slidesUrl ?? ""}
+                            teacherName={lesson.User.name ?? "Teacher"}
+                            comments={lesson.comments}
+                          />
+                        </div>
+                      )
+                    })}
+                </TabsContent>
+              )
+            }
+          })}
+      </Tabs>
     </div>
   )
 }

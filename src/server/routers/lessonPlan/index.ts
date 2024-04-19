@@ -110,4 +110,53 @@ export const lessonPlanRouter = router({
     })
     return lessonPlans
   }),
+  getRecentLessonPlansByTeacherId: adminProcedure
+    .input(
+      z.object({
+        teacherId: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const lessonPlans = await prisma.lessonPlan.findMany({
+        where: { userId: input.teacherId },
+        take: 20,
+        orderBy: {
+          date: "desc",
+        },
+        select: {
+          id: true,
+          title: true,
+          date: true,
+          slidesUrl: true,
+          homeworkSent: true,
+          comments: {
+            select: {
+              id: true,
+              createdAt: true,
+              content: true,
+              User: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          Student: {
+            select: {
+              id: true,
+              studentFirstName: true,
+              studentLastName: true,
+            },
+          },
+          User: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
+      })
+      return lessonPlans
+    }),
 })
