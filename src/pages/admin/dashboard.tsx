@@ -62,12 +62,6 @@ export default function AdminDashboard() {
       teacherId,
     })
 
-  console.log("teacherId: ", teacherId)
-  console.log(
-    "recentLessonPlansByTeacherId: ",
-    recentLessonPlansByTeacherId.data
-  )
-
   const handleTabChange = (teacherId: string) => {
     setTeacherId(teacherId)
   }
