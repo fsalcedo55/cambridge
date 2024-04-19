@@ -7,7 +7,14 @@ const prisma = new PrismaClient()
 export const teacherRouter = router({
   getAll: adminProcedure.query(() => {
     return prisma.user.findMany({
-      where: { role: "teacher" },
+      where: {
+        role: "teacher",
+        students: {
+          some: {
+            status: "active",
+          },
+        },
+      },
     })
   }),
 })
