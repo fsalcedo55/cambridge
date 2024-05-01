@@ -66,6 +66,11 @@ export default function AdminDashboard() {
     setTeacherId(teacherId)
   }
 
+  console.log(
+    "recentLessonPlansByTeacherId: ",
+    recentLessonPlansByTeacherId.data
+  )
+
   return (
     <div>
       <PageHeading pageTitle="Admin Dashboard" />
@@ -128,30 +133,36 @@ export default function AdminDashboard() {
             })}
         </TabsList>
         <TabsContent value="all">
-          <div className="h-4"></div>
           {recentLessonPlans.data &&
-            recentLessonPlans.data.map((lesson, index) => {
-              let str = lesson.User.name as string
-              let teacherInitials = str
-                .split(/\s/)
-                .reduce((response, word) => (response += word.slice(0, 1)), "")
-              return (
-                <div key={lesson.id}>
-                  <RecentLessonPlanComponent
-                    title={lesson.title}
-                    image={lesson.User.image as string}
-                    teacherInitials={teacherInitials ?? "IMG"}
-                    studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
-                    date={lesson.date}
-                    homeworkSent={lesson.homeworkSent ?? false}
-                    studentId={lesson.Student.id}
-                    slidesUrl={lesson.slidesUrl ?? ""}
-                    teacherName={lesson.User.name ?? "Teacher"}
-                    comments={lesson.comments}
-                  />
+            Object.entries(recentLessonPlans.data).map(([date, lessons]) => (
+              <div key={date}>
+                <div className="flex items-center gap-2 pt-4 pb-1">
+                  <span className="text-2xl">
+                    <ImCalendar />
+                  </span>
+                  <span className="text-lg font-bold">
+                    {dayjs(date).format("dddd, MMMM D, YYYY")}
+                  </span>
                 </div>
-              )
-            })}
+                <ul>
+                  {lessons.map((lesson) => (
+                    <li key={lesson.id}>
+                      <RecentLessonPlanComponent
+                        title={lesson.title}
+                        image={lesson.User.image as string}
+                        studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
+                        date={lesson.date}
+                        homeworkSent={lesson.homeworkSent ?? false}
+                        studentId={lesson.Student.id}
+                        slidesUrl={lesson.slidesUrl ?? ""}
+                        teacherName={lesson.User.name ?? "Teacher"}
+                        comments={lesson.comments}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
         </TabsContent>
 
         {teachers.data &&
@@ -161,34 +172,38 @@ export default function AdminDashboard() {
             if (teacherId) {
               return (
                 <TabsContent value={teacherId}>
-                  <div className="h-4"></div>
-
                   {recentLessonPlansByTeacherId.data &&
-                    recentLessonPlansByTeacherId.data.map((lesson, index) => {
-                      let str = lesson.User.name as string
-                      let teacherInitials = str
-                        .split(/\s/)
-                        .reduce(
-                          (response, word) => (response += word.slice(0, 1)),
-                          ""
-                        )
-                      return (
-                        <div key={lesson.id}>
-                          <RecentLessonPlanComponent
-                            title={lesson.title}
-                            image={lesson.User.image as string}
-                            teacherInitials={teacherInitials ?? "IMG"}
-                            studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
-                            date={lesson.date}
-                            homeworkSent={lesson.homeworkSent ?? false}
-                            studentId={lesson.Student.id}
-                            slidesUrl={lesson.slidesUrl ?? ""}
-                            teacherName={lesson.User.name ?? "Teacher"}
-                            comments={lesson.comments}
-                          />
+                    Object.entries(recentLessonPlansByTeacherId.data).map(
+                      ([date, lessons]) => (
+                        <div key={date}>
+                          <div className="flex items-center gap-2 pt-4 pb-1">
+                            <span className="text-2xl">
+                              <ImCalendar />
+                            </span>
+                            <span className="text-lg font-bold">
+                              {dayjs(date).format("dddd, MMMM D, YYYY")}
+                            </span>
+                          </div>
+                          <ul>
+                            {lessons.map((lesson) => (
+                              <li key={lesson.id}>
+                                <RecentLessonPlanComponent
+                                  title={lesson.title}
+                                  image={lesson.User.image as string}
+                                  studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
+                                  date={lesson.date}
+                                  homeworkSent={lesson.homeworkSent ?? false}
+                                  studentId={lesson.Student.id}
+                                  slidesUrl={lesson.slidesUrl ?? ""}
+                                  teacherName={lesson.User.name ?? "Teacher"}
+                                  comments={lesson.comments}
+                                />
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       )
-                    })}
+                    )}
                 </TabsContent>
               )
             }
@@ -201,9 +216,9 @@ export default function AdminDashboard() {
 interface RecentLessonPlanProps {
   title: string
   image: string
-  teacherInitials: string
+  teacherInitials?: string
   studentName: string
-  date: string
+  date?: string
   homeworkSent: boolean
   studentId: string
   slidesUrl: string
@@ -278,7 +293,7 @@ function RecentLessonPlanComponent({
                 {!slidesUrl && <div>{title}</div>}
               </div>
             </div>
-            {date && (
+            {/* {date && (
               <div className="flex items-center gap-2">
                 <span className="text-2xl">
                   <ImCalendar />
@@ -287,7 +302,7 @@ function RecentLessonPlanComponent({
                   {dayjs(date).format("dddd, MMMM D, YYYY")}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
           <div>
             {homeworkSent && (

@@ -108,7 +108,20 @@ export const lessonPlanRouter = router({
         },
       },
     })
-    return lessonPlans
+
+    const groupedByDate = lessonPlans.reduce(
+      (acc: { [key: string]: any[] }, lessonPlan) => {
+        const date = lessonPlan.date.split("T")[0]
+        if (!acc[date]) {
+          acc[date] = []
+        }
+        acc[date].push(lessonPlan)
+        return acc
+      },
+      {}
+    )
+
+    return groupedByDate
   }),
   getRecentLessonPlansByTeacherId: adminProcedure
     .input(
@@ -157,6 +170,19 @@ export const lessonPlanRouter = router({
           },
         },
       })
-      return lessonPlans
+
+      const groupedByDate = lessonPlans.reduce(
+        (acc: { [key: string]: any[] }, lessonPlan) => {
+          const date = lessonPlan.date.split("T")[0]
+          if (!acc[date]) {
+            acc[date] = []
+          }
+          acc[date].push(lessonPlan)
+          return acc
+        },
+        {}
+      )
+
+      return groupedByDate
     }),
 })
