@@ -1,5 +1,10 @@
 import PageHeading from "../../components/ui/pageHeading"
-import { FaChild, FaExternalLinkAlt } from "react-icons/fa"
+import {
+  FaChild,
+  FaComment,
+  FaExternalLinkAlt,
+  FaRegComment,
+} from "react-icons/fa"
 import { trpc } from "../../utils/trpc"
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
@@ -18,6 +23,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@src/components/ui/tabs"
+import AddLessonPlanCommentInput from "@src/components/addLessonPlanCommentInput"
+import { Disclosure } from "@headlessui/react"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -50,8 +57,24 @@ function Card({ stat, label, icon, color }: CardProps) {
   )
 }
 
-export default function AdminDashboard() {
+function DateComponent({ date }: { date: string }) {
+  return (
+    <div>
+      <div className="flex items-center gap-2 pt-4 pb-1">
+        <span className="text-2xl">
+          <ImCalendar />
+        </span>
+        <span className="text-2xl font-bold">
+          {dayjs(date).format("dddd, MMMM D, YYYY")}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export default function AdminDashboard({ sessionSSR }: any) {
   const [teacherId, setTeacherId] = useState<string>("")
+  const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
   const activeStudents = trpc.student.getActiveStudents.useQuery()
   const publishedLessons = trpc.lesson.getAllPublishedLessons.useQuery()
   const lessonPlans = trpc.lessonPlan.getTotalNumberOfLessonPlans.useQuery()
@@ -136,30 +159,49 @@ export default function AdminDashboard() {
           {recentLessonPlans.data &&
             Object.entries(recentLessonPlans.data).map(([date, lessons]) => (
               <div key={date}>
-                <div className="flex items-center gap-2 pt-4 pb-1">
-                  <span className="text-2xl">
-                    <ImCalendar />
-                  </span>
-                  <span className="text-lg font-bold">
-                    {dayjs(date).format("dddd, MMMM D, YYYY")}
-                  </span>
-                </div>
+                <DateComponent date={date} />
                 <ul>
-                  {lessons.map((lesson) => (
-                    <li key={lesson.id}>
-                      <RecentLessonPlanComponent
-                        title={lesson.title}
-                        image={lesson.User.image as string}
-                        studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
-                        date={lesson.date}
-                        homeworkSent={lesson.homeworkSent ?? false}
-                        studentId={lesson.Student.id}
-                        slidesUrl={lesson.slidesUrl ?? ""}
-                        teacherName={lesson.User.name ?? "Teacher"}
-                        comments={lesson.comments}
-                      />
-                    </li>
-                  ))}
+                  {lessons.map((lesson) => {
+                    console.log("lesson: ", lesson)
+                    return (
+                      <li key={lesson.id}>
+                        <RecentLessonPlanCard>
+                          <RecentLessonPlanComponent
+                            title={lesson.title}
+                            image={lesson.User.image as string}
+                            studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
+                            date={lesson.date}
+                            homeworkSent={lesson.homeworkSent ?? false}
+                            studentId={lesson.Student.id}
+                            slidesUrl={lesson.slidesUrl ?? ""}
+                            teacherName={lesson.User.name ?? "Teacher"}
+                            comments={lesson.comments}
+                          />
+                          <Disclosure>
+                            <Disclosure.Button className="w-full">
+                              <Divider />
+                              <div className="flex justify-center pt-4 pb-4">
+                                <div className="flex items-center justify-center w-32 h-8 gap-1 rounded-lg hover:bg-neutral-50">
+                                  <div className="text-lg">
+                                    <FaRegComment />
+                                  </div>
+                                  Comment
+                                </div>
+                              </div>
+                            </Disclosure.Button>
+                            <Disclosure.Panel>
+                              <Divider />
+                              <div className="h-4"></div>
+                              <AddLessonPlanCommentInput
+                                currentLessonPlan={lesson}
+                                user={me.data}
+                              />
+                            </Disclosure.Panel>
+                          </Disclosure>
+                        </RecentLessonPlanCard>
+                      </li>
+                    )
+                  })}
                 </ul>
               </div>
             ))}
@@ -176,14 +218,7 @@ export default function AdminDashboard() {
                     Object.entries(recentLessonPlansByTeacherId.data).map(
                       ([date, lessons]) => (
                         <div key={date}>
-                          <div className="flex items-center gap-2 pt-4 pb-1">
-                            <span className="text-2xl">
-                              <ImCalendar />
-                            </span>
-                            <span className="text-lg font-bold">
-                              {dayjs(date).format("dddd, MMMM D, YYYY")}
-                            </span>
-                          </div>
+                          <DateComponent date={date} />
                           <ul>
                             {lessons.map((lesson) => (
                               <li key={lesson.id}>
@@ -239,8 +274,8 @@ function RecentLessonPlanComponent({
   comments,
 }: RecentLessonPlanProps) {
   return (
-    <div className="mb-3 bg-white border shadow rounded-3xl border-neutral-300">
-      <div className="py-4 pl-2 pr-4">
+    <>
+      <div className="py-4">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-6">
             <div className="flex flex-col items-center gap-1 w-28">
@@ -293,16 +328,6 @@ function RecentLessonPlanComponent({
                 {!slidesUrl && <div>{title}</div>}
               </div>
             </div>
-            {/* {date && (
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">
-                  <ImCalendar />
-                </span>
-                <span className="text-lg font-bold">
-                  {dayjs(date).format("dddd, MMMM D, YYYY")}
-                </span>
-              </div>
-            )} */}
           </div>
           <div>
             {homeworkSent && (
@@ -315,7 +340,7 @@ function RecentLessonPlanComponent({
         </div>
       </div>
       {comments && comments.length > 0 && (
-        <div className="px-4">
+        <div>
           <Divider />
         </div>
       )}
@@ -328,10 +353,10 @@ function RecentLessonPlanComponent({
                   <AvatarImage src={`${comment.User.image}`} />
                   <AvatarFallback>{teacherInitials}</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-100 text-primary-900">
+                <div className="flex flex-col gap-1 px-4 py-3 text-sm rounded-lg shadow group bg-neutral-50 text-neutral-900">
                   <div className="flex items-center gap-2">
                     <p className="font-bold">{comment.User.name}</p>
-                    <div className="hidden text-xs font-thin opacity-50 md:block">
+                    <div className="hidden text-xs opacity-80 md:block">
                       {`${dayjs(comment.createdAt).format(
                         "MMM D, YYYY h:mma"
                       )}`}
@@ -347,6 +372,14 @@ function RecentLessonPlanComponent({
           ))}
         </div>
       )}
+    </>
+  )
+}
+
+function RecentLessonPlanCard({ children }: any) {
+  return (
+    <div className="mb-3 bg-white shadow rounded-xl">
+      <div className="p-4">{children}</div>
     </div>
   )
 }
