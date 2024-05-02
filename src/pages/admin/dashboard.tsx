@@ -176,28 +176,9 @@ export default function AdminDashboard({ sessionSSR }: any) {
                             slidesUrl={lesson.slidesUrl ?? ""}
                             teacherName={lesson.User.name ?? "Teacher"}
                             comments={lesson.comments}
+                            lesson={lesson}
+                            me={me.data}
                           />
-                          <Disclosure>
-                            <Disclosure.Button className="w-full">
-                              <Divider />
-                              <div className="flex justify-center pt-4 pb-4">
-                                <div className="flex items-center justify-center w-32 h-8 gap-1 rounded-lg hover:bg-neutral-50">
-                                  <div className="text-lg">
-                                    <FaRegComment />
-                                  </div>
-                                  Comment
-                                </div>
-                              </div>
-                            </Disclosure.Button>
-                            <Disclosure.Panel>
-                              <Divider />
-                              <div className="h-4"></div>
-                              <AddLessonPlanCommentInput
-                                currentLessonPlan={lesson}
-                                user={me.data}
-                              />
-                            </Disclosure.Panel>
-                          </Disclosure>
                         </RecentLessonPlanCard>
                       </li>
                     )
@@ -222,17 +203,21 @@ export default function AdminDashboard({ sessionSSR }: any) {
                           <ul>
                             {lessons.map((lesson) => (
                               <li key={lesson.id}>
-                                <RecentLessonPlanComponent
-                                  title={lesson.title}
-                                  image={lesson.User.image as string}
-                                  studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
-                                  date={lesson.date}
-                                  homeworkSent={lesson.homeworkSent ?? false}
-                                  studentId={lesson.Student.id}
-                                  slidesUrl={lesson.slidesUrl ?? ""}
-                                  teacherName={lesson.User.name ?? "Teacher"}
-                                  comments={lesson.comments}
-                                />
+                                <RecentLessonPlanCard>
+                                  <RecentLessonPlanComponent
+                                    title={lesson.title}
+                                    image={lesson.User.image as string}
+                                    studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
+                                    date={lesson.date}
+                                    homeworkSent={lesson.homeworkSent ?? false}
+                                    studentId={lesson.Student.id}
+                                    slidesUrl={lesson.slidesUrl ?? ""}
+                                    teacherName={lesson.User.name ?? "Teacher"}
+                                    comments={lesson.comments}
+                                    lesson={lesson}
+                                    me={me.data}
+                                  />
+                                </RecentLessonPlanCard>
                               </li>
                             ))}
                           </ul>
@@ -259,6 +244,8 @@ interface RecentLessonPlanProps {
   slidesUrl: string
   teacherName: string
   comments: any[]
+  lesson: any
+  me: any
 }
 
 function RecentLessonPlanComponent({
@@ -272,11 +259,13 @@ function RecentLessonPlanComponent({
   slidesUrl,
   teacherName,
   comments,
+  lesson,
+  me,
 }: RecentLessonPlanProps) {
   return (
     <>
-      <div className="py-4">
-        <div className="flex items-center justify-between w-full">
+      <div>
+        <div className="flex items-center justify-between w-full px-4 py-2 shadow">
           <div className="flex items-center gap-6">
             <div className="flex flex-col items-center gap-1 w-28">
               <Avatar>
@@ -372,6 +361,24 @@ function RecentLessonPlanComponent({
           ))}
         </div>
       )}
+      <Disclosure as="div" className="px-4">
+        <Disclosure.Button className="w-full">
+          <div className="flex justify-center pt-1">
+            <div className="flex items-center justify-center w-32 h-8 gap-1 rounded-lg hover:bg-neutral-50 text-neutral-400">
+              <div className="text-lg">
+                <FaRegComment />
+              </div>
+              Comment
+            </div>
+          </div>
+        </Disclosure.Button>
+        <Disclosure.Panel>
+          <div className="h-1"></div>
+          <Divider />
+          <div className="h-4"></div>
+          <AddLessonPlanCommentInput currentLessonPlan={lesson} user={me} />
+        </Disclosure.Panel>
+      </Disclosure>
     </>
   )
 }
@@ -379,7 +386,7 @@ function RecentLessonPlanComponent({
 function RecentLessonPlanCard({ children }: any) {
   return (
     <div className="mb-3 bg-white shadow rounded-xl">
-      <div className="p-4">{children}</div>
+      <div className="pb-2">{children}</div>
     </div>
   )
 }
