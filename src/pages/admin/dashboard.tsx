@@ -10,7 +10,7 @@ import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { HiOutlineCollection } from "react-icons/hi"
 import { IoIosPaper } from "react-icons/io"
-import { ReactElement, useState } from "react"
+import { Fragment, ReactElement, useCallback, useState } from "react"
 import Divider from "@src/components/ui/Divider"
 import { Avatar, AvatarFallback, AvatarImage } from "@src/components/ui/avatar"
 import dayjs from "dayjs"
@@ -24,7 +24,8 @@ import {
   TabsTrigger,
 } from "@src/components/ui/tabs"
 import AddLessonPlanCommentInput from "@src/components/addLessonPlanCommentInput"
-import { Disclosure } from "@headlessui/react"
+import { Disclosure, Switch } from "@headlessui/react"
+import { toast } from "sonner"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -36,6 +37,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       sessionSSR: session,
     },
   }
+}
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ")
 }
 
 interface CardProps {
@@ -74,6 +79,7 @@ function DateComponent({ date }: { date: string }) {
 
 export default function AdminDashboard({ sessionSSR }: any) {
   const [teacherId, setTeacherId] = useState<string>("")
+
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
   const activeStudents = trpc.student.getActiveStudents.useQuery()
   const publishedLessons = trpc.lesson.getAllPublishedLessons.useQuery()
@@ -88,11 +94,6 @@ export default function AdminDashboard({ sessionSSR }: any) {
   const handleTabChange = (teacherId: string) => {
     setTeacherId(teacherId)
   }
-
-  console.log(
-    "recentLessonPlansByTeacherId: ",
-    recentLessonPlansByTeacherId.data
-  )
 
   return (
     <div>
@@ -162,7 +163,6 @@ export default function AdminDashboard({ sessionSSR }: any) {
                 <DateComponent date={date} />
                 <ul>
                   {lessons.map((lesson) => {
-                    console.log("lesson: ", lesson)
                     return (
                       <li key={lesson.id}>
                         <RecentLessonPlanCard>
@@ -170,7 +170,6 @@ export default function AdminDashboard({ sessionSSR }: any) {
                             title={lesson.title}
                             image={lesson.User.image as string}
                             studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
-                            date={lesson.date}
                             homeworkSent={lesson.homeworkSent ?? false}
                             studentId={lesson.Student.id}
                             slidesUrl={lesson.slidesUrl ?? ""}
@@ -208,7 +207,6 @@ export default function AdminDashboard({ sessionSSR }: any) {
                                     title={lesson.title}
                                     image={lesson.User.image as string}
                                     studentName={`${lesson.Student.studentFirstName} ${lesson.Student.studentLastName}`}
-                                    date={lesson.date}
                                     homeworkSent={lesson.homeworkSent ?? false}
                                     studentId={lesson.Student.id}
                                     slidesUrl={lesson.slidesUrl ?? ""}
@@ -238,7 +236,6 @@ interface RecentLessonPlanProps {
   image: string
   teacherInitials?: string
   studentName: string
-  date?: string
   homeworkSent: boolean
   studentId: string
   slidesUrl: string
@@ -253,7 +250,6 @@ function RecentLessonPlanComponent({
   image,
   teacherInitials,
   studentName,
-  date,
   homeworkSent,
   studentId,
   slidesUrl,
@@ -262,6 +258,43 @@ function RecentLessonPlanComponent({
   lesson,
   me,
 }: RecentLessonPlanProps) {
+  const [hmwrkSent, sethmwrkSent] = useState(homeworkSent)
+  const editLessonPlan = trpc.lessonPlan.edit.useMutation()
+
+  const toggleHomeworkSent = useCallback(async () => {
+    sethmwrkSent(!hmwrkSent)
+    console.log("hmwrkSent", hmwrkSent)
+    try {
+      if (hmwrkSent) {
+        toast.promise(
+          editLessonPlan.mutateAsync({
+            id: lesson.id,
+            homeworkSent: false,
+          }),
+          {
+            loading: "One moment...",
+            success: "Homework has been unsent",
+            error: "Failed to unsend homework",
+          }
+        )
+      } else {
+        toast.promise(
+          editLessonPlan.mutateAsync({
+            id: lesson.id,
+            homeworkSent: true,
+          }),
+          {
+            loading: "Sending...",
+            success: "Homework has been sent",
+            error: "Failed to send homework",
+          }
+        )
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }, [hmwrkSent])
+
   return (
     <>
       <div>
@@ -319,12 +352,41 @@ function RecentLessonPlanComponent({
             </div>
           </div>
           <div>
-            {homeworkSent && (
+            {/* {homeworkSent && (
               <span className="h-8 inline-flex items-center rounded-full bg-accent-100 px-2 md:px-3 py-0.5 text-xs md:text-sm font-medium text-accent-800 gap-1 md:gap-2">
                 <RiMailSendLine />
                 Homework Sent
               </span>
-            )}
+            )} */}
+            <Switch.Group as="div" className="flex items-center mb-1">
+              <Switch.Label as="span" className="mr-3">
+                <span className="text-sm font-medium text-gray-900">
+                  Homework Sent - {hmwrkSent === true ? "Yes" : "No"}
+                </span>
+              </Switch.Label>
+              <Switch
+                defaultChecked={homeworkSent}
+                onChange={toggleHomeworkSent}
+                as={Fragment}
+              >
+                {({ checked }) => (
+                  <button
+                    className={classNames(
+                      checked ? "bg-accent-500" : "bg-neutral-200",
+                      "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    )}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={classNames(
+                        checked ? "translate-x-5" : "translate-x-0",
+                        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                      )}
+                    ></span>
+                  </button>
+                )}
+              </Switch>
+            </Switch.Group>
           </div>
         </div>
       </div>
