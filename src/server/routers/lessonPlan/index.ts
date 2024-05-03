@@ -31,11 +31,11 @@ export const lessonPlanRouter = router({
   edit: protectedProcedure
     .input(
       z.object({
-        title: z.string(),
-        date: z.string(),
+        title: z.string().optional(),
+        date: z.string().optional(),
         id: z.string(),
         slidesUrl: z.string().optional(),
-        homeworkSent: z.boolean(),
+        homeworkSent: z.boolean().optional(),
       })
     )
     .mutation(async ({ input }) => {
