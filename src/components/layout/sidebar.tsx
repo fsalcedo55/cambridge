@@ -63,7 +63,7 @@ const NavItem: FC<NavItemProps> = ({ item, isExternal = false, active }) => {
     <Link key={item.name} href={item.href} legacyBehavior>
       {content}
     </Link>
-  );
+  )
 }
 
 interface NavigationSectionProps {
@@ -104,7 +104,7 @@ const Sidebar: FC = () => {
   const { data: session, status } = useSession()
 
   if (status == "loading") return <LoadingSkeleton />
-  console.log("status: ", status)
+  console.log("session: ", session)
 
   return (
     <div

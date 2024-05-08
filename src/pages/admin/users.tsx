@@ -67,16 +67,13 @@ export default function Users() {
           <div className="flex items-center space-x-3">
             <div className="avatar">
               <div className="w-6 rounded-full">
-                <Image
-                  src={user.image!}
-                  width={24}
-                  height={24}
-                  alt={"teacher"}
-                />
+                {user.image && (
+                  <Image src={user.image} width={24} height={24} alt={"user"} />
+                )}
               </div>
             </div>
             <div>
-              <div>{user.name!}</div>
+              <div>{user.name ?? ""}</div>
             </div>
           </div>
         ),
@@ -96,7 +93,7 @@ export default function Users() {
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               closeButton="Cancel"
-              title={`Edit ${currentUser?.name}`}
+              title={`Edit ${currentUser?.name ?? ""}`}
               description={
                 <EditUser
                   closeModal={() => setIsOpen(false)}

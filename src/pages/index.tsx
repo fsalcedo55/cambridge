@@ -14,8 +14,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: { destination: "/teacher/students", permanent: false },
     }
-  } else if (session?.role === "admin") {
+  }
+  if (session?.role === "admin") {
     return { redirect: { destination: "/admin/dashboard", permanent: false } }
+  }
+  if (session?.role === "parent") {
+    return { redirect: { destination: "/parent/dashboard", permanent: false } }
   }
   return {
     props: {

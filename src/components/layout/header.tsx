@@ -18,14 +18,14 @@ export default function Header() {
             height={36}
           />
         </Link>
-        {session ? (
-          session?.role === "admin" ? (
-            <div className="text-sm font-bold">Admin Portal</div>
+        {session &&
+          (session?.role === "admin" ? (
+            <div className="text-sm font-bold">Portal</div>
           ) : (
             <div className="text-sm font-bold">Teacher Portal</div>
-          )
-        ) : (
-          ""
+          ))}
+        {session?.role === "parent" && (
+          <div className="text-sm font-bold">Parent Portal</div>
         )}
       </div>
       <div>

@@ -7,6 +7,7 @@ import Link from "next/link"
 import { userNavigation } from "@src/constants/navigation"
 import Sidebar from "./sidebar"
 import MobileSidebar from "./MobileSidebar"
+import { FaUserAlt } from "react-icons/fa"
 
 interface Props {
   children: React.ReactNode
@@ -16,19 +17,25 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ")
 }
 
-function ProfileDropdown({ userImage }: { userImage: string }) {
+function ProfileDropdown({ userImage }: { userImage: string | JSX.Element }) {
   return (
     <Menu as="div" className="relative ml-3">
       <div>
         <Menu.Button className="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
           <span className="sr-only">Open user menu</span>
-          <Image
-            src={userImage}
-            alt="user-photo"
-            width={40}
-            height={40}
-            className="w-8 h-8 rounded-full"
-          />
+          {typeof userImage === "string" ? (
+            <Image
+              src={userImage as string}
+              alt="user-photo"
+              width={40}
+              height={40}
+              className="w-8 h-8 rounded-full"
+            />
+          ) : (
+            <div className="text-xl">
+              <FaUserAlt />
+            </div>
+          )}
         </Menu.Button>
       </div>
       <Transition
@@ -76,128 +83,134 @@ export default function Layout({ children }: Props) {
   // Tell Knock to use the users id and the token for the user
   // knockClient.authenticate(session?.user?.email!, session?.knockToken)
 
-  return <>
-    <div className="relative">
-      <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-40 md:hidden"
-          onClose={setSidebarOpen}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="transition-opacity ease-linear duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity ease-linear duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
+  return (
+    <>
+      <div className="relative">
+        <Transition.Root show={sidebarOpen} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-40 md:hidden"
+            onClose={setSidebarOpen}
           >
-            <div className="fixed inset-0 bg-opacity-75 bg-neutral-600" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 z-40 flex">
             <Transition.Child
               as={Fragment}
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
+              enter="transition-opacity ease-linear duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="transition-opacity ease-linear duration-300"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
             >
-              <Dialog.Panel className="relative flex flex-col flex-1 w-full max-w-xs pt-5 pb-4 bg-primary-700">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-in-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in-out duration-300"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="absolute top-0 right-0 pt-2 -mr-12">
-                    <button
-                      type="button"
-                      className="flex items-center justify-center w-10 h-10 ml-1 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <span className="sr-only">Close sidebar</span>
-                      <XMarkIcon
-                        className="w-6 h-6 text-white"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                </Transition.Child>
-                <MobileSidebar />
-              </Dialog.Panel>
+              <div className="fixed inset-0 bg-opacity-75 bg-neutral-600" />
             </Transition.Child>
-            <div className="flex-shrink-0 w-14" aria-hidden="true">
-              {/* ======== Dummy element to force sidebar to shrink to fit close icon ======== */}
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
-      <div className="flex flex-col flex-1">
-        {/* ======== Navbar ======== */}
-        <div className="fixed top-0 z-10 flex flex-shrink-0 w-screen h-16 bg-white shadow">
-          <button
-            type="button"
-            className="px-4 border-r text-neutral-500 border-neutral-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <span className="sr-only">Open sidebar</span>
-            <Bars3BottomLeftIcon className="w-6 h-6" aria-hidden="true" />
-          </button>
 
-          <div className="flex justify-between flex-1 px-8">
-            <div className="flex items-center flex-shrink-0 px-4 gap-2">
-              <Link href="/" legacyBehavior>
-                <Image
-                  src="/Spanish-For-Us-Logo-1080p (2).png"
-                  alt="logo"
-                  width={118}
-                  height={36}
-                />
-              </Link>
-              <div className="text-sm font-bold">{`${
-                session?.role === "teacher" ? "Teacher" : "Admin"
-              } Portal`}</div>
-            </div>
-            <div className="flex items-center ml-4 md:ml-6">
-              <button
-                type="button"
-                className="p-1 bg-white rounded-full text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            <div className="fixed inset-0 z-40 flex">
+              <Transition.Child
+                as={Fragment}
+                enter="transition ease-in-out duration-300 transform"
+                enterFrom="-translate-x-full"
+                enterTo="translate-x-0"
+                leave="transition ease-in-out duration-300 transform"
+                leaveFrom="translate-x-0"
+                leaveTo="-translate-x-full"
               >
-                <span className="sr-only">View notifications</span>
-              </button>
+                <Dialog.Panel className="relative flex flex-col flex-1 w-full max-w-xs pt-5 pb-4 bg-primary-700">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-in-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in-out duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="absolute top-0 right-0 pt-2 -mr-12">
+                      <button
+                        type="button"
+                        className="flex items-center justify-center w-10 h-10 ml-1 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        <span className="sr-only">Close sidebar</span>
+                        <XMarkIcon
+                          className="w-6 h-6 text-white"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </div>
+                  </Transition.Child>
+                  <MobileSidebar />
+                </Dialog.Panel>
+              </Transition.Child>
+              <div className="flex-shrink-0 w-14" aria-hidden="true">
+                {/* ======== Dummy element to force sidebar to shrink to fit close icon ======== */}
+              </div>
+            </div>
+          </Dialog>
+        </Transition.Root>
+        <div className="flex flex-col flex-1">
+          {/* ======== Navbar ======== */}
+          <div className="fixed top-0 z-10 flex flex-shrink-0 w-screen h-16 bg-white shadow">
+            <button
+              type="button"
+              className="px-4 border-r text-neutral-500 border-neutral-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <span className="sr-only">Open sidebar</span>
+              <Bars3BottomLeftIcon className="w-6 h-6" aria-hidden="true" />
+            </button>
 
-              {/* ======== Profile dropdown ======== */}
-              {session?.user?.image && (
-                <ProfileDropdown userImage={session?.user?.image} />
-              )}
+            <div className="flex justify-between flex-1 px-8">
+              <div className="flex items-center flex-shrink-0 gap-2 px-4">
+                <Link href="/" legacyBehavior>
+                  <Image
+                    src="/Spanish-For-Us-Logo-1080p (2).png"
+                    alt="logo"
+                    width={118}
+                    height={36}
+                  />
+                </Link>
+                <div className="text-sm font-bold">
+                  {session?.role === "admin" && "Admin"}
+                  {session?.role === "teacher" && "Teacher"}
+                  {session?.role === "parent" && "Parent"} Portal
+                </div>
+              </div>
+              <div className="flex items-center ml-4 md:ml-6">
+                <button
+                  type="button"
+                  className="p-1 bg-white rounded-full text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <span className="sr-only">View notifications</span>
+                </button>
+
+                {/* ======== Profile dropdown ======== */}
+                {session?.user && (
+                  <ProfileDropdown
+                    userImage={session?.user?.image ?? <FaUserAlt />}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        {/* ======== Static sidebar for desktop ======== */}
-        <div className="z-50 hidden mt-24 h-max md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
-          {<Sidebar />}
-        </div>
-
-        <main className="z-0 min-h-screen md:pl-64">
-          <div className="py-6">
-            <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-              {/* ======== Replace with your content ======== */}
-              <div className="py-4 mt-16">{children}</div>
-              {/* ======== /End replace ======== */}
-            </div>
+          {/* ======== Static sidebar for desktop ======== */}
+          <div className="z-50 hidden mt-24 h-max md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+            {/* Sidebar component */}
+            {<Sidebar />}
           </div>
-        </main>
+
+          <main className="z-0 min-h-screen md:pl-64">
+            <div className="py-6">
+              <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
+                {/* ======== Start content ======== */}
+                <div className="py-4 mt-16">{children}</div>
+                {/* ======== /End content ======== */}
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
-  </>;
+    </>
+  )
 }
 
 // import {
