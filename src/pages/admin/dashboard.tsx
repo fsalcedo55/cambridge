@@ -1,10 +1,5 @@
 import PageHeading from "../../components/ui/pageHeading"
-import {
-  FaChild,
-  FaComment,
-  FaExternalLinkAlt,
-  FaRegComment,
-} from "react-icons/fa"
+import { FaChild, FaExternalLinkAlt, FaRegComment } from "react-icons/fa"
 import { trpc } from "../../utils/trpc"
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
