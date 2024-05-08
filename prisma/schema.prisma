@@ -38,13 +38,20 @@ model Session {
     @@index([userId])
 }
 
+// Enum for user roles
+enum Role {
+    admin
+    teacher
+    parent
+}
+
 model User {
     id                 String              @id @unique @default(cuid())
     name               String?
     email              String?             @unique
     emailVerified      DateTime?
     image              String?
-    role               String?
+    role               Role?               @default(parent)
     accounts           Account[]
     sessions           Session[]
     students           Student[]
