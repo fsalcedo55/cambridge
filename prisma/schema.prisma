@@ -1,226 +1,222 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Account {
-    id                String  @id @unique @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? @db.Text
-    session_state     String?
+  id                String  @id @unique @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@unique([provider, providerAccountId])
-    @@index([userId])
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
-    id           String   @id @unique @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @unique @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
+  @@index([userId])
 }
 
 model User {
-    id                 String              @id @unique @default(cuid())
-    name               String?
-    email              String?             @unique
-    emailVerified      DateTime?
-    image              String?
-    role               String?
-    accounts           Account[]
-    sessions           Session[]
-    students           Student[]
-    lessonPlans        LessonPlan[]
-    lessonPlanComments LessonPlanComment[]
-    lessonComments     LessonComment[]
-    Feedback           Feedback[]
+  id                 String              @id @unique @default(cuid())
+  name               String?
+  email              String?             @unique
+  emailVerified      DateTime?
+  image              String?
+  role               String?
+  accounts           Account[]
+  sessions           Session[]
+  students           Student[]
+  lessonPlans        LessonPlan[]
+  lessonPlanComments LessonPlanComment[]
+  lessonComments     LessonComment[]
+  Feedback           Feedback[]
 }
 
 model Student {
-    id                 String             @id @unique @default(cuid())
-    studentFirstName   String
-    studentLastName    String
-    studentDateOfBirth String
-    status             String
-    teacher            User?              @relation(fields: [userId], references: [id])
-    userId             String?
-    lessonPlans        LessonPlan[]
-    Lesson             Lesson[]
-    entitlements       Entitlements[]
-    lessonCompletions  LessonCompletion[]
-    Feedback           Feedback[]
-    LessonComment      LessonComment[]
+  id                 String             @id @unique @default(cuid())
+  studentFirstName   String
+  studentLastName    String
+  studentDateOfBirth String
+  userId             String?
+  status             String
+  teacher            User?              @relation(fields: [userId], references: [id])
+  lessonPlans        LessonPlan[]
+  Lesson             Lesson[]
+  entitlements       Entitlements[]
+  lessonCompletions  LessonCompletion[]
+  Feedback           Feedback[]
+  LessonComment      LessonComment[]
 
-    @@index([userId])
+  @@index([userId])
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }
 
 model LessonPlan {
-    id           String              @id @unique @default(cuid())
-    title        String
-    date         String
-    slidesUrl    String?
-    homeworkSent Boolean?            @default(false)
-    Student      Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    studentId    String
-    User         User                @relation(fields: [userId], references: [id], onDelete: NoAction)
-    userId       String
-    comments     LessonPlanComment[]
+  id           String              @id @unique @default(cuid())
+  date         String
+  studentId    String
+  userId       String
+  title        String
+  slidesUrl    String?
+  homeworkSent Boolean?            @default(false)
+  Student      Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  User         User                @relation(fields: [userId], references: [id], onDelete: NoAction)
+  comments     LessonPlanComment[]
 
-    @@index([studentId])
-    @@index([userId])
+  @@index([studentId])
+  @@index([userId])
 }
 
 model LessonPlanComment {
-    id           String     @id @unique @default(cuid())
-    content      String     @db.Text
-    createdAt    DateTime   @default(now())
-    LessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
-    lessonPlanId String
-    User         User       @relation(fields: [userId], references: [id], onDelete: NoAction)
-    userId       String
+  id           String     @id @unique @default(cuid())
+  lessonPlanId String
+  userId       String
+  content      String     @db.Text
+  createdAt    DateTime   @default(now())
+  LessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
+  User         User       @relation(fields: [userId], references: [id], onDelete: NoAction)
 
-    @@index([lessonPlanId])
-    @@index([userId])
+  @@index([lessonPlanId])
+  @@index([userId])
 }
 
 model Assignment {
-    id       String  @id @unique @default(cuid())
-    title    String
-    url      String
-    Lesson   Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-    lessonId String?
+  id       String  @id @unique @default(cuid())
+  title    String
+  url      String
+  lessonId String?
+  Lesson   Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
-    @@index([lessonId])
+  @@index([lessonId])
 }
 
 model Lesson {
-    id                String             @id @unique @default(cuid())
-    title             String
-    photoUrl          String
-    slidesUrl         String?
-    number            Int
-    published         Boolean            @default(false)
-    objective         String?            @db.Text
-    assignments       Assignment[]
-    Student           Student?           @relation(fields: [studentId], references: [id])
-    studentId         String?
-    Unit              Unit               @relation(fields: [unitId], references: [id])
-    unitId            String
-    comments          LessonComment[]
-    lessonCompletions LessonCompletion[]
-    Feedback          Feedback[]
+  id                String             @id @unique @default(cuid())
+  title             String
+  studentId         String?
+  unitId            String
+  published         Boolean            @default(false)
+  photoUrl          String
+  number            Int
+  slidesUrl         String?
+  objective         String?            @db.Text
+  assignments       Assignment[]
+  Student           Student?           @relation(fields: [studentId], references: [id])
+  Unit              Unit               @relation(fields: [unitId], references: [id])
+  comments          LessonComment[]
+  lessonCompletions LessonCompletion[]
+  Feedback          Feedback[]
 
-    @@index([studentId])
-    @@index([unitId])
+  @@index([studentId])
+  @@index([unitId])
 }
 
 model LessonComment {
-    id        String   @id @unique @default(cuid())
-    content   String   @db.Text
-    createdAt DateTime @default(now())
-    lessonId  String
-    userId    String
-    studentId String
+  id        String   @id @unique @default(cuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  lessonId  String
+  userId    String
+  studentId String
+  Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+  Student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-    Lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-    User    User    @relation(fields: [userId], references: [id], onDelete: NoAction)
-    Student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-    @@index([lessonId])
-    @@index([userId])
-    @@index([studentId])
+  @@index([lessonId])
+  @@index([userId])
+  @@index([studentId])
 }
 
 model Unit {
-    id        String   @id @unique @default(cuid())
-    title     String
-    number    Int
-    photoUrl  String
-    published Boolean  @default(false)
-    Lesson    Lesson[]
-    Level     Level    @relation(fields: [levelId], references: [id], onDelete: NoAction)
-    levelId   String
+  id        String   @id @unique @default(cuid())
+  title     String
+  levelId   String
+  published Boolean  @default(false)
+  number    Int
+  photoUrl  String
+  Lesson    Lesson[]
+  Level     Level    @relation(fields: [levelId], references: [id], onDelete: NoAction)
 
-    @@index([levelId])
+  @@index([levelId])
 }
 
 model Level {
-    id               String         @id @default(cuid())
-    title            String
-    number           Int
-    published        Boolean        @default(false)
-    Unit             Unit[]
-    studentsEntitled Entitlements[]
+  id               String         @id @default(cuid())
+  title            String
+  number           Int
+  published        Boolean        @default(false)
+  Unit             Unit[]
+  studentsEntitled Entitlements[]
 }
 
 model Entitlements {
-    id        String   @id @unique @default(cuid())
-    Level     Level?   @relation(fields: [levelId], references: [id], onDelete: Cascade)
-    levelId   String?
-    Student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    studentId String?
+  id        String   @id @unique @default(cuid())
+  levelId   String?
+  studentId String?
+  Level     Level?   @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  Student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-    @@index([levelId])
-    @@index([studentId])
+  @@index([levelId])
+  @@index([studentId])
 }
 
 model LessonCompletion {
-    id          String   @id @unique @default(cuid())
-    lessonId    String
-    studentId   String
-    completedAt DateTime @default(now())
-    comments    String?  @db.Text
+  id          String   @id @unique @default(cuid())
+  lessonId    String
+  studentId   String
+  completedAt DateTime @default(now())
+  comments    String?  @db.Text
+  Lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  Student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-    Lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-    Student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-    @@index([lessonId])
-    @@index([studentId])
+  @@index([lessonId])
+  @@index([studentId])
 }
 
 model FeedbackMetric {
-    id String @id @unique @default(cuid())
+  id String @id @unique @default(cuid())
 }
 
 model Feedback {
-    id               String @id @unique @default(cuid())
-    studentId        String
-    userId           String
-    lessonId         String
-    feedbackMetricId String
+  id               String  @id @unique @default(cuid())
+  studentId        String
+  userId           String
+  lessonId         String
+  feedbackMetricId String
+  Student          Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  User             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Lesson           Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
-    Student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    User    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    Lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-
-    @@index([studentId])
-    @@index([userId])
-    @@index([lessonId])
-    @@index([feedbackMetricId])
+  @@index([studentId])
+  @@index([userId])
+  @@index([lessonId])
+  @@index([feedbackMetricId])
 }
