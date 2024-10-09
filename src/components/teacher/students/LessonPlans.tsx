@@ -3,7 +3,7 @@ import { trpc } from "@src/utils/trpc"
 import LessonPlan from "@src/components/lessonPlan"
 import AddLessonPlanCommentInput from "@src/components/addLessonPlanCommentInput"
 import { useRef, useState } from "react"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import Modal from "@ui/modal"
 import AddLessonPlan from "@src/components/addLessonPlan"
 import Loading from "@ui/loading"
@@ -72,9 +72,13 @@ export default function LessonPlans({ me }: Props) {
   const addLessonPlanBtn = (
     <div>
       <div>
-        <Button intent="primary" size="small" onClick={() => setIsOpen(true)}>
+        <ButtonLegacy
+          intent="primary"
+          size="small"
+          onClick={() => setIsOpen(true)}
+        >
           + Add Lesson Plan
-        </Button>
+        </ButtonLegacy>
         <Modal
           isOpen={isOpen}
           setIsOpen={setIsOpen}

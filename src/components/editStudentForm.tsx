@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { FormInput } from "@src/components/ui/form/form-input"
-import { Button } from "./ui/button"
+import { ButtonLegacy } from "./ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 import { IStudent } from "@src/interfaces"
 import { useEffect, useState } from "react"
@@ -207,7 +207,7 @@ export default function EditStudentForm({
         </fieldset>
       </div>
 
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -217,7 +217,7 @@ export default function EditStudentForm({
         loadingLabel="Saving..."
       >
         Save
-      </Button>
+      </ButtonLegacy>
     </form>
   )
 }

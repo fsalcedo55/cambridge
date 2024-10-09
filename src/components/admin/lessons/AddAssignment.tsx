@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
-import { Button } from "@src/components/ui/button"
+import { ButtonLegacy } from "@src/components/ui/button"
 import { trpc } from "@src/utils/trpc"
 
 function classNames(...classes: string[]) {
@@ -58,7 +58,7 @@ export default function AddAssignment({ closeModal, currentLesson }: Props) {
         rules={{ required: "You must enter a URL." }}
         errors={errors}
       />
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -68,7 +68,7 @@ export default function AddAssignment({ closeModal, currentLesson }: Props) {
         fullWidth
       >
         Add Assignment
-      </Button>
+      </ButtonLegacy>
     </form>
   )
 }

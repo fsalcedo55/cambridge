@@ -96,6 +96,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["Nunito", ...defaultTheme.fontFamily.sans],
+        "open-sans": ["Open Sans", ...defaultTheme.fontFamily.sans],
       },
     },
   },

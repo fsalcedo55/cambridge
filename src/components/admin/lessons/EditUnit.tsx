@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
 import { Fragment, useState } from "react"
@@ -145,7 +145,7 @@ export default function EditUnit({ closeModal, currentUnit, levels }: Props) {
         </Switch>
       </Switch.Group>
 
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -155,7 +155,7 @@ export default function EditUnit({ closeModal, currentUnit, levels }: Props) {
         fullWidth
       >
         Save
-      </Button>
+      </ButtonLegacy>
     </form>
   )
 }

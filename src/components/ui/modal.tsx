@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 
 interface Props {
   isOpen: boolean
@@ -63,7 +63,7 @@ export default function Modal({
               </Dialog.Description>
               <div className="flex flex-col gap-2">
                 {actionButton && (
-                  <Button
+                  <ButtonLegacy
                     onClick={() => actionFunction(currentData)}
                     loading={loading}
                     loadingLabel={loadingLabel}
@@ -71,15 +71,15 @@ export default function Modal({
                     intent={btnIntent}
                   >
                     {actionButton}
-                  </Button>
+                  </ButtonLegacy>
                 )}
-                <Button
+                <ButtonLegacy
                   onClick={() => setIsOpen(false)}
                   intent="cancel"
                   size="medium"
                 >
                   {closeButton}
-                </Button>
+                </ButtonLegacy>
               </div>
             </Dialog.Panel>
           </div>

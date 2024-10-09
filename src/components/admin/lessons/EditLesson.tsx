@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
 import { Fragment, useEffect, useState } from "react"
@@ -182,10 +182,9 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
               href="https://unsplash.com/"
               className="cursor-pointer text-primary-400 hover:underline"
               target="_blank"
-              rel="noopener noreferrer">
-              
-                (Unsplash)
-              
+              rel="noopener noreferrer"
+            >
+              (Unsplash)
             </Link>
           </div>
         }
@@ -308,7 +307,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         </Switch>
       </Switch.Group>
 
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -318,7 +317,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         fullWidth
       >
         Save
-      </Button>
+      </ButtonLegacy>
     </form>
-  );
+  )
 }

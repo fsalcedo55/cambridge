@@ -13,7 +13,7 @@ import EditAssignment from "@src/components/admin/lessons/EditAssignment"
 import Modal from "@ui/modal"
 import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
 import Container from "@ui/Container"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 
 // TRPC Hooks
 import { trpc } from "@src/utils/trpc"
@@ -114,7 +114,7 @@ export default function LessonPage() {
           loading={lesson.isLoading}
         />
         <div className="flex gap-2">
-          <Button
+          <ButtonLegacy
             onClick={() => setCurrentModal("EDIT_LESSON")}
             size="small"
             intent="secondary"
@@ -122,15 +122,15 @@ export default function LessonPage() {
           >
             <RiPencilLine />
             Edit Lesson
-          </Button>
-          <Button
+          </ButtonLegacy>
+          <ButtonLegacy
             size="small"
             intent="danger"
             className="flex gap-2"
             onClick={() => setCurrentModal("DELETE_LESSON")}
           >
             <RiDeleteBinLine /> Delete Lesson
-          </Button>
+          </ButtonLegacy>
         </div>
       </div>
       <div className="flex gap-4">

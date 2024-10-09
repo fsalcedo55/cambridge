@@ -1,4 +1,4 @@
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
@@ -58,7 +58,7 @@ export default function AddLevel({ closeModal }: Props) {
         errors={errors}
       />
 
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -68,7 +68,7 @@ export default function AddLevel({ closeModal }: Props) {
         fullWidth
       >
         Add
-      </Button>
+      </ButtonLegacy>
     </form>
   )
 }
