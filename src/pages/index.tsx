@@ -1,7 +1,5 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import { useEffect } from "react"
-import Header from "../components/layout/header"
 import Loading from "../components/ui/loading"
 import Image from "next/image"
 import { GetServerSidePropsContext } from "next"
@@ -9,6 +7,7 @@ import { getAuthSession } from "@src/server/common/get-server-session"
 import HomeLandingPage from "@src/components/landingpage/HomeLandingPage"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { ArrowRightIcon } from "@heroicons/react/24/outline"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -83,6 +82,16 @@ export default function IndexPage() {
                 />
               </motion.a>
             </Link>
+            <div>
+              <a
+                href="https://tally.so/r/mRMq4l"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="flex px-5 py-2 font-bold rounded-full shadow-lg text-md bg-amber-400 text-primary-500 hover:bg-amber-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
+              >
+                Get Started <ArrowRightIcon className="w-5 h-5 ml-2" />
+              </a>
+            </div>
           </div>
         </motion.div>
       </motion.nav>
