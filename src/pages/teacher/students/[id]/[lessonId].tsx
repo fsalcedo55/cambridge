@@ -3,7 +3,7 @@ import {
   SlideComponent,
 } from "@src/components/lessonDetails/LessonDetails"
 import Container from "@src/components/ui/Container"
-import { Button } from "@src/components/ui/button"
+import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import Loading from "@src/components/ui/loading"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
 import { getAuthSession } from "@src/server/common/get-server-session"
@@ -295,7 +295,7 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
             ))}
             <div className="flex justify-end">
               {!lessonCompletion.isLoading && (
-                <Button
+                <ButtonLegacy
                   intent="secondary"
                   size="small"
                   className="max-w-sm px-4"
@@ -305,7 +305,7 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
                     <BiCommentCheck className="text-lg" />
                     Add Feedback
                   </span>
-                </Button>
+                </ButtonLegacy>
               )}
             </div>
           </div>
@@ -318,19 +318,23 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
           <div className="flex flex-col items-center justify-center gap-3">
             <BsFillCheckCircleFill className="text-7xl" />
             <div className="text-3xl font-bold">Lesson Completed</div>
-            <Button intent="secondary" size="small" onClick={toggleCompletion}>
+            <ButtonLegacy
+              intent="secondary"
+              size="small"
+              onClick={toggleCompletion}
+            >
               Mark as not completed
-            </Button>
+            </ButtonLegacy>
           </div>
         ) : (
-          <Button
+          <ButtonLegacy
             intent="primary"
             size="large"
             className="px-24"
             onClick={toggleCompletion}
           >
             <span className="text-xl">Mark as Completed</span>
-          </Button>
+          </ButtonLegacy>
         )}
       </div>
 

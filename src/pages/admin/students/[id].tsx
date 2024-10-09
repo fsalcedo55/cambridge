@@ -9,7 +9,7 @@ import EditLessonPlan from "@src/components/editLessonPlan"
 import Loading from "@ui/loading"
 import LoadingSkeleton from "@ui/loadingSkeleton"
 import Modal from "@ui/modal"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import LessonPlan from "@components/lessonPlan"
 import AddLessonPlan from "@components/addLessonPlan"
 import { HiOutlineFolderAdd } from "react-icons/hi"
@@ -121,9 +121,13 @@ export default function AdminStudentPage({ sessionSSR }: any) {
     <div>
       {router.isReady ? (
         <div>
-          <Button intent="primary" size="small" onClick={() => setIsOpen(true)}>
+          <ButtonLegacy
+            intent="primary"
+            size="small"
+            onClick={() => setIsOpen(true)}
+          >
             + Add Lesson Plan
-          </Button>
+          </ButtonLegacy>
           <Modal
             isOpen={isOpen}
             setIsOpen={setIsOpen}

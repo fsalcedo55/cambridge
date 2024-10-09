@@ -10,7 +10,7 @@ import { useRouter } from "next/router"
 import Image from "next/image"
 import { trpc } from "src/utils/trpc"
 import EditStudentForm from "@src/components/editStudentForm"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import { getAge } from "@src/helpers/date"
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
@@ -262,13 +262,13 @@ export default function Students() {
           ) : (
             <div>
               <div className="flex justify-end my-2">
-                <Button
+                <ButtonLegacy
                   size="small"
                   intent="primary"
                   onClick={() => setIsOpenAddModal(true)}
                 >
                   + Add Student
-                </Button>
+                </ButtonLegacy>
               </div>
               {/* Delete Modal */}
               <Modal

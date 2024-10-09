@@ -2,7 +2,7 @@ import { Disclosure } from "@headlessui/react"
 import AddLevel from "@src/components/admin/lessons/AddLevel"
 import AddUnit from "@src/components/admin/lessons/AddUnit"
 import Layout from "@src/components/layout/layout"
-import { Button } from "@src/components/ui/button"
+import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import Modal from "@src/components/ui/modal"
 import PageHeading from "@src/components/ui/pageHeading"
 import { trpc } from "@src/utils/trpc"
@@ -99,13 +99,13 @@ export default function Curriculum() {
 
   const addLevelBtn = (
     <div>
-      <Button
+      <ButtonLegacy
         intent="primary"
         size="small"
         onClick={() => setIsOpenLevelBtn(true)}
       >
         + Add Level
-      </Button>
+      </ButtonLegacy>
       <Modal
         isOpen={isOpenLevelBtn}
         setIsOpen={setIsOpenLevelBtn}
@@ -118,13 +118,13 @@ export default function Curriculum() {
 
   const addUnitBtn = (
     <div>
-      <Button
+      <ButtonLegacy
         intent="primary"
         size="small"
         onClick={() => setIsOpenUnitBtn(true)}
       >
         + Add Unit
-      </Button>
+      </ButtonLegacy>
       <Modal
         isOpen={isOpenUnitBtn}
         setIsOpen={setIsOpenUnitBtn}
@@ -142,13 +142,13 @@ export default function Curriculum() {
 
   const addLessonBtn = (
     <div>
-      <Button
+      <ButtonLegacy
         intent="primary"
         size="small"
         onClick={() => setIsOpenLessonBtn(true)}
       >
         + Add Lesson
-      </Button>
+      </ButtonLegacy>
       <Modal
         isOpen={isOpenLessonBtn}
         setIsOpen={setIsOpenLessonBtn}

@@ -3,7 +3,7 @@ import { RadioGroup } from "@headlessui/react"
 import { IoMdInformationCircleOutline } from "react-icons/io"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { useForm } from "react-hook-form"
-import { Button } from "@src/components/ui/button"
+import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
@@ -136,7 +136,7 @@ export default function AddFeedback({
         </div>
       </div>
       {me.data && (
-        <Button
+        <ButtonLegacy
           type="submit"
           intent="primary"
           size="medium"
@@ -146,7 +146,7 @@ export default function AddFeedback({
           loading={addLessonComment.isLoading}
         >
           Submit Feedback
-        </Button>
+        </ButtonLegacy>
       )}
     </form>
   )

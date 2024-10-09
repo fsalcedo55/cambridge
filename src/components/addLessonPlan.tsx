@@ -1,4 +1,4 @@
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import { Switch } from "@headlessui/react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -130,7 +130,7 @@ export default function AddLessonPlan({
           </Switch>
         </Switch.Group>
       )}
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -140,7 +140,7 @@ export default function AddLessonPlan({
         fullWidth
       >
         Save
-      </Button>
+      </ButtonLegacy>
     </form>
   )
 }

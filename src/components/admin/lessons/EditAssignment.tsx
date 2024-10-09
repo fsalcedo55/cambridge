@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
-import { Button } from "@src/components/ui/button"
+import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 
 function classNames(...classes: string[]) {
@@ -63,7 +63,7 @@ export default function EditAssignment({
         errors={errors}
         defaultValue={currentAssignment.url}
       />
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -73,7 +73,7 @@ export default function EditAssignment({
         fullWidth
       >
         Update Assignment
-      </Button>
+      </ButtonLegacy>
     </form>
   )
 }

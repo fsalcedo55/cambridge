@@ -2,7 +2,7 @@ import { useFormik } from "formik"
 import { useState } from "react"
 import Loading from "./ui/loading"
 import * as Yup from "yup"
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import dayjs from "dayjs"
 import { trpc } from "@src/utils/trpc"
 
@@ -225,7 +225,7 @@ export default function AddStudent({
               </fieldset>
             </div>
 
-            <Button
+            <ButtonLegacy
               type="submit"
               className="max-w-md my-2"
               intent="primary"
@@ -234,7 +234,7 @@ export default function AddStudent({
               loadingLabel={btnLabel}
             >
               + Add Student
-            </Button>
+            </ButtonLegacy>
           </form>
         )}
       </div>

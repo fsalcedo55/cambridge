@@ -3,7 +3,7 @@ import { PublishedStatus } from "../ui/badges"
 import Loading from "../ui/loading"
 import { RiSlideshowLine } from "react-icons/ri"
 import Link from "next/link"
-import { Button } from "../ui/button"
+import { ButtonLegacy } from "../ui/buttonLegacy"
 import { HiOutlineExternalLink } from "react-icons/hi"
 
 interface LessonInfoProps {
@@ -80,14 +80,14 @@ export function SlideComponent({ lesson, admin }: SlideComponentProps) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button
+            <ButtonLegacy
               size="small"
               intent="secondary"
               className="flex items-center gap-2"
             >
               <span>Edit on Google Slides</span>
               <HiOutlineExternalLink />
-            </Button>
+            </ButtonLegacy>
           </Link>
         )}
       </div>

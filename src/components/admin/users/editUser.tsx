@@ -1,4 +1,4 @@
-import { Button } from "@ui/button"
+import { ButtonLegacy } from "@ui/buttonLegacy"
 import { Switch } from "@headlessui/react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -62,7 +62,7 @@ export default function EditUser({ user, closeModal }: Props) {
         </select>
       </div>
 
-      <Button
+      <ButtonLegacy
         type="submit"
         intent="primary"
         size="medium"
@@ -72,7 +72,7 @@ export default function EditUser({ user, closeModal }: Props) {
         fullWidth
       >
         Save
-      </Button>
+      </ButtonLegacy>
     </form>
   )
 }
