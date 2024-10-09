@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
-import { ButtonLegacy } from "@src/components/ui/button"
+import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 
 function classNames(...classes: string[]) {

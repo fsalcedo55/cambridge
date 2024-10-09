@@ -3,7 +3,7 @@ import {
   SlideComponent,
 } from "@src/components/lessonDetails/LessonDetails"
 import Container from "@src/components/ui/Container"
-import { ButtonLegacy } from "@src/components/ui/button"
+import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import Loading from "@src/components/ui/loading"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
 import { getAuthSession } from "@src/server/common/get-server-session"
