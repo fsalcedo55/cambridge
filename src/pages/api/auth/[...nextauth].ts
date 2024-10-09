@@ -6,6 +6,18 @@ import EmailProvider from "next-auth/providers/email"
 import { GetServerSidePropsContext } from "next"
 
 export const authOptions: NextAuthOptions = {
+  debug: true,
+  logger: {
+    error: (code, metadata) => {
+      console.error(code, metadata)
+    },
+    warn: (code) => {
+      console.warn(code)
+    },
+    debug: (code, metadata) => {
+      console.log(code, metadata)
+    },
+  },
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
