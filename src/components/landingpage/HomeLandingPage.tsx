@@ -410,7 +410,7 @@ function ParentsReviewSection() {
       </div>
       <div className="relative bottom-0 left-0 right-0 h-24 overflow-hidden sm:h-36">
         <Image
-          src="/landingPageAssets/divs/ParentReviewsTopDiv.svg"
+          src="/landingPageAssets/divs/parentReviewsTopDiv.svg"
           alt="wavy div"
           fill={true}
           className="object-cover object-top"
