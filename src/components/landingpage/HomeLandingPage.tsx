@@ -8,24 +8,30 @@ import {
 } from "../ui/carousel"
 import Faqs from "./Faqs"
 import Footer from "./Footer"
+import { FaqItem } from "./Faqs"
+interface HomeLandingPageProps {
+  faqs: FaqItem[]
+}
 
-export default function HomeLandingPage() {
+export default function HomeLandingPage({ faqs }: HomeLandingPageProps) {
   return (
     <div>
-      <div className="relative bg-primary-500">
+      <header className="relative bg-primary-500">
         <div className="mx-auto max-w-7xl">
           <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-            <img
-              className="object-cover w-full h-56 sm:h-72 md:h-96 lg:h-full lg:w-full"
-              src="https://images.unsplash.com/photo-1611623516688-c47bb8d43311?q=80&w=2874&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Spanish class for kids"
+            <Image
+              src="https://images.unsplash.com/photo-1611623516688-c47bb8d43311"
+              alt="Young girl enthusiastically learning Spanish remotely on her laptop, interacting with native-speaking Spanish teachers"
+              layout="fill"
+              objectFit="cover"
+              priority
             />
           </div>
           <div className="px-6 py-12 sm:py-24 lg:w-1/2 xl:pr-16">
             <div className="max-w-2xl mx-auto lg:mx-0">
-              <div className="text-xl font-black text-white mb-7">
+              <h2 className="text-xl font-black text-white mb-7">
                 ONLINE SPANISH SCHOOL FOR KIDS
-              </div>
+              </h2>
               <h1 className="text-3xl font-extrabold tracking-tight text-amber-400 sm:text-5xl md:text-6xl">
                 ✨ Empower Your Child with Interactive Online Spanish Classes
               </h1>
@@ -33,7 +39,7 @@ export default function HomeLandingPage() {
                 Personalized, engaging Spanish lessons led by native-speaking
                 experts. Boost skills, confidence, and a love for the language!
               </p>
-              <div className="flex flex-col items-center mt-10 sm:flex-row gap-y-4 sm:gap-x-6">
+              <nav className="flex flex-col items-center mt-10 sm:flex-row gap-y-4 sm:gap-x-6">
                 <a
                   href="https://tally.so/r/mRMq4l"
                   rel="noopener noreferrer"
@@ -45,11 +51,11 @@ export default function HomeLandingPage() {
                 {/* <a href="#" className="font-semibold leading-6 text-primary-50">
                   Learn more <span aria-hidden="true">→</span>
                 </a> */}
-              </div>
+              </nav>
             </div>
           </div>
         </div>
-      </div>
+      </header>
       {/* ********************** */}
       {/* <div className="relative bg-primary-500">
         <div className="mx-auto max-w-7xl">
@@ -97,7 +103,7 @@ export default function HomeLandingPage() {
         <LearningJourneySection />
         <LevelsSection />
         <ParentsReviewSection />
-        <Faqs />
+        <Faqs faqs={faqs} />
         <Footer>
           <TrialClassButton text="Let's Get Started 🚀" />
         </Footer>
@@ -143,9 +149,10 @@ function HighlightsSection() {
                 <div className="relative mx-auto w-36 sm:w-48 h-36 sm:h-44">
                   <Image
                     src={highlight.image}
-                    alt="logo"
+                    alt={highlight.name}
                     fill={true}
                     className="object-contain"
+                    loading="lazy"
                   />
                 </div>
 
@@ -323,7 +330,7 @@ function ParentsReviewSection() {
       author: "Mariana Briones",
     },
     {
-      text: "My daughter has been receiving Spanish lessons for over a year now and she has enjoyed herself immensely. Her teacher is professional, friendly, knowledgeable, and great with kids. My daughter looks forward to her Spanish lessons every week and we are thrilled to give her the opportunity to practice her skills with the guidance of a stellar tutoring company.",
+      text: "My daughter has been receiving Spanish lessons for over a year now and she has enjoyed herself immensely. Her teacher is professional, friendly, knowledgeable, and great with kids. My daughter looks forward to her Spanish lessons every week and has learned a lot. They went from knowing single words to actually saying sentences in Spanish.",
       author: "Kelly Suarez",
     },
     {
