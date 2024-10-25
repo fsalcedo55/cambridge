@@ -351,7 +351,7 @@ function ParentsReviewSection() {
     },
     {
       text: "My son has been taking Spanish courses with them for a year now. The teacher is incredible he loves her a lot. The software is nicely built for activities, songs … kids will not get bored they actually enjoy their Spanish classes. Best choice ever.",
-      author: "Christiane Chbib",
+      author: "Christiane Meena",
     },
     {
       text: "Ever since my son started classes with Spanish For Us his Spanish has gotten so much better. He was afraid to even try it or speak it. Now, whenever he hears Spanish he tries to join in on the conversation. Ms. Paula is great, patient and very sweet.",
