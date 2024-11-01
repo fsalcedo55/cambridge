@@ -56,6 +56,17 @@ export const authOptions: NextAuthOptions = {
         return true
       }
 
+      if (user.email == process.env.ADMIN_EMAILS) {
+        await prisma.user.create({
+          data: {
+            email: user?.email,
+            name: user?.name,
+            image: user?.image,
+            role: "admin",
+          },
+        })
+      }
+
       if (user.email.includes("spanishforus")) {
         await prisma.user.create({
           data: {

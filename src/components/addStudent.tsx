@@ -33,7 +33,7 @@ export default function AddStudent({
   const [levelId, setLevelId] = useState<string[]>([])
   const getLevels = trpc.level.getLevelsReduced.useQuery()
 
-  console.log("levelid: ", levelId)
+  console.log("teachers: ", teachers)
 
   const handleLevelCheckboxChange = (e: any) => {
     const value = e.target.value
