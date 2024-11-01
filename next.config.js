@@ -8,6 +8,7 @@ const nextConfig = {
       "placeimg.com",
       "images.unsplash.com",
       "cdn-icons-png.flaticon.com",
+      "picsum.photos",
     ],
   },
   env: {

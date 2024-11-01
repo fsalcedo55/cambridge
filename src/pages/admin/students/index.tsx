@@ -60,7 +60,7 @@ export default function Students() {
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
   const [numOfActiveStudents, setNumOfActiveStudents] = useState(0)
 
-  console.log("activestudents: ", activeStudents.data)
+  console.log("teachers: ", teachers.data)
 
   const handleAddStudentModal = async (values: any) => {
     try {
