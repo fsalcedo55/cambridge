@@ -2,14 +2,24 @@ import { useForm } from "react-hook-form"
 import { trpc } from "@src/utils/trpc"
 import Image from "next/image"
 import Loading from "./ui/loading"
+import { toast } from "sonner"
 
 export type FormFields = {
   content: string
 }
 
+interface User {
+  id: string
+  image: string
+}
+
+interface LessonPlan {
+  id: string
+}
+
 interface Props {
-  currentLessonPlan: any
-  user: any
+  currentLessonPlan: LessonPlan
+  user: User
 }
 
 export default function AddLessonPlanCommentInput({
@@ -22,12 +32,7 @@ export default function AddLessonPlanCommentInput({
     },
   })
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormFields>()
+  const { register, handleSubmit, reset } = useForm<FormFields>()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -37,8 +42,10 @@ export default function AddLessonPlanCommentInput({
         userId: user.id,
       })
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to add comment")
+      return
     }
+    toast.success("Comment added successfully")
   })
 
   return (

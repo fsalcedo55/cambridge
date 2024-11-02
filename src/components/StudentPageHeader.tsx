@@ -1,13 +1,29 @@
+import React from "react"
 import { useRouter } from "next/router"
 import Breadcrumbs from "./ui/breadcrumbs"
 import LoadingSkeleton from "./ui/loadingSkeleton"
 import PageHeading from "./ui/pageHeading"
 import Image from "next/image"
 
+interface StudentData {
+  studentFirstName?: string
+  studentLastName?: string
+  teacher?: {
+    image?: string
+    name?: string
+  }
+}
+
+interface BreadcrumbPage {
+  name: string
+  href?: string
+  current: boolean
+}
+
 interface StudentPageHeaderProps {
   isLoading: boolean
-  studentData: any
-  pages: any
+  studentData: StudentData
+  pages: BreadcrumbPage[]
 }
 
 export default function StudentPageHeader({
@@ -29,7 +45,11 @@ export default function StudentPageHeader({
         <div>
           <PageHeading
             userCard={true}
-            pageTitle={`${studentData?.studentFirstName} ${studentData?.studentLastName}`}
+            pageTitle={
+              <h2 className="font-bold leading-7 sm:truncate sm:text-2xl sm:tracking-tight">
+                {studentData?.studentFirstName} {studentData?.studentLastName}
+              </h2>
+            }
             content={
               <div className="flex items-center gap-2">
                 <div className="avatar">

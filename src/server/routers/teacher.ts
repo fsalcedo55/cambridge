@@ -9,11 +9,11 @@ export const teacherRouter = router({
     return prisma.user.findMany({
       where: {
         role: "teacher",
-        // students: {
-        //   some: {
-        //     status: "active",
-        //   },
-        // },
+        students: {
+          some: {
+            status: "active",
+          },
+        },
       },
     })
   }),
