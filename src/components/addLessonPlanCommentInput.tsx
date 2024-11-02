@@ -3,14 +3,10 @@ import { trpc } from "@src/utils/trpc"
 import Image from "next/image"
 import Loading from "./ui/loading"
 import { toast } from "sonner"
+import type { User } from "@src/pages/admin/users"
 
 export type FormFields = {
   content: string
-}
-
-interface User {
-  id: string
-  image: string
 }
 
 interface LessonPlan {
@@ -48,13 +44,15 @@ export default function AddLessonPlanCommentInput({
     toast.success("Comment added successfully")
   })
 
+  const defaultAvatar = "/landingPageAssets/mascots/Untitled-8.png"
+
   return (
     <div className="relative">
       <div className="absolute inset-y-0 left-0 flex items-center pl-1 pointer-events-none">
         <div className="avatar">
           <div className="w-10 h-10 rounded-full">
             <Image
-              src={user.image}
+              src={user.image || defaultAvatar} // Provide fallback image
               alt="teacher-photo"
               height={40}
               width={40}

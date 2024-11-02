@@ -21,6 +21,7 @@ import {
   TabsTrigger,
 } from "@src/components/ui/tabs"
 import { Badge } from "@src/components/ui/badges"
+import type { User } from "@src/pages/admin/users"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -61,6 +62,14 @@ export default function Students() {
   const [numOfActiveStudents, setNumOfActiveStudents] = useState(0)
 
   console.log("teachers: ", teachers.data)
+
+  // Filter out teachers with null names and transform the data
+  const validTeachers = teachers.data
+    ?.filter((teacher): teacher is User => teacher.name !== null)
+    .map((teacher) => ({
+      id: teacher.id,
+      name: teacher.name as string,
+    }))
 
   const handleAddStudentModal = async (values: any) => {
     try {
@@ -303,7 +312,7 @@ export default function Students() {
                 title="Add Student"
                 description={
                   <AddStudent
-                    teachers={teachers.data}
+                    teachers={validTeachers}
                     handleSubmit={handleAddStudentModal}
                     btnLabel="Adding Student..."
                     btnLoading={addStudent.isLoading}
