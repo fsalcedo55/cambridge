@@ -5,14 +5,13 @@ interface LevelPanelProps {
   levelNumber: number
   levelTitle: string
   levelPublished: boolean
-  levelObj: any
   numberOfUnits: number
-  levelId: string
   editLevelModal?: () => void
   setStateOpenDisabledDeleteLevelModal?: () => void
   deleteLevelModal?: () => void
   admin: boolean
   edit?: boolean
+  levelId: string
 }
 
 export function LevelPanel({

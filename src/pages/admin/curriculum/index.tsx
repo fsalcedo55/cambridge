@@ -265,7 +265,6 @@ export default function Curriculum() {
                   levelNumber={level.number}
                   levelTitle={level.title}
                   levelPublished={level.published}
-                  levelObj={undefined}
                   numberOfUnits={level.Unit.length}
                   levelId={level.id}
                   editLevelModal={() => handleEditLevelModal(level)}

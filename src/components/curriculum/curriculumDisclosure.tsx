@@ -191,7 +191,6 @@ const CurriculumDisclosure = memo(
               levelNumber={levelNumber}
               levelTitle={levelTitle}
               levelPublished={levelPublished}
-              levelObj={undefined}
               admin={admin}
               edit={edit}
               numberOfUnits={numberOfUnits}

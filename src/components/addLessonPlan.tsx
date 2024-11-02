@@ -6,19 +6,13 @@ import { FormInput } from "./ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
 import { useSession } from "next-auth/react"
 import { notifyNewLessonPlan } from "@src/lib/knockApi"
+import { toast } from "sonner"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
 }
 
 export type FormFields = {
-  title: string
-  slidesUrl: string
-  date: string
-  homeworkSent: boolean
-}
-
-interface Values {
   title: string
   slidesUrl: string
   date: string
@@ -71,8 +65,10 @@ export default function AddLessonPlan({
         actionUrl,
       })
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to add lesson plan. Please try again.")
+      return
     }
+    toast.success("Lesson plan added successfully!")
     closeModal()
   })
 

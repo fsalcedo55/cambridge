@@ -2,14 +2,20 @@ import { useForm } from "react-hook-form"
 import { trpc } from "@src/utils/trpc"
 import Image from "next/image"
 import Loading from "./ui/loading"
+import { toast } from "sonner"
+import type { User } from "@src/pages/admin/users"
 
 export type FormFields = {
   content: string
 }
 
+interface LessonPlan {
+  id: string
+}
+
 interface Props {
-  currentLessonPlan: any
-  user: any
+  currentLessonPlan: LessonPlan
+  user: User
 }
 
 export default function AddLessonPlanCommentInput({
@@ -22,12 +28,7 @@ export default function AddLessonPlanCommentInput({
     },
   })
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormFields>()
+  const { register, handleSubmit, reset } = useForm<FormFields>()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -37,9 +38,13 @@ export default function AddLessonPlanCommentInput({
         userId: user.id,
       })
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to add comment")
+      return
     }
+    toast.success("Comment added successfully")
   })
+
+  const defaultAvatar = "/landingPageAssets/mascots/Untitled-8.png"
 
   return (
     <div className="relative">
@@ -47,7 +52,7 @@ export default function AddLessonPlanCommentInput({
         <div className="avatar">
           <div className="w-10 h-10 rounded-full">
             <Image
-              src={user.image}
+              src={user.image || defaultAvatar} // Provide fallback image
               alt="teacher-photo"
               height={40}
               width={40}

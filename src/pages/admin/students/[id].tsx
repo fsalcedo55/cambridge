@@ -20,6 +20,7 @@ import { ILessonPlan } from "@src/interfaces/index"
 import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
 import Breadcrumbs from "@src/components/ui/breadcrumbs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
+import type { User } from "@src/pages/admin/users"
 
 type Student = {
   studentFirstName: string
@@ -211,7 +212,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
                   AddLessonPlanCommentInput={
                     <AddLessonPlanCommentInput
                       currentLessonPlan={lessonPlan}
-                      user={me.data}
+                      user={me.data as User}
                     />
                   }
                   currentUserId={me.data?.id!}

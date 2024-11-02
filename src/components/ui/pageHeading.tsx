@@ -1,3 +1,4 @@
+import React from "react"
 import LoadingSkeleton from "@ui/loadingSkeleton"
 
 type Props = {
