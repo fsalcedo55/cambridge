@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "@src/components/ui/form/form-input"
 import { ButtonLegacy } from "./ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
-import { IStudent } from "@src/interfaces"
-import { useEffect, useState } from "react"
+import type { IStudent } from "@src/interfaces"
+import { useState } from "react"
 
 export type FormFields = {
   firstName: string
@@ -15,7 +15,10 @@ export type FormFields = {
 
 interface Props {
   currentStudent: IStudent
-  teachers?: any[]
+  teachers?: Array<{
+    id: string
+    name: string | null
+  }>
   closeModal: () => void
 }
 
@@ -36,19 +39,19 @@ export default function EditStudentForm({
 
   const getLevels = trpc.level.getLevelsReduced.useQuery()
 
-  console.log("currentstudent entitlements: ", currentStudent.entitlements)
-
   function getExistingLevelIds() {
     const newArray: string[] = []
-    currentStudent.entitlements.map((entitlement: any) => {
-      if (newArray.includes(entitlement.Level.id) == false) {
-        newArray.push(entitlement.Level.id)
+    currentStudent.entitlements.map(
+      (entitlement: { Level: { id: string } }) => {
+        if (newArray.includes(entitlement.Level.id) === false) {
+          newArray.push(entitlement.Level.id)
+        }
       }
-    })
+    )
     return newArray
   }
 
-  const handleCheckboxChange = (levelIdToAdd: any) => {
+  const handleCheckboxChange = (levelIdToAdd: string) => {
     if (levelId.includes(levelIdToAdd)) {
       // Remove the level id if it already exists in the array
       setLevelId(levelId.filter((id) => id !== levelIdToAdd))
@@ -57,26 +60,6 @@ export default function EditStudentForm({
       setLevelId([...levelId, levelIdToAdd])
     }
   }
-
-  console.log("levelId: ", levelId)
-
-  const levels = [
-    {
-      id: "small",
-      name: "Level 1",
-      description: "Beginner",
-    },
-    {
-      id: "medium",
-      name: "Level 2",
-      description: "Intermediate",
-    },
-    {
-      id: "large",
-      name: "Level 3",
-      description: "Advanced",
-    },
-  ]
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -91,7 +74,11 @@ export default function EditStudentForm({
         existingLevelIds: getExistingLevelIds(),
       })
     } catch (error) {
-      console.log("Error editing student", error)
+      console.error("Failed to edit student:", {
+        error,
+        studentId: currentStudent.id,
+        formData: data,
+      })
     }
     closeModal()
   })
@@ -137,8 +124,8 @@ export default function EditStudentForm({
           className="w-full select select-bordered"
           {...register("teacher")}
         >
-          <option disabled selected value={currentStudent.teacher.id}>
-            {currentStudent.teacher.name}
+          <option disabled selected value={currentStudent.teacher?.id}>
+            {currentStudent.teacher?.name}
           </option>
           {teachers?.map((teacher) => (
             <option value={teacher.id} key={teacher.id}>
@@ -169,7 +156,7 @@ export default function EditStudentForm({
         </label>
         <fieldset>
           <div className="space-y-1">
-            {getLevels.data?.map((level, index) => (
+            {getLevels.data?.map((level) => (
               <div key={level.id} className="relative flex items-start">
                 <div className="flex items-center h-6">
                   <input
@@ -178,7 +165,7 @@ export default function EditStudentForm({
                     name="level"
                     type="checkbox"
                     value={
-                      getExistingLevelIds().length > 0 && levelId.length == 0
+                      getExistingLevelIds().length > 0 && levelId.length === 0
                         ? getExistingLevelIds()
                         : levelId
                     }

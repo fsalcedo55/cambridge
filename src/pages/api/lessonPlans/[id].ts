@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { NextApiRequest, NextApiResponse } from "next"
 
 const prisma = new PrismaClient()
@@ -33,7 +34,10 @@ async function addLessonPlan(req: NextApiRequest, res: NextApiResponse) {
     })
     return res.status(200).json({ success: true, ...newLessonPlan })
   } catch (error) {
-    console.log(error)
+    return res.status(500).json({
+      error: "Error creating lesson plan",
+      success: false,
+    })
   }
 }
 
@@ -45,7 +49,6 @@ async function getLessonPlans(req: NextApiRequest, res: NextApiResponse) {
     })
     return res.status(200).json({ success: true, lessonPlans })
   } catch (error) {
-    console.log(error)
     return res.status(500).json({
       error: "Error fetching lesson plans from database",
       success: false,
@@ -56,11 +59,14 @@ async function getLessonPlans(req: NextApiRequest, res: NextApiResponse) {
 async function deleteLessonPlan(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body
   try {
-    const lessonPlan = await prisma.lessonPlan.delete({
+    await prisma.lessonPlan.delete({
       where: { id: body },
     })
     return res.status(200).json({ success: true })
   } catch (error) {
-    console.log("Error deleting lesson plan from database: ", error)
+    return res.status(500).json({
+      error: "Error deleting lesson plan from database",
+      success: false,
+    })
   }
 }

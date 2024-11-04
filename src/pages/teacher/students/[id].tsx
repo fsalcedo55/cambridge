@@ -9,7 +9,7 @@ import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosur
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "teacher") {
+  if (!session || session.role !== "teacher") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -19,7 +19,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default function TeacherStudentPage({ sessionSSR }: any) {
+type TeacherStudentPageProps = {
+  sessionSSR: {
+    user: {
+      email: string
+    }
+  }
+}
+
+export default function TeacherStudentPage({
+  sessionSSR,
+}: TeacherStudentPageProps) {
   const router = useRouter()
   const { id, tab = "lessonPlans" } = router.query
   const student = trpc.student.byId.useQuery(

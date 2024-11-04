@@ -4,19 +4,21 @@ import * as Yup from "yup"
 import { ButtonLegacy } from "@ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 
+export type AddStudentFormValues = {
+  studentFirstName: string
+  studentLastName: string
+  studentDateOfBirth: string
+  teacher: string
+  status: string
+  levelId: string[]
+}
+
 interface Props {
   teachers?: {
     id: string
     name: string
   }[]
-  handleSubmit: (values: {
-    studentFirstName: string
-    studentLastName: string
-    studentDateOfBirth: string
-    teacher: string
-    status: string
-    levelId: string[]
-  }) => Promise<void>
+  handleSubmit: (values: AddStudentFormValues) => Promise<void>
   btnLoading: boolean
   btnLabel: string
 }

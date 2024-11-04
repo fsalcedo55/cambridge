@@ -1,6 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { GetServerSidePropsContext } from "next"
 import { useSession } from "next-auth/react"
 import PageHeading from "@src/components/ui/pageHeading"
-import AddStudent from "@components/addStudent"
+import AddStudent, {
+  type AddStudentFormValues,
+} from "@src/components/addStudent"
 import { useState } from "react"
 import Loading from "@ui/loading"
 import Modal from "@ui/modal"
@@ -12,7 +16,6 @@ import { trpc } from "src/utils/trpc"
 import EditStudentForm from "@src/components/editStudentForm"
 import { ButtonLegacy } from "@ui/buttonLegacy"
 import { getAge } from "@src/helpers/date"
-import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import {
   Tabs,
@@ -22,10 +25,11 @@ import {
 } from "@src/components/ui/tabs"
 import { Badge } from "@src/components/ui/badges"
 import type { User } from "@src/pages/admin/users"
+import type { IStudent } from "@src/interfaces"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "admin") {
+  if (!session || session.role !== "admin") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -54,14 +58,10 @@ export default function Students() {
   const teachers = trpc.teacher.getAll.useQuery()
   const addStudent = trpc.student.add.useMutation()
   const deleteStudent = trpc.student.deleteStudent.useMutation()
-  const editStudent = trpc.student.editStudent.useMutation()
-  const [currentStudent, setCurrentStudent] = useState<any>(null)
+  const [currentStudent, setCurrentStudent] = useState<IStudent | null>(null)
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
-  const [numOfActiveStudents, setNumOfActiveStudents] = useState(0)
-
-  console.log("teachers: ", teachers.data)
 
   // Filter out teachers with null names and transform the data
   const validTeachers = teachers.data
@@ -71,7 +71,7 @@ export default function Students() {
       name: teacher.name as string,
     }))
 
-  const handleAddStudentModal = async (values: any) => {
+  const handleAddStudentModal = async (values: AddStudentFormValues) => {
     try {
       await addStudent.mutateAsync({
         studentFirstName: values.studentFirstName,
@@ -82,22 +82,26 @@ export default function Students() {
         levelId: values.levelId,
       })
     } catch (error) {
-      console.log("Error adding new student to the database.")
+      setIsOpenAddModal(false)
+      throw error
     }
     setIsOpenAddModal(false)
   }
 
-  const handleEditModal = async (student: any) => {
+  const handleEditModal = async (student: IStudent) => {
+    if (!student.userId) return // Guard against null userId
     setIsOpenEditModal(true)
     setCurrentStudent(student)
   }
 
-  const handleDeleteModal = async (student: any) => {
+  const handleDeleteModal = async (student: IStudent) => {
+    if (!student.userId) return // Guard against null userId
     setIsOpenDeleteModal(true)
     setCurrentStudent(student)
   }
 
-  const handleDelete = async (student: any) => {
+  const handleDelete = async (student: IStudent) => {
+    if (!student.userId) return // Guard against null userId
     await deleteStudent.mutateAsync({
       id: student.id,
     })
@@ -117,145 +121,172 @@ export default function Students() {
 
   // Formatted rows for table cells
   const formattedRows = (activeStatus: boolean) => {
-    return students.data?.map((student, idx: number) => {
-      const row: any = {
-        cells: [
-          {
-            content: (
-              <div>
-                <div className="font-bold md:text-lg text-md">
-                  {student.studentFirstName} {student.studentLastName}
-                </div>
-                <div className="text-xs font-light md:text-sm text-neutral-400">
-                  {student.lessonPlans.length > 0 ? (
-                    <div>
-                      <span className="font-bold">
-                        {student.lessonPlans.length}
-                      </span>{" "}
-                      lesson plans
-                    </div>
-                  ) : (
-                    <div className="text-sm font-light text-neutral-200">
-                      0 lesson plans
-                    </div>
-                  )}{" "}
-                </div>
-              </div>
-            ),
-            href: `/admin/students/${student.id}`,
-            importance: 1,
-          },
-          {
-            content: `${getAge(student.studentDateOfBirth)}`,
-            importance: 4,
-          },
-          {
-            content: (
-              <div className="flex items-center space-x-3">
-                <div className="avatar">
-                  <div className="w-6 rounded-full">
-                    {student.teacher?.image ? (
-                      <Image
-                        src={`${student.teacher?.image}`}
-                        width={24}
-                        height={24}
-                        alt={"teacher"}
-                      />
+    return students.data
+      ?.map((student) => {
+        const row: {
+          cells: Array<{
+            content:
+              | string
+              | number
+              | boolean
+              | React.ReactFragment
+              | React.ReactElement
+            href?: string
+            importance: number
+          }>
+        } = {
+          cells: [
+            {
+              content: (
+                <div>
+                  <div className="font-bold md:text-lg text-md">
+                    {student.studentFirstName} {student.studentLastName}
+                  </div>
+                  <div className="text-xs font-light md:text-sm text-neutral-400">
+                    {student.lessonPlans.length > 0 ? (
+                      <div>
+                        <span className="font-bold">
+                          {student.lessonPlans.length}
+                        </span>{" "}
+                        lesson plans
+                      </div>
                     ) : (
-                      ""
-                    )}
+                      <div className="text-sm font-light text-neutral-200">
+                        0 lesson plans
+                      </div>
+                    )}{" "}
                   </div>
                 </div>
-                <div>
-                  <div>{student.teacher?.name}</div>
+              ),
+              href: `/admin/students/${student.id}`,
+              importance: 1,
+            },
+            {
+              content: `${getAge(student.studentDateOfBirth)}`,
+              importance: 4,
+            },
+            {
+              content: (
+                <div className="flex items-center space-x-3">
+                  <div className="avatar">
+                    <div className="w-6 rounded-full">
+                      {student.teacher?.image ? (
+                        <Image
+                          src={`${student.teacher?.image}`}
+                          width={24}
+                          height={24}
+                          alt={"teacher"}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <div>{student.teacher?.name}</div>
+                  </div>
                 </div>
-              </div>
-            ),
-            importance: 1,
-          },
-          {
-            content: (
-              <div className="flex flex-col">
-                {student.entitlements.length > 0 ? (
-                  student.entitlements
-                    .slice()
-                    .sort(
-                      (a, b) => (a.Level?.number || 0) - (b.Level?.number || 0)
-                    )
-                    .map((level) => {
-                      return (
-                        <div key={level.id}>
-                          <span className="font-bold">
-                            Level {level.Level?.number}
-                          </span>{" "}
-                          - {level.Level?.title}
-                        </div>
+              ),
+              importance: 1,
+            },
+            {
+              content: (
+                <div className="flex flex-col">
+                  {student.entitlements.length > 0 ? (
+                    student.entitlements
+                      .slice()
+                      .sort(
+                        (a, b) =>
+                          (a.Level?.number || 0) - (b.Level?.number || 0)
                       )
-                    })
-                ) : (
-                  <div>No Levels Assigned</div>
-                )}
-              </div>
-            ),
-            importance: 1,
-          },
+                      .map((level) => {
+                        return (
+                          <div key={level.id}>
+                            <span className="font-bold">
+                              Level {level.Level?.number}
+                            </span>{" "}
+                            - {level.Level?.title}
+                          </div>
+                        )
+                      })
+                  ) : (
+                    <div>No Levels Assigned</div>
+                  )}
+                </div>
+              ),
+              importance: 1,
+            },
 
-          {
-            content: (
-              <div>
-                {student.status == "Active" ? (
-                  <span className="inline-flex items-center rounded-full bg-accent-200 px-3 py-0.5 text-sm font-medium text-accent-900">
-                    {student.status}
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800">
-                    Inactive
-                  </span>
-                )}
-              </div>
-            ),
-            importance: 4,
-          },
-          {
-            content: (
-              <div className="flex gap-2 text-xl text-base-300">
-                <div
-                  onClick={() => handleEditModal(student)}
-                  className="cursor-pointer hover:text-primary tooltip tooltip-top"
-                  data-tip="Edit"
-                >
-                  <RiPencilLine />
+            {
+              content: (
+                <div>
+                  {student.status === "Active" ? (
+                    <span className="inline-flex items-center rounded-full bg-accent-200 px-3 py-0.5 text-sm font-medium text-accent-900">
+                      {student.status}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center rounded-full bg-neutral-100 px-3 py-0.5 text-sm font-medium text-neutral-800">
+                      Inactive
+                    </span>
+                  )}
                 </div>
-                <div
-                  onClick={() => handleDeleteModal(student)}
-                  className="cursor-pointer hover:text-error tooltip tooltip-error tooltip-top"
-                  data-tip="Delete"
-                >
-                  <RiDeleteBinLine />
+              ),
+              importance: 4,
+            },
+            {
+              content: (
+                <div className="flex gap-2 text-xl text-base-300">
+                  <div
+                    onClick={() => handleEditModal(student)}
+                    className="cursor-pointer hover:text-primary tooltip tooltip-top"
+                    data-tip="Edit"
+                  >
+                    <RiPencilLine />
+                  </div>
+                  <div
+                    onClick={() => handleDeleteModal(student)}
+                    className="cursor-pointer hover:text-error tooltip tooltip-error tooltip-top"
+                    data-tip="Delete"
+                  >
+                    <RiDeleteBinLine />
+                  </div>
                 </div>
-              </div>
-            ),
-            importance: 4,
-          },
-        ],
-      }
-      if (activeStatus) {
-        if (student.status == "Active") {
-          return row
-        } else {
-          return []
+              ),
+              importance: 4,
+            },
+          ],
         }
-      } else if (activeStatus == false) {
-        if (student.status == "Inactive") {
-          return row
-        } else return []
-      }
-    })
+        if (activeStatus) {
+          if (student.status === "Active") {
+            return row
+          } else {
+            return []
+          }
+        } else if (activeStatus === false) {
+          if (student.status === "Inactive") {
+            return row
+          } else return []
+        }
+      })
+      .filter(
+        (
+          row
+        ): row is {
+          cells: Array<{
+            content:
+              | string
+              | number
+              | boolean
+              | React.ReactElement
+              | React.ReactFragment
+            href?: string
+            importance: number
+          }>
+        } => (Array.isArray(row) ? row.length > 0 : !!row)
+      )
   }
 
   if (session?.role === "admin") {
-    console.log(students.data)
-    console.log("formattedrows: ", formattedRows(true))
     return (
       <div>
         <div className="flex flex-col items-end justify-between md:flex-row">
@@ -320,19 +351,21 @@ export default function Students() {
                 }
               />
               {/* Edit Student Modal */}
-              <Modal
-                isOpen={isOpenEditModal}
-                setIsOpen={setIsOpenEditModal}
-                closeButton="Cancel"
-                title={`Edit ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
-                description={
-                  <EditStudentForm
-                    currentStudent={currentStudent}
-                    teachers={teachers.data}
-                    closeModal={() => setIsOpenEditModal(false)}
-                  />
-                }
-              />
+              {isOpenEditModal && currentStudent && (
+                <Modal
+                  isOpen={isOpenEditModal}
+                  setIsOpen={setIsOpenEditModal}
+                  closeButton="Cancel"
+                  title={`Edit ${currentStudent.studentFirstName} ${currentStudent.studentLastName}`}
+                  description={
+                    <EditStudentForm
+                      currentStudent={currentStudent}
+                      teachers={teachers.data}
+                      closeModal={() => setIsOpenEditModal(false)}
+                    />
+                  }
+                />
+              )}
 
               <div className="overflow-x-auto"></div>
             </div>

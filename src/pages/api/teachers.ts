@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client"
 import type { NextApiRequest, NextApiResponse } from "next"
-import { userAgent } from "next/server"
 
 const prisma = new PrismaClient()
 
@@ -24,7 +23,6 @@ async function getAllTeachers(req: NextApiRequest, res: NextApiResponse) {
     })
     return res.status(200).json({ success: true, allTeachers })
   } catch (error) {
-    console.log(error)
     return res
       .status(500)
       .json({ error: "Error fetching teachers from database", success: false })

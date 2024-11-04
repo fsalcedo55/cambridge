@@ -7,21 +7,30 @@ export interface IUser {
 }
 
 export interface IStudent {
+  id: string
+  userId: string | null
   studentFirstName: string
   studentLastName: string
   studentDateOfBirth: string
-  userId: string
-  id: string
   status: string
-  entitlements: any
-  teacher: {
+  teacher?: {
     id: string
-    name: string
-    email: string
-    emailVerified: null
-    image: string
-    role: string
-  }
+    name: string | null
+    email: string | null
+    emailVerified: Date | null
+    image: string | null
+    role: string | null
+  } | null
+  entitlements: Array<{
+    id: string
+    Level?: {
+      number: number
+      title: string
+    } | null
+  }>
+  lessonPlans: Array<{
+    id: string
+  }>
 }
 
 export interface ILessonPlan {

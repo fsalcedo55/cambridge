@@ -1,13 +1,11 @@
 import PageHeading from "../../components/ui/pageHeading"
-import { FaChild, FaChalkboardTeacher } from "react-icons/fa"
-import { trpc } from "../../utils/trpc"
-import { useSession } from "next-auth/react"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "teacher") {
+  if (!session || session.role !== "teacher") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -17,9 +15,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default function AdminDashboard() {
-  const { data: session } = useSession()
-
+export default function TeacherDashboard() {
   return (
     <div>
       <PageHeading pageTitle="Teacher Dashboard" />
@@ -27,4 +23,4 @@ export default function AdminDashboard() {
   )
 }
 
-AdminDashboard.auth = true
+TeacherDashboard.auth = true
