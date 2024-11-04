@@ -24,6 +24,7 @@ export interface IStudent {
   entitlements: Array<{
     id: string
     Level?: {
+      id: string
       number: number
       title: string
     } | null

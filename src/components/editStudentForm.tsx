@@ -13,8 +13,18 @@ export type FormFields = {
   status: string
 }
 
+interface IEntitlement {
+  Level?: {
+    id: string
+    number: number
+    title: string
+  } | null
+}
+
 interface Props {
-  currentStudent: IStudent
+  currentStudent: IStudent & {
+    entitlements: IEntitlement[]
+  }
   teachers?: Array<{
     id: string
     name: string | null
@@ -41,13 +51,14 @@ export default function EditStudentForm({
 
   function getExistingLevelIds() {
     const newArray: string[] = []
-    currentStudent.entitlements.map(
-      (entitlement: { Level: { id: string } }) => {
-        if (newArray.includes(entitlement.Level.id) === false) {
-          newArray.push(entitlement.Level.id)
-        }
+    currentStudent.entitlements.forEach((entitlement) => {
+      if (
+        entitlement.Level &&
+        !newArray.includes(entitlement.Level.number.toString())
+      ) {
+        newArray.push(entitlement.Level.number.toString())
       }
-    )
+    })
     return newArray
   }
 
