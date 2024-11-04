@@ -1,8 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import NextAuth, { NextAuthOptions, getServerSession } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "../../../../lib/prismadb"
 import EmailProvider from "next-auth/providers/email"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { GetServerSidePropsContext } from "next"
 
 export const authOptions: NextAuthOptions = {
@@ -15,6 +17,7 @@ export const authOptions: NextAuthOptions = {
       console.warn(code)
     },
     debug: (code, metadata) => {
+      // eslint-disable-next-line no-console
       console.log(code, metadata)
     },
   },
@@ -56,7 +59,7 @@ export const authOptions: NextAuthOptions = {
         return true
       }
 
-      if (user.email == process.env.ADMIN_EMAILS) {
+      if (user.email === process.env.ADMIN_EMAILS) {
         await prisma.user.create({
           data: {
             email: user?.email,
@@ -97,7 +100,7 @@ export const authOptions: NextAuthOptions = {
         select: { role: true },
       })
 
-      if (user.email == process.env.ADMIN_EMAILS) {
+      if (user.email === process.env.ADMIN_EMAILS) {
         session.role = "admin"
       }
 

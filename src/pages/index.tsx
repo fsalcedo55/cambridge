@@ -1,15 +1,14 @@
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/router"
-import Loading from "../components/ui/loading"
-import Image from "next/image"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { GetServerSidePropsContext } from "next"
+import { useSession } from "next-auth/react"
+import Image from "next/image"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import HomeLandingPage from "@src/components/landingpage/HomeLandingPage"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRightIcon } from "@heroicons/react/24/outline"
 import Head from "next/head"
-import { FaqItem } from "@src/components/landingpage/Faqs"
+import type { FaqItem } from "@src/components/landingpage/Faqs"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -136,22 +135,7 @@ export default function IndexPage({
   seoData: { title: string; description: string }
   faqs: FaqItem[]
 }) {
-  const { data: session, status } = useSession()
-  const router = useRouter()
-
-  // if (status === "loading") {
-  //   return (
-  //     <div className="flex flex-col items-center justify-center min-h-screen gap-8">
-  //       <Image
-  //         src="/Spanish-For-Us-Logo-1080p (2).png"
-  //         alt="logo"
-  //         width={391}
-  //         height={117}
-  //       />
-  //       <Loading />
-  //     </div>
-  //   )
-  // }
+  const { data: session } = useSession()
 
   if (session) {
     // If session exists, the user will be redirected by getServerSideProps

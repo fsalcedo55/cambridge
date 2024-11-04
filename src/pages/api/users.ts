@@ -23,10 +23,9 @@ async function getAllUsers(req: NextApiRequest, res: NextApiResponse) {
     const allUsers = await prisma.user.findMany()
     return res.status(200).json({ success: true, allUsers })
   } catch (error) {
-    console.log(error)
     return res
       .status(500)
-      .json({ error: "Error fetching users from database", success: false })
+      .json({ error: "Error fetching users from database.", success: false })
   }
 }
 
@@ -39,7 +38,8 @@ async function updateUser(req: NextApiRequest, res: NextApiResponse) {
     })
     return res.status(200).json({ success: true, ...updatedEntry })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ error: "Error updating user", success: false })
+    return res
+      .status(500)
+      .json({ error: "Error updating user", success: false })
   }
 }

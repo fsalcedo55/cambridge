@@ -1,24 +1,20 @@
-import { useSession } from "next-auth/react"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { GetServerSidePropsContext } from "next"
 import PageHeading from "../../components/ui/pageHeading"
 import { useState } from "react"
 import Loading from "../../components/ui/loading"
 import Modal from "../../components/ui/modal"
-import EditUserForm from "../../components/editStudentForm"
-import { useRouter } from "next/router"
 import Image from "next/image"
-import AccessDenied from "../../components/access-denied"
-import { useQuery } from "@tanstack/react-query"
 import Table from "../../components/ui/table"
-import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { trpc } from "@src/utils/trpc"
 import EditUser from "@src/components/admin/users/editUser"
-import { IUser } from "@src/interfaces"
+import type { IUser } from "@src/interfaces"
 import { capFirstLetter } from "@src/helpers/string"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "admin") {
+  if (!session || session.role !== "admin") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -48,9 +44,7 @@ const userTableHeaders = [
 export default function Users() {
   const usersTRPC = trpc.user.getAll.useQuery()
   // const { data: users, isLoading } = useQuery(["users"], getAllUsers)
-  const { data: session } = useSession()
   const [currentUser, setCurrentUser] = useState<IUser>()
-  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
 
   const handleEditModal = (user: IUser) => {
@@ -78,7 +72,7 @@ export default function Users() {
           </div>
         ),
       },
-      { content: user.email! },
+      { content: user.email ?? "" },
       { content: user.role ? capFirstLetter(user.role) : "None" },
       {
         content: (

@@ -19,14 +19,12 @@ export default async function handler(
 async function getUniqueStudent(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query
 
-  console.log("slug", id)
   try {
     const uniqueStudent = await prisma.student.findUnique({
       where: { id: String(id) },
     })
     return res.status(200).json({ success: true, uniqueStudent })
   } catch (error) {
-    console.log(error)
     return res.status(500).json({ error: "Error fetching unique student" })
   }
 }

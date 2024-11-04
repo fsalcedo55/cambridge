@@ -1,5 +1,3 @@
-import { GetServerSideProps } from "next"
-
 const EXTERNAL_DATA_URL = "https://www.spanishforuskids.com"
 
 function generateSiteMap(pages) {

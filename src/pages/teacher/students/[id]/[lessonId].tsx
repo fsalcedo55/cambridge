@@ -8,6 +8,7 @@ import Loading from "@src/components/ui/loading"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { trpc } from "@src/utils/trpc"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { GetServerSidePropsContext } from "next"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -26,7 +27,7 @@ import { toast } from "sonner"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "teacher") {
+  if (!session || session.role !== "teacher") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -38,7 +39,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 type ModalType = "ADD_FEEDBACK" | "DELETE_COMMENT" | null
 
-export default function TeacherStudentLessonPage({ sessionSSR }: any) {
+type PageProps = {
+  sessionSSR: {
+    user: {
+      email: string
+    }
+    role: string
+  }
+}
+
+export default function TeacherStudentLessonPage({ sessionSSR }: PageProps) {
   const [currentModal, setCurrentModal] = useState<ModalType>(null)
   const router = useRouter()
   const { lessonId } = router.query
@@ -114,7 +124,7 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
           }),
           {
             loading: "Loading...",
-            success: (data) => {
+            success: (_data) => {
               return `${lesson.data?.title} is not completed.`
             },
             error: "Error",
@@ -128,7 +138,7 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
           }),
           {
             loading: "Loading...",
-            success: (data) => {
+            success: (_data) => {
               return `${lesson.data?.title} has been completed.`
             },
             error: "Error",
@@ -168,7 +178,7 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
             lesson.data.objective &&
             lesson.data.objective.length > 0 && (
               <Container title="Lesson Objective">
-                {lesson?.data?.objective?.length! > 0 ? (
+                {lesson?.data?.objective && lesson.data.objective.length > 0 ? (
                   lesson.data?.objective
                 ) : (
                   <div className="flex items-center justify-center">
@@ -189,26 +199,32 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
                 <div>
                   <div className="relative flex items-start"></div>
                   <div className="relative items-start">
-                    {assignments.data?.map((assignment: any) => (
-                      <div
-                        className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
-                        key={assignment.id}
-                      >
-                        <div className="flex items-center justify-between my-1">
-                          <Link
-                            href={assignment.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
-                              <div className="font-bold">
-                                {assignment.title}
+                    {assignments.data?.map(
+                      (assignment: {
+                        id: string
+                        title: string
+                        url: string
+                      }) => (
+                        <div
+                          className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
+                          key={assignment.id}
+                        >
+                          <div className="flex items-center justify-between my-1">
+                            <Link
+                              href={assignment.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
+                                <div className="font-bold">
+                                  {assignment.title}
+                                </div>
                               </div>
-                            </div>
-                          </Link>
+                            </Link>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </div>
               </fieldset>
@@ -252,7 +268,7 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
                         <p className="text-base">{comment.content}</p>
                       </div>
                       <div>
-                        {comment.User.id == me.data?.id && (
+                        {comment.User.id === me.data?.id && (
                           <Menu.Button className="invisible h-5 px-2 py-1 rounded-lg shadow cursor-pointer hover:bg-neutral-100 bg-neutral-50 group-hover:visible">
                             <TfiMoreAlt />
                           </Menu.Button>
@@ -270,9 +286,9 @@ export default function TeacherStudentLessonPage({ sessionSSR }: any) {
                         <Menu.Items className="absolute right-0 z-10 mt-6 origin-top-right rounded-md shadow-lg w-36 bg-base-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
                           <div className="py-2">
                             <Menu.Item>
-                              {({ active }) => (
+                              {() => (
                                 <div
-                                  onClick={(id) => {
+                                  onClick={() => {
                                     setCommentId(comment.id)
                                     return setCurrentModal("DELETE_COMMENT")
                                   }}
