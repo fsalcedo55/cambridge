@@ -5,13 +5,12 @@ import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import Loading from "@ui/loading"
 import { FiChevronRight } from "react-icons/fi"
-import { useSession } from "next-auth/react"
 import { getAge } from "@src/helpers/date"
-import { protectPage } from "@src/services/teachers.services"
+import type { Session } from "next-auth"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "teacher") {
+  if (!session || session.role !== "teacher") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -25,15 +24,17 @@ const studentTableHeaders = [
   { id: "header2", label: <div className="px-10">Name</div> },
 ]
 
-export default function Students({ sessionSSR }: any) {
-  const { data: session } = useSession()
-  const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
-  const students = trpc.student.byTeacherId.useQuery({
-    id: me.data?.id!,
+export default function Students({ sessionSSR }: { sessionSSR: Session }) {
+  const me = trpc.user.me.useQuery({
+    email: sessionSSR.user?.email ?? undefined,
   })
+  const students = trpc.student.byTeacherId.useQuery(
+    { id: me.data?.id ?? "" },
+    { enabled: !!me.data?.id }
+  )
 
   // Formatted rows for table cells
-  const formattedRows = students?.data?.map((student, idx: number) => ({
+  const formattedRows = students?.data?.map((student) => ({
     cells: [
       {
         content: (

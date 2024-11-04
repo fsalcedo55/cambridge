@@ -1,9 +1,4 @@
-import {
-  router,
-  publicProcedure,
-  adminProcedure,
-  protectedProcedure,
-} from "@src/server/trpc"
+import { router, adminProcedure, protectedProcedure } from "@src/server/trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
@@ -47,7 +42,7 @@ export const assignmentRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const assignment = await prisma.assignment.update({
+      return await prisma.assignment.update({
         where: {
           id: input.id,
         },
@@ -65,7 +60,7 @@ export const assignmentRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const lesson = await prisma.assignment.delete({
+      await prisma.assignment.delete({
         where: {
           id: input.id,
         },

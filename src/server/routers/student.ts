@@ -1,9 +1,4 @@
-import {
-  router,
-  publicProcedure,
-  protectedProcedure,
-  adminProcedure,
-} from "../trpc"
+import { router, protectedProcedure, adminProcedure } from "../trpc"
 import { z } from "zod"
 import { PrismaClient, Prisma } from "@prisma/client"
 
@@ -202,7 +197,7 @@ export const studentRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const student = await prisma.student.delete({
+      await prisma.student.delete({
         where: input,
       })
     }),
@@ -220,8 +215,6 @@ export const studentRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      console.log("existinglevelids: ", input.existingLevelIds)
-      console.log("levelId: ", input.levelId)
       const student = await prisma.student.update({
         where: { id: input.id },
         data: {
@@ -319,6 +312,6 @@ export const studentRouter = router({
           },
         },
       })
-      return entitlements.map((entitlement: any) => entitlement.Level)
+      return entitlements.map((entitlement) => entitlement.Level)
     }),
 })

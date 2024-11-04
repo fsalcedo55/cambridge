@@ -1,11 +1,6 @@
-import {
-  router,
-  publicProcedure,
-  protectedProcedure,
-  adminProcedure,
-} from "../../trpc"
+import { router, protectedProcedure, adminProcedure } from "../../trpc"
 import { z } from "zod"
-import { Prisma, PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
@@ -43,6 +38,7 @@ export const lessonPlanRouter = router({
         where: { id: input.id },
         data: input,
       })
+      return lessonPlan
     }),
   delete: protectedProcedure
     .input(
@@ -51,7 +47,7 @@ export const lessonPlanRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const lessonPlan = await prisma.lessonPlan.delete({
+      return await prisma.lessonPlan.delete({
         where: input,
       })
     }),
@@ -109,17 +105,16 @@ export const lessonPlanRouter = router({
       },
     })
 
-    const groupedByDate = lessonPlans.reduce(
-      (acc: { [key: string]: any[] }, lessonPlan) => {
-        const date = lessonPlan.date.split("T")[0]
-        if (!acc[date]) {
-          acc[date] = []
-        }
-        acc[date].push(lessonPlan)
-        return acc
-      },
-      {}
-    )
+    const groupedByDate = lessonPlans.reduce<
+      Record<string, typeof lessonPlans>
+    >((acc, lessonPlan) => {
+      const date = lessonPlan.date.split("T")[0]
+      if (!acc[date]) {
+        acc[date] = []
+      }
+      acc[date].push(lessonPlan)
+      return acc
+    }, {})
 
     return groupedByDate
   }),
@@ -171,17 +166,16 @@ export const lessonPlanRouter = router({
         },
       })
 
-      const groupedByDate = lessonPlans.reduce(
-        (acc: { [key: string]: any[] }, lessonPlan) => {
-          const date = lessonPlan.date.split("T")[0]
-          if (!acc[date]) {
-            acc[date] = []
-          }
-          acc[date].push(lessonPlan)
-          return acc
-        },
-        {}
-      )
+      const groupedByDate = lessonPlans.reduce<
+        Record<string, typeof lessonPlans>
+      >((acc, lessonPlan) => {
+        const date = lessonPlan.date.split("T")[0]
+        if (!acc[date]) {
+          acc[date] = []
+        }
+        acc[date].push(lessonPlan)
+        return acc
+      }, {})
 
       return groupedByDate
     }),
