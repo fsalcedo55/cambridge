@@ -30,7 +30,7 @@ export const trpc = createTRPCNext<AppRouter>({
       },
     },
   },
-  config({ ctx }) {
+  config() {
     return {
       transformer: SuperJSON,
       links: [

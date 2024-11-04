@@ -60,7 +60,7 @@ export const lessonCommentRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const comment = await prisma.lessonComment.delete({
+      await prisma.lessonComment.delete({
         where: {
           id: input.commentId,
         },

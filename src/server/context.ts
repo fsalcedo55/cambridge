@@ -1,7 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import * as trpc from "@trpc/server"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import * as trpcNext from "@trpc/server/adapters/next"
 import { getAuthSession } from "./common/get-server-session"
-import { prisma } from "@prisma/client"
 import client from "lib/prismadb"
 
 export async function createContext(opts: trpcNext.CreateNextContextOptions) {

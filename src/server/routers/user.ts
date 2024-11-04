@@ -1,10 +1,5 @@
-import {
-  router,
-  publicProcedure,
-  protectedProcedure,
-  adminProcedure,
-} from "../trpc"
-import { string, z } from "zod"
+import { router, protectedProcedure, adminProcedure } from "../trpc"
+import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()

@@ -1,4 +1,5 @@
 import { TRPCError, initTRPC } from "@trpc/server"
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { Context } from "./context"
 import SuperJSON from "superjson"
 import { getServerAuthSession } from "@src/pages/api/auth/[...nextauth]"

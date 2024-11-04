@@ -1,4 +1,4 @@
-import { router, publicProcedure, adminProcedure } from "@src/server/trpc"
+import { router, adminProcedure } from "@src/server/trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
@@ -133,7 +133,7 @@ export const levelRouter = router({
   delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
-      const level = await prisma.level.delete({
+      await prisma.level.delete({
         where: input,
       })
     }),

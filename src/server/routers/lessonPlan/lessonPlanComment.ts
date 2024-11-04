@@ -1,4 +1,4 @@
-import { router, publicProcedure, protectedProcedure } from "@src/server/trpc"
+import { router, protectedProcedure } from "@src/server/trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
 
@@ -26,7 +26,7 @@ export const lessonPlanCommentRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const comment = await prisma.lessonPlanComment.delete({
+      await prisma.lessonPlanComment.delete({
         where: { id: input.id },
       })
     }),
