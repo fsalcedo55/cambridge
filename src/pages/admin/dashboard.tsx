@@ -80,7 +80,7 @@ export default function AdminDashboard({ sessionSSR }: any) {
   const publishedLessons = trpc.lesson.getAllPublishedLessons.useQuery()
   const lessonPlans = trpc.lessonPlan.getTotalNumberOfLessonPlans.useQuery()
   const recentLessonPlans = trpc.lessonPlan.getRecentLessonPlans.useQuery()
-  const teachers = trpc.teacher.getAll.useQuery()
+  const teachers = trpc.teacher.getCurrentTeachers.useQuery()
   const recentLessonPlansByTeacherId =
     trpc.lessonPlan.getRecentLessonPlansByTeacherId.useQuery({
       teacherId,
