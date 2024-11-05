@@ -5,6 +5,7 @@ import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
 import { Fragment, useState } from "react"
 import { useSession } from "next-auth/react"
+import { toast } from "sonner"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -17,7 +18,12 @@ export type FormFields = {
 }
 
 interface Props {
-  currentLevel: any
+  currentLevel: {
+    id: string
+    title: string
+    published: boolean
+    number: number
+  }
   closeModal: () => void
 }
 
@@ -35,12 +41,14 @@ export default function EditLevel({ closeModal, currentLevel }: Props) {
     try {
       await editLevel.mutateAsync({
         title: data.title,
-        id: currentLevel.id,
+        id: String(currentLevel.id),
         published: published,
         number: Number(data.number),
       })
+      toast.success("Level updated successfully!")
     } catch (error) {
-      console.log("Error editing level.", error)
+      toast.error("Failed to update level. Please try again.")
+      return
     }
     closeModal()
   })
@@ -65,7 +73,7 @@ export default function EditLevel({ closeModal, currentLevel }: Props) {
         label="Number"
         register={register}
         errors={errors}
-        defaultValue={currentLevel?.number}
+        defaultValue={String(currentLevel?.number)}
       />
 
       {session?.role === "admin" && (

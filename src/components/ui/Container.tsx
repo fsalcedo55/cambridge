@@ -1,4 +1,9 @@
-export default function Container({ title, children }: any) {
+interface ContainerProps {
+  title: string
+  children: React.ReactNode
+}
+
+export default function Container({ title, children }: ContainerProps) {
   return (
     <div className="px-4 pb-2 bg-white shadow rounded-xl">
       <div className="py-2 text-xl font-bold">{title}</div>

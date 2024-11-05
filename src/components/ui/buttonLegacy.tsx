@@ -6,7 +6,7 @@ interface Props {
   intent?: "primary" | "secondary" | "danger" | "cancel"
   loading?: boolean
   loadingLabel?: string
-  onClick?: any
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
   type?: "button" | "submit" | "reset" | undefined
   size?: "small" | "medium" | "large"
   className?: string

@@ -14,7 +14,7 @@ export function PublishedStatus({
 }: PublishedStatusProps) {
   const draftedStyles =
     "inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 border border-neutral-900 gap-1"
-  if (parentPublished == false) {
+  if (parentPublished === false) {
     return (
       <span className={draftedStyles}>
         <MdUnpublished />

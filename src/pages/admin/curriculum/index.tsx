@@ -19,6 +19,14 @@ import { LevelPanel } from "@src/components/curriculum/LevelPanel"
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { Unit } from "@src/components/admin/lessons/EditUnit"
+
+interface Level {
+  id: string
+  title: string
+  published: boolean
+  number: number
+}
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -45,8 +53,8 @@ export default function Curriculum() {
   const [isOpenDisabledDeleteLevelModal, setIsOpenDisabledDeleteLevelModal] =
     useState(false)
   const [levelId, setLevelId] = useState<string>()
-  const [currentLevel, setCurrentLevel] = useState()
-  const [currentUnit, setCurrentUnit] = useState()
+  const [currentLevel, setCurrentLevel] = useState<Level | null>(null)
+  const [currentUnit, setCurrentUnit] = useState<Unit | null>(null)
   const [unitId, setUnitId] = useState<string>()
   const levels = trpc.level.getAll.useQuery()
   const deleteLevel = trpc.level.delete.useMutation()
@@ -87,12 +95,12 @@ export default function Curriculum() {
     setUnitId("")
   }
 
-  const handleEditLevelModal = (level: any) => {
+  const handleEditLevelModal = (level: Level) => {
     setIsOpenEditLevelModal(true)
     setCurrentLevel(level)
   }
 
-  const handleEditUnitModal = (unit: any) => {
+  const handleEditUnitModal = (unit: Unit) => {
     setIsOpenEditUnitModal(true)
     setCurrentUnit(unit)
   }
@@ -133,7 +141,13 @@ export default function Curriculum() {
         description={
           <AddUnit
             closeModal={() => setIsOpenUnitBtn(false)}
-            levelsArray={levels.data}
+            levelsArray={
+              levels.data?.map((level) => ({
+                id: level.id,
+                number: level.number,
+                title: level.title,
+              })) || []
+            }
           />
         }
       />
@@ -386,13 +400,14 @@ export default function Curriculum() {
       <Modal
         isOpen={isOpenEditLevelModal}
         setIsOpen={setIsOpenEditLevelModal}
-        actionFunction={deleteLevelEvent}
         title="Edit Level"
         description={
-          <EditLevel
-            currentLevel={currentLevel}
-            closeModal={() => setIsOpenEditLevelModal(false)}
-          />
+          currentLevel ? (
+            <EditLevel
+              currentLevel={currentLevel}
+              closeModal={() => setIsOpenEditLevelModal(false)}
+            />
+          ) : null
         }
         closeButton="Cancel"
       />
@@ -400,14 +415,22 @@ export default function Curriculum() {
       <Modal
         isOpen={isOpenEditUnitModal}
         setIsOpen={setIsOpenEditUnitModal}
-        actionFunction={deleteLevelEvent}
         title="Edit Unit"
         description={
-          <EditUnit
-            levels={levels?.data}
-            currentUnit={currentUnit}
-            closeModal={() => setIsOpenEditUnitModal(false)}
-          />
+          currentUnit ? (
+            <EditUnit
+              levels={
+                levels.data?.map((level) => ({
+                  id: level.id,
+                  title: level.title,
+                  published: level.published,
+                  number: level.number,
+                })) || []
+              }
+              currentUnit={currentUnit}
+              closeModal={() => setIsOpenEditUnitModal(false)}
+            />
+          ) : null
         }
         closeButton="Cancel"
       />

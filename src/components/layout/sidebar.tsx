@@ -6,17 +6,17 @@ import {
 } from "@src/constants/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { useRouter } from "next/router"
+import { useRouter, type NextRouter } from "next/router"
 import { TbExternalLink } from "react-icons/tb"
 import Divider from "../ui/Divider"
-import { FC } from "react"
+import { type FC } from "react"
 import LoadingSkeleton from "../ui/loadingSkeleton"
 
 interface NavItemProps {
   item: {
     name: string
     href: string
-    icon: any
+    icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>
   }
   isExternal?: boolean
   active: boolean
@@ -36,7 +36,7 @@ const NavItem: FC<NavItemProps> = ({ item, isExternal = false, active }) => {
 
   const content = (
     <div className={baseClasses}>
-      <item.icon className="mr-3 text-2xl" aria-hidden="true" />
+      <item.icon className="mr-3 text-2xl" aria-hidden={true} />
       {isExternal ? (
         <div className="flex items-center gap-2">
           {item.name}
@@ -69,7 +69,7 @@ const NavItem: FC<NavItemProps> = ({ item, isExternal = false, active }) => {
 interface NavigationSectionProps {
   items: NavItemProps["item"][]
   isExternal?: boolean
-  router: any
+  router: NextRouter
   status: string
 }
 
@@ -77,7 +77,6 @@ const NavigationSection: FC<NavigationSectionProps> = ({
   items,
   isExternal = false,
   router,
-  status,
 }) => {
   return (
     <div>
@@ -103,8 +102,7 @@ const Sidebar: FC = () => {
   const router = useRouter()
   const { data: session, status } = useSession()
 
-  if (status == "loading") return <LoadingSkeleton />
-  console.log("session: ", session)
+  if (status === "loading") return <LoadingSkeleton />
 
   return (
     <div

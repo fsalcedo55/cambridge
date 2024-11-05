@@ -357,7 +357,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
         loadingLabel="Deleting Comment..."
         btnIntent="danger"
         currentData={commentId}
-        actionFunction={deleteCommentEvent}
+        actionFunction={() => deleteCommentEvent(commentId!)}
         closeButton="Cancel"
         actionButton="Delete"
         title="Delete Comment"

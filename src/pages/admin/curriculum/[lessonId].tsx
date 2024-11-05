@@ -2,6 +2,7 @@
 import { useState, useRef } from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import { toast } from "sonner"
 
 // Components
 import Layout from "@src/components/layout/layout"
@@ -29,7 +30,7 @@ import {
 interface Assignment {
   title: string
   url: string
-  lessonId: string
+  lessonId: string | null
   id: string
 }
 
@@ -69,8 +70,9 @@ export default function LessonPage() {
       await deleteAssignment.mutateAsync({
         id: currentAssignment.current.id,
       })
+      toast.success("Assignment deleted successfully")
     } catch (error) {
-      console.log("Error deleting assignment.", error)
+      toast.error("Failed to delete assignment")
     }
     setCurrentModal(null)
   }
@@ -80,8 +82,9 @@ export default function LessonPage() {
       await deleteLesson.mutateAsync({
         id: lessonId as string,
       })
+      toast.success("Lesson deleted successfully")
     } catch (error) {
-      console.log("Error deleting lesson.", error)
+      toast.error("Failed to delete lesson")
     }
     router.push("/admin/curriculum")
   }
@@ -95,14 +98,26 @@ export default function LessonPage() {
     },
   ]
 
-  const handleEditAssignment = (assignment: any) => {
+  const handleEditAssignment = (assignment: Assignment) => {
     currentAssignment.current = assignment
     setCurrentModal("EDIT_ASSIGNMENT")
   }
 
-  const handleDeleteAssignmentModal = (assignment: any) => {
+  const handleDeleteAssignmentModal = (assignment: Assignment) => {
     currentAssignment.current = assignment
     setCurrentModal("DELETE_ASSIGNMENT")
+  }
+
+  // Wrap setCurrentModal to match the expected type
+  const handleModalClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      setCurrentModal(null)
+    }
+  }
+
+  // Add this function near your other handlers
+  const handleClose = () => {
+    setCurrentModal(null)
   }
 
   return (
@@ -141,7 +156,7 @@ export default function LessonPage() {
         </div>
         <div className="flex-1">
           <Container title="Lesson Objective">
-            {lesson?.data?.objective?.length! > 0 ? (
+            {lesson?.data?.objective && lesson.data.objective.length > 0 ? (
               lesson.data?.objective
             ) : (
               <div className="flex items-center justify-center">
@@ -170,7 +185,7 @@ export default function LessonPage() {
                   </div>
                 </div>
                 <div className="relative items-start">
-                  {assignments.data?.map((assignment: any) => (
+                  {assignments.data?.map((assignment: Assignment) => (
                     <div
                       className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
                       key={assignment.id}
@@ -216,7 +231,7 @@ export default function LessonPage() {
       {/* Delete Lesson Modal */}
       <Modal
         isOpen={currentModal === "DELETE_LESSON"}
-        setIsOpen={setCurrentModal}
+        setIsOpen={handleModalClose}
         actionFunction={deleteLessonEvent}
         loading={deleteLesson.isLoading}
         btnIntent="danger"
@@ -233,41 +248,35 @@ export default function LessonPage() {
       {/* Edit Lesson Modal */}
       <Modal
         isOpen={currentModal === "EDIT_LESSON"}
-        setIsOpen={setCurrentModal}
+        setIsOpen={handleModalClose}
         loading={editLesson.isLoading}
         loadingLabel="Updating Lesson..."
         title="Edit Lesson"
         description={
-          <EditLesson
-            currentLesson={lesson}
-            closeModal={() => setCurrentModal(null)}
-          />
+          <EditLesson currentLesson={lesson} closeModal={handleClose} />
         }
         closeButton="Cancel"
       />
       {/* Add Assignment Modal */}
       <Modal
         isOpen={currentModal === "ADD_ASSIGNMENT"}
-        setIsOpen={setCurrentModal}
+        setIsOpen={handleModalClose}
         title="Add Assignment"
         description={
-          <AddAssignment
-            currentLesson={lesson}
-            closeModal={() => setCurrentModal(null)}
-          />
+          <AddAssignment currentLesson={lesson} closeModal={handleClose} />
         }
         closeButton="Cancel"
       />
       {/* Edit Assignment Modal */}
       <Modal
         isOpen={currentModal === "EDIT_ASSIGNMENT"}
-        setIsOpen={setCurrentModal}
+        setIsOpen={handleModalClose}
         loading={editLesson.isLoading}
         title={`Edit ${currentAssignment.current.title}`}
         description={
           <EditAssignment
             currentAssignment={currentAssignment.current}
-            closeModal={() => setCurrentModal(null)}
+            closeModal={handleClose}
           />
         }
         closeButton="Cancel"
@@ -275,7 +284,7 @@ export default function LessonPage() {
       {/* Delete Assignment Modal */}
       <Modal
         isOpen={currentModal === "DELETE_ASSIGNMENT"}
-        setIsOpen={setCurrentModal}
+        setIsOpen={handleModalClose}
         actionFunction={deleteAssignmentEvent}
         loading={deleteAssignment.isLoading}
         btnIntent="danger"

@@ -2,10 +2,7 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
+import { toast } from "sonner"
 
 export type FormFields = {
   title: string
@@ -13,7 +10,11 @@ export type FormFields = {
 }
 
 interface Props {
-  currentAssignment: any
+  currentAssignment: {
+    id: string | number
+    title: string
+    url: string
+  }
   closeModal: () => void
 }
 
@@ -33,17 +34,18 @@ export default function EditAssignment({
       await editAssignment.mutateAsync({
         title: data.title,
         url: data.url,
-        id: currentAssignment.id,
+        id: String(currentAssignment.id),
       })
+      toast.success("Assignment updated successfully")
     } catch (error) {
-      console.log("Error updating assignment.", error)
+      toast.error("Failed to update assignment")
     }
     closeModal()
   })
 
   return (
     <form onSubmit={onSubmit}>
-      <FormInput
+      <FormInput<FormFields>
         id="title"
         type="text"
         name="title"
@@ -53,7 +55,7 @@ export default function EditAssignment({
         errors={errors}
         defaultValue={currentAssignment.title}
       />
-      <FormInput
+      <FormInput<FormFields>
         id="url"
         type="text"
         name="url"

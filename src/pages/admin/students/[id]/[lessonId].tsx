@@ -1,9 +1,9 @@
 // import PageHeading from "../../components/ui/pageHeading"
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import PageHeadingWithBreadcrumb from "@src/components/ui/pageHeadingWithBreadcrumb"
-import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { trpc } from "@src/utils/trpc"
 import {
@@ -13,11 +13,10 @@ import {
 import Container from "@src/components/ui/Container"
 import { MdDescription } from "react-icons/md"
 import Link from "next/link"
-import Divider from "@src/components/ui/Divider"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "admin") {
+  if (!session || session.role !== "admin") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -72,7 +71,7 @@ export default function AdminStudentLessonPage() {
         </div>
         <div className="flex-1">
           <Container title="Lesson Objective">
-            {lesson?.data?.objective?.length! > 0 ? (
+            {lesson?.data?.objective && lesson.data.objective.length > 0 ? (
               lesson.data?.objective
             ) : (
               <div className="flex items-center justify-center">
@@ -91,24 +90,32 @@ export default function AdminStudentLessonPage() {
               <div>
                 <div className="relative flex items-start"></div>
                 <div className="relative items-start">
-                  {assignments.data?.map((assignment: any) => (
-                    <div
-                      className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
-                      key={assignment.id}
-                    >
-                      <div className="flex items-center justify-between my-1">
-                        <Link
-                          href={assignment.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
-                            <div className="font-bold">{assignment.title}</div>
-                          </div>
-                        </Link>
+                  {assignments.data?.map(
+                    (assignment: {
+                      id: string
+                      title: string
+                      url: string
+                    }) => (
+                      <div
+                        className="flex flex-col border border-white border-opacity-0 rounded-lg hover:shadow-lg hover:border hover:border-neutral-200 group/assignment"
+                        key={assignment.id}
+                      >
+                        <div className="flex items-center justify-between my-1">
+                          <Link
+                            href={assignment.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <div className="flex items-center min-w-0 gap-1 pl-2 cursor-pointer hover:underline">
+                              <div className="font-bold">
+                                {assignment.title}
+                              </div>
+                            </div>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
             </fieldset>
@@ -116,7 +123,7 @@ export default function AdminStudentLessonPage() {
         </div>
       </div>
       <div className="h-4"></div>
-      <Container title="Feedback"></Container>
+      {/* <Container title="Feedback"></Container> */}
     </div>
   )
 }

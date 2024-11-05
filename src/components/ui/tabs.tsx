@@ -40,7 +40,7 @@ TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
+>(({ ...props }, ref) => (
   <TabsPrimitive.Content
     // className={cn("mt-2 rounded-md border border-neutral-200 p-6", className)}
     {...props}
