@@ -2,11 +2,7 @@ import { ButtonLegacy } from "@ui/buttonLegacy"
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
-import { useSession } from "next-auth/react"
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
+import { toast } from "sonner"
 
 export type FormFields = {
   title: string
@@ -31,8 +27,9 @@ export default function AddLevel({ closeModal }: Props) {
         title: data.title,
         number: Number(data.number),
       })
+      toast.success("Level added successfully")
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to add level")
     }
     closeModal()
   })

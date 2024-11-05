@@ -9,7 +9,7 @@ export function getAge(birthdate: string) {
     const monthsDiff = currentDate.getUTCMonth() - birthDateObj.getUTCMonth()
     const daysDiff = currentDate.getUTCDate() - birthDateObj.getUTCDate()
 
-    let calculatedAge = { years: yearsDiff, months: monthsDiff }
+    const calculatedAge = { years: yearsDiff, months: monthsDiff }
     if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff < 0)) {
       calculatedAge.years--
       calculatedAge.months += 12

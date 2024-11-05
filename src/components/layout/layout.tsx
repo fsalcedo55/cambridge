@@ -13,7 +13,7 @@ interface Props {
   children: React.ReactNode
 }
 
-function classNames(...classes: any[]) {
+function classNames(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ")
 }
 

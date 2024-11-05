@@ -2,10 +2,7 @@ import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
+import { toast } from "sonner"
 
 export type FormFields = {
   title: string
@@ -13,7 +10,27 @@ export type FormFields = {
 }
 
 interface Props {
-  currentLesson: any
+  currentLesson: {
+    data?: {
+      id: string | number
+      Unit?: {
+        number: number
+        Level?: {
+          number: number
+          id: string
+          title: string
+        }
+        id: string
+        title: string
+        published: boolean
+      }
+      title: string
+      published: boolean
+      slidesUrl: string | null
+      photoUrl: string
+      objective: string | null
+    } | null
+  }
   closeModal: () => void
 }
 
@@ -30,10 +47,11 @@ export default function AddAssignment({ closeModal, currentLesson }: Props) {
       await addAssignment.mutateAsync({
         title: data.title,
         url: data.url,
-        lessonId: currentLesson.data?.id,
+        lessonId: String(currentLesson.data?.id),
       })
+      toast.success("Assignment added successfully")
     } catch (error) {
-      console.log("Error adding assignment.", error)
+      toast.error("Failed to add assignment")
     }
     closeModal()
   })

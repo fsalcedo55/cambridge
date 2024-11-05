@@ -4,8 +4,8 @@ import { ButtonLegacy } from "@ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
 import { Fragment, useState } from "react"
-import { useSession } from "next-auth/react"
 import { ErrorMessage } from "@hookform/error-message"
+import { toast } from "sonner"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -19,14 +19,27 @@ export type FormFields = {
   levelId: string
 }
 
+export interface Level {
+  id: string
+  title: string
+}
+
+export interface Unit {
+  id: string
+  title: string
+  photoUrl: string
+  published: boolean
+  number: number
+  Level: Level
+}
+
 interface Props {
-  levels: any
-  currentUnit: any
+  levels: Level[]
+  currentUnit: Unit
   closeModal: () => void
 }
 
 export default function EditUnit({ closeModal, currentUnit, levels }: Props) {
-  const { data: session } = useSession()
   const [published, setPublished] = useState(currentUnit?.published)
   const editUnit = trpc.unit.edit.useMutation()
   const {
@@ -45,13 +58,12 @@ export default function EditUnit({ closeModal, currentUnit, levels }: Props) {
         photoUrl: data.photoUrl,
         levelId: data.levelId,
       })
+      toast.success("Unit updated successfully")
     } catch (error) {
-      console.log("Error editing level.", error)
+      toast.error("Failed to update unit")
     }
     closeModal()
   })
-
-  console.log("currentUnit: ", currentUnit)
 
   return (
     <form onSubmit={onSubmit}>
@@ -69,7 +81,7 @@ export default function EditUnit({ closeModal, currentUnit, levels }: Props) {
             {currentUnit.Level.title}
           </option>
 
-          {levels?.map((level: any) => (
+          {levels?.map((level: Level) => (
             <option value={level.id} key={level.id}>
               {level.title}
             </option>
@@ -112,7 +124,7 @@ export default function EditUnit({ closeModal, currentUnit, levels }: Props) {
         label="Unit Number"
         register={register}
         errors={errors}
-        defaultValue={currentUnit?.number}
+        defaultValue={String(currentUnit?.number)}
       />
 
       <Switch.Group as="div" className="flex items-center mb-1">

@@ -6,9 +6,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel"
-import Faqs from "./Faqs"
+import Faqs, { type FaqItem } from "./Faqs"
 import Footer from "./Footer"
-import { FaqItem } from "./Faqs"
+
 interface HomeLandingPageProps {
   faqs: FaqItem[]
 }
@@ -46,7 +46,7 @@ export default function HomeLandingPage({ faqs }: HomeLandingPageProps) {
                   target="_blank"
                   className="w-full sm:w-auto text-center rounded-full bg-amber-400 px-3.5 py-2.5 text-sm sm:text-base font-extrabold text-primary-500 shadow-sm hover:bg-amber-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
                 >
-                  Let's Begin With a Free Class
+                  Let&apos;s Begin With a Free Class
                 </a>
                 {/* <a href="#" className="font-semibold leading-6 text-primary-50">
                   Learn more <span aria-hidden="true">→</span>

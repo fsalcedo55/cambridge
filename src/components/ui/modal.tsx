@@ -3,12 +3,12 @@ import { ButtonLegacy } from "@ui/buttonLegacy"
 
 interface Props {
   isOpen: boolean
-  setIsOpen: any
+  setIsOpen: (isOpen: boolean) => void
   loading?: boolean
-  currentData?: any
-  actionFunction?: any
-  title: any
-  description: any
+  currentData?: unknown
+  actionFunction?: (data: unknown) => void | Promise<void>
+  title: React.ReactNode
+  description: React.ReactNode
   closeButton: string
   actionButton?: string
   actionButtonStyle?: string
@@ -27,8 +27,6 @@ export default function Modal({
   description,
   closeButton,
   actionButton,
-  actionButtonStyle,
-  actionButtonLoading,
   loadingLabel,
   btnIntent,
 }: Props) {
@@ -64,7 +62,7 @@ export default function Modal({
               <div className="flex flex-col gap-2">
                 {actionButton && (
                   <ButtonLegacy
-                    onClick={() => actionFunction(currentData)}
+                    onClick={() => actionFunction?.(currentData)}
                     loading={loading}
                     loadingLabel={loadingLabel}
                     size="medium"

@@ -9,9 +9,33 @@ import AddLessonPlan from "@src/components/addLessonPlan"
 import Loading from "@ui/loading"
 import { HiOutlineFolderAdd } from "react-icons/hi"
 import EditLessonPlan from "@src/components/editLessonPlan"
+import { toast } from "sonner"
 
 interface Props {
-  me: any
+  me: { data: User | null | undefined }
+}
+
+export interface User {
+  id: string
+  name: string | null
+  email?: string | null
+  emailVerified?: Date | null
+  image: string | null
+  role?: string | null
+}
+
+export interface LessonPlan {
+  id: string
+  title: string
+  date: string
+  slidesUrl: string | null
+  homeworkSent: boolean | null
+  comments: {
+    id: string
+    content: string
+    createdAt: Date
+    User: User
+  }[]
 }
 
 export default function LessonPlans({ me }: Props) {
@@ -33,7 +57,14 @@ export default function LessonPlans({ me }: Props) {
   const deleteComment = trpc.lessonPlanComment.deleteById.useMutation()
 
   const lessonId = useRef("")
-  const currentLessonPlan = useRef({})
+  const currentLessonPlan = useRef<LessonPlan>({
+    id: "",
+    title: "",
+    date: "",
+    slidesUrl: null,
+    homeworkSent: null,
+    comments: [],
+  })
 
   const handleDeleteModal = async (lessonPlanId: string) => {
     setIsOpenDeleteModal(true)
@@ -49,7 +80,7 @@ export default function LessonPlans({ me }: Props) {
     setIsOpenDeleteModal(false)
   }
 
-  const handleEditModal = async (lessonPlan: any) => {
+  const handleEditModal = async (lessonPlan: LessonPlan) => {
     currentLessonPlan.current = lessonPlan
     setIsOpenEditModal(true)
   }
@@ -58,13 +89,15 @@ export default function LessonPlans({ me }: Props) {
     setIsOpenDeleteCommentModal(true)
   }
 
-  const deleteCommentEvent = async (commentId: string) => {
+  const deleteCommentEvent = async (data: unknown) => {
+    if (typeof data !== "string") return
     try {
       await deleteComment.mutateAsync({
-        id: commentId,
+        id: data,
       })
+      toast.success("Comment deleted successfully")
     } catch (error) {
-      console.log("Error deleting comment.", error)
+      toast.error("Failed to delete comment")
     }
     setIsOpenDeleteCommentModal(false)
   }
@@ -89,7 +122,7 @@ export default function LessonPlans({ me }: Props) {
               studentId={student?.data?.id}
               teacherId={student?.data?.teacher?.id}
               closeModal={() => setIsOpen(false)}
-              actorId={student?.data?.teacher?.email!}
+              actorId={student?.data?.teacher?.email ?? ""}
               recipientId="spanishforuskids@gmail.com"
               studentName={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
               actionUrl={`/admin/students/${student?.data?.id}`}
@@ -106,7 +139,7 @@ export default function LessonPlans({ me }: Props) {
         <Loading />
       ) : (
         <div>
-          {student.data?.lessonPlans.length == 0 ? (
+          {student.data?.lessonPlans.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-6 shadow bg-neutral-50 h-96 rounded-xl">
               <div className="text-6xl text-base-300">
                 <HiOutlineFolderAdd />
@@ -122,7 +155,7 @@ export default function LessonPlans({ me }: Props) {
               <div className="flex flex-col w-full">
                 <div className="flex justify-end my-2">{addLessonPlanBtn}</div>
                 {student.data?.lessonPlans &&
-                  student.data.lessonPlans.map((lessonPlan, idx) => (
+                  student.data.lessonPlans.map((lessonPlan) => (
                     <div key={lessonPlan.id}>
                       <LessonPlan
                         title={lessonPlan.title}
@@ -137,12 +170,14 @@ export default function LessonPlans({ me }: Props) {
                         comments={lessonPlan.comments}
                         setCommentId={setCommentId}
                         AddLessonPlanCommentInput={
-                          <AddLessonPlanCommentInput
-                            currentLessonPlan={lessonPlan}
-                            user={me.data}
-                          />
+                          me.data ? (
+                            <AddLessonPlanCommentInput
+                              currentLessonPlan={lessonPlan}
+                              user={me.data}
+                            />
+                          ) : null
                         }
-                        currentUserId={me.data?.id!}
+                        currentUserId={me.data?.id ?? ""}
                       />
                       <div className="h-12"></div>
                     </div>

@@ -2,13 +2,9 @@ import { ButtonLegacy } from "@ui/buttonLegacy"
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
-import { useEffect } from "react"
 import { ErrorMessage } from "@hookform/error-message"
 import Link from "next/link"
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
+import { toast } from "sonner"
 
 export type FormFields = {
   title: string
@@ -19,7 +15,11 @@ export type FormFields = {
 
 interface Props {
   closeModal: () => void
-  levelsArray: any
+  levelsArray: Array<{
+    id: string
+    number: number
+    title: string
+  }>
 }
 
 export default function AddUnit({ closeModal, levelsArray }: Props) {
@@ -38,8 +38,9 @@ export default function AddUnit({ closeModal, levelsArray }: Props) {
         levelId: data.levelId,
         photoUrl: data.photoUrl,
       })
+      toast.success("Unit added successfully")
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to add unit")
     }
     closeModal()
   })
@@ -58,7 +59,7 @@ export default function AddUnit({ closeModal, levelsArray }: Props) {
         >
           <option disabled selected value="" />
 
-          {levelsArray?.map((level: any) => (
+          {levelsArray?.map((level) => (
             <option value={level.id} key={level.id}>
               {level.number}: {level.title}
             </option>

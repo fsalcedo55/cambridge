@@ -3,7 +3,7 @@ import { trpc } from "@src/utils/trpc"
 import Image from "next/image"
 import Loading from "./ui/loading"
 import { toast } from "sonner"
-import type { User } from "@src/pages/admin/users"
+import type { User } from "@src/components/teacher/students/LessonPlans"
 
 export type FormFields = {
   content: string

@@ -6,13 +6,12 @@ interface Page {
   href?: string
   current: boolean
 }
-;[]
 
 type Props = {
-  pageTitle: any
+  pageTitle: string | React.ReactNode
   loading?: boolean
   userCard?: boolean
-  content?: any
+  content?: React.ReactNode
   pages: Page[]
 }
 

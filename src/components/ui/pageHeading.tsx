@@ -2,10 +2,10 @@ import React from "react"
 import LoadingSkeleton from "@ui/loadingSkeleton"
 
 type Props = {
-  pageTitle: any
+  pageTitle: string | React.ReactNode
   loading?: boolean
   userCard?: boolean
-  content?: any
+  content?: React.ReactNode
 }
 
 export default function PageHeading({

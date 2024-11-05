@@ -316,7 +316,7 @@ export default function Students() {
                 setIsOpen={setIsOpenDeleteModal}
                 loading={deleteStudent.isLoading}
                 currentData={currentStudent}
-                actionFunction={handleDelete}
+                actionFunction={() => handleDelete(currentStudent!)}
                 closeButton="Cancel"
                 actionButton="Delete"
                 actionButtonLoading="Deleting"

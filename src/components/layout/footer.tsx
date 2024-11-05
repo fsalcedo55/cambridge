@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 export default function Footer() {
   return (
     <footer className="items-center p-4 footer bg-primary-500 text-base-100">

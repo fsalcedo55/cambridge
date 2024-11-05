@@ -357,7 +357,7 @@ export default function TeacherStudentLessonPage({ sessionSSR }: PageProps) {
       {/* Add Comment Modal */}
       <Modal
         isOpen={currentModal === "ADD_FEEDBACK"}
-        setIsOpen={setCurrentModal}
+        setIsOpen={(isOpen) => setCurrentModal(isOpen ? "ADD_FEEDBACK" : null)}
         title={"Add Feedback"}
         description={
           <AddFeedback
@@ -371,7 +371,9 @@ export default function TeacherStudentLessonPage({ sessionSSR }: PageProps) {
       {/* Delete Comment Modal */}
       <Modal
         isOpen={currentModal === "DELETE_COMMENT"}
-        setIsOpen={setCurrentModal}
+        setIsOpen={(isOpen) =>
+          setCurrentModal(isOpen ? "DELETE_COMMENT" : null)
+        }
         loading={deleteComment.isLoading}
         loadingLabel="Deleting Comment..."
         btnIntent="danger"

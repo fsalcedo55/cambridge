@@ -2,7 +2,7 @@ import Link from "next/link"
 
 interface TableProps {
   headers: {
-    label: any
+    label: string | React.ReactNode
     importance?: number
   }[]
   rows?: IRows[] | undefined
@@ -17,7 +17,10 @@ export interface IRows {
           | number
           | boolean
           | React.ReactFragment
-          | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+          | React.ReactElement<
+              unknown,
+              string | React.JSXElementConstructor<unknown>
+            >
           | undefined
         href?: string | undefined
         icon?: boolean | undefined
@@ -27,7 +30,7 @@ export interface IRows {
 }
 
 export default function Table({ rows, headers }: TableProps) {
-  if (rows?.length == 0) {
+  if (rows?.length === 0) {
     return <div>No Data</div>
   }
   return (
@@ -185,7 +188,7 @@ export default function Table({ rows, headers }: TableProps) {
         </table>
       </div>
     </div>
-  );
+  )
 }
 
 // export default function Table({ rows, headers }: TableProps) {

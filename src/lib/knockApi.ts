@@ -16,6 +16,7 @@ const headers = { "Content-Type": "application/json" }
 //   }
 // }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function notifyNewLessonPlan(params: any) {
   try {
     const resp = await fetch("/api/notifyNewLessonPlan", {

@@ -1,14 +1,7 @@
 import React from "react"
 import LoadingSkeleton from "@ui/loadingSkeleton"
 import { BiChevronRight } from "react-icons/bi"
-import { AiFillHome } from "react-icons/ai"
 import Link from "next/link"
-
-// Pages array example
-// const pages = [
-//   { name: "Projects", href: "#", current: false },
-//   { name: "Project Nero", href: "#", current: true }, <-- current page as true
-// ]
 
 type Page = {
   name: string
@@ -25,7 +18,7 @@ export default function Breadcrumbs({ loading, pages }: Props) {
   return (
     <nav className="flex" aria-label="Breadcrumb">
       <ol role="list" className="flex items-center">
-        {pages.map((page: any, idx: number) => (
+        {pages.map((page: Page[number], idx: number) => (
           <li key={idx}>
             <div className="flex items-center">
               {loading ? (
@@ -49,7 +42,7 @@ export default function Breadcrumbs({ loading, pages }: Props) {
                   {page.name}
                 </div>
               )}
-              {pages.length - 1 != idx && (
+              {pages.length - 1 !== idx && (
                 <BiChevronRight
                   className="flex-shrink-0 w-5 h-5 mx-2 text-neutral-500"
                   aria-hidden="true"
