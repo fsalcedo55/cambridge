@@ -2,14 +2,10 @@ import { ButtonLegacy } from "@ui/buttonLegacy"
 import { useForm } from "react-hook-form"
 import { FormInput } from "@ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { ErrorMessage } from "@hookform/error-message"
-import { FormErrorMessage } from "@src/components/ui/form/formErrorMessage"
 import Link from "next/link"
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
+import { toast } from "sonner"
 
 export type FormFields = {
   title: string
@@ -19,15 +15,25 @@ export type FormFields = {
   photoUrl: string
 }
 
+interface Level {
+  id: string
+  number: number
+  title: string
+}
+
+interface Unit {
+  id: string
+  title: string
+}
+
 interface Props {
   closeModal: () => void
-  levelsArray: any
+  levelsArray: Level[]
 }
 
 export default function AddLesson({ closeModal, levelsArray }: Props) {
   const {
     register,
-    setError,
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
@@ -47,8 +53,9 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
         unitId: data.unitId,
         photoUrl: data.photoUrl,
       })
+      toast.success("Lesson added successfully")
     } catch (error) {
-      console.log(error)
+      toast.error("Error adding lesson")
     }
     closeModal()
   })
@@ -72,7 +79,7 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
           }}
         >
           <option disabled selected value="" />
-          {levelsArray?.map((level: any) => (
+          {levelsArray?.map((level: Level) => (
             <option value={level.id} key={level.id}>
               {level.number}: {level.title}
             </option>
@@ -99,7 +106,7 @@ export default function AddLesson({ closeModal, levelsArray }: Props) {
             })}
           >
             <option disabled selected value="" />
-            {unitByLevelId.data?.map((unit: any) => (
+            {unitByLevelId.data?.map((unit: Unit) => (
               <option value={unit.id} key={unit.id}>
                 {unit.title}
               </option>

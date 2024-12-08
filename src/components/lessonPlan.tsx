@@ -9,16 +9,27 @@ import { Fragment } from "react"
 import dayjs from "dayjs"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 
+interface Comment {
+  id: string
+  content: string
+  createdAt: Date
+  User: {
+    id: string
+    name: string | null
+    image: string | null
+  }
+}
+
 interface Props {
   title: string
-  date: any
+  date: string
   handleDeleteModal: () => void
   handleEditModal: () => void
   handleDeleteCommentModal: () => void
-  comments: any[]
-  AddLessonPlanCommentInput: any
+  comments: Comment[]
+  AddLessonPlanCommentInput: React.ReactNode
   currentUserId: string
-  setCommentId: any
+  setCommentId: (id: string) => void
   slidesUrl?: string | null
   homeworkSent?: boolean | null
 }
@@ -104,7 +115,7 @@ export default function LessonPlan({
                 <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right rounded-md shadow-lg w-36 bg-base-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
                     <Menu.Item>
-                      {({ active }) => (
+                      {() => (
                         <div
                           onClick={handleEditModal}
                           className="flex items-center gap-0.5 hover:bg-base-200 text-base-content rounded cursor-pointer p-3"
@@ -117,7 +128,7 @@ export default function LessonPlan({
                       )}
                     </Menu.Item>
                     <Menu.Item>
-                      {({ active }) => (
+                      {() => (
                         <div
                           onClick={handleDeleteModal}
                           className="flex items-center gap-0.5 hover:bg-base-200 text-base-content rounded cursor-pointer p-3"
@@ -147,7 +158,7 @@ export default function LessonPlan({
                       View all <b className="font-bold">{comments.length}</b>{" "}
                       comments
                     </div>
-                  ) : comments.length == 1 ? (
+                  ) : comments.length === 1 ? (
                     <div>
                       View <b className="font-bold">1</b> comment
                     </div>
@@ -208,7 +219,7 @@ export default function LessonPlan({
                                   <p>{comment.content}</p>
                                 </div>
                                 <div>
-                                  {comment.User.id == currentUserId && (
+                                  {comment.User.id === currentUserId && (
                                     <Menu.Button className="invisible h-5 px-2 py-1 rounded-lg shadow cursor-pointer hover:bg-neutral-200 bg-neutral-100 group-hover:visible">
                                       <TfiMoreAlt />
                                     </Menu.Button>
@@ -226,9 +237,9 @@ export default function LessonPlan({
                                   <Menu.Items className="absolute right-0 z-10 mt-6 origin-top-right rounded-md shadow-lg w-36 bg-base-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
                                     <div className="py-2">
                                       <Menu.Item>
-                                        {({ active }) => (
+                                        {() => (
                                           <div
-                                            onClick={(id) => {
+                                            onClick={() => {
                                               setCommentId(comment.id)
                                               return handleDeleteCommentModal()
                                             }}

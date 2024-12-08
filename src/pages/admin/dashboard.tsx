@@ -1,15 +1,15 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { GetServerSidePropsContext } from "next"
 import PageHeading from "../../components/ui/pageHeading"
 import { FaChild, FaExternalLinkAlt, FaRegComment } from "react-icons/fa"
 import { trpc } from "../../utils/trpc"
-import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { HiOutlineCollection } from "react-icons/hi"
 import { IoIosPaper } from "react-icons/io"
-import { Fragment, ReactElement, useCallback, useState } from "react"
+import { Fragment, type ReactElement, useCallback, useState } from "react"
 import Divider from "@src/components/ui/Divider"
 import { Avatar, AvatarFallback, AvatarImage } from "@src/components/ui/avatar"
 import dayjs from "dayjs"
-import { RiMailSendLine } from "react-icons/ri"
 import Link from "next/link"
 import { ImCalendar } from "react-icons/im"
 import {
@@ -24,7 +24,7 @@ import { toast } from "sonner"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "admin") {
+  if (!session || session.role !== "admin") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -45,7 +45,7 @@ interface CardProps {
   color: string
 }
 
-function Card({ stat, label, icon, color }: CardProps) {
+function Card({ stat, label, icon }: CardProps) {
   return (
     <div className="flex items-center w-full gap-4 p-4 border-r border-neutral-50">
       <div className="text-5xl text-primary-50">{icon}</div>
@@ -72,7 +72,16 @@ function DateComponent({ date }: { date: string }) {
   )
 }
 
-export default function AdminDashboard({ sessionSSR }: any) {
+interface AdminDashboardProps {
+  sessionSSR: {
+    user: {
+      email: string
+    }
+    role: string
+  }
+}
+
+export default function AdminDashboard({ sessionSSR }: AdminDashboardProps) {
   const [teacherId, setTeacherId] = useState<string>("")
 
   const me = trpc.user.me.useQuery({ email: sessionSSR.user.email })
@@ -111,7 +120,7 @@ export default function AdminDashboard({ sessionSSR }: any) {
           />
         )}
 
-        {lessonPlans.data != undefined && (
+        {lessonPlans.data !== undefined && (
           <Card
             stat={lessonPlans.data}
             label="Weekly Class Total"
@@ -138,7 +147,7 @@ export default function AdminDashboard({ sessionSSR }: any) {
 
               if (teacherId) {
                 return (
-                  <TabsTrigger value={teacherId}>
+                  <TabsTrigger key={teacherId} value={teacherId}>
                     <div className="flex items-center gap-1">
                       <Avatar className="w-6 h-6">
                         <AvatarImage src={`${teacher.image}`} />
@@ -171,7 +180,11 @@ export default function AdminDashboard({ sessionSSR }: any) {
                             teacherName={lesson.User.name ?? "Teacher"}
                             comments={lesson.comments}
                             lesson={lesson}
-                            me={me.data}
+                            me={{
+                              id: me?.data?.id ?? "",
+                              name: me?.data?.name ?? "Unknown User",
+                              image: me?.data?.image ?? null,
+                            }}
                           />
                         </RecentLessonPlanCard>
                       </li>
@@ -188,7 +201,7 @@ export default function AdminDashboard({ sessionSSR }: any) {
 
             if (teacherId) {
               return (
-                <TabsContent value={teacherId}>
+                <TabsContent key={teacherId} value={teacherId}>
                   {recentLessonPlansByTeacherId.data &&
                     Object.entries(recentLessonPlansByTeacherId.data).map(
                       ([date, lessons]) => (
@@ -208,7 +221,11 @@ export default function AdminDashboard({ sessionSSR }: any) {
                                     teacherName={lesson.User.name ?? "Teacher"}
                                     comments={lesson.comments}
                                     lesson={lesson}
-                                    me={me.data}
+                                    me={{
+                                      id: me?.data?.id ?? "",
+                                      name: me?.data?.name ?? "Unknown User",
+                                      image: me?.data?.image ?? null,
+                                    }}
                                   />
                                 </RecentLessonPlanCard>
                               </li>
@@ -235,9 +252,38 @@ interface RecentLessonPlanProps {
   studentId: string
   slidesUrl: string
   teacherName: string
-  comments: any[]
-  lesson: any
-  me: any
+  comments: {
+    id: string
+    content: string
+    createdAt: Date
+    User: {
+      name: string | null
+      image: string | null
+    }
+  }[]
+  lesson: {
+    id: string
+    title: string
+    homeworkSent: boolean | null
+    User: {
+      name: string | null
+      image: string | null
+    }
+    Student: {
+      id: string
+      studentFirstName: string
+      studentLastName: string
+    }
+    slidesUrl?: string | null
+  }
+  me:
+    | {
+        id: string
+        name: string | null
+        image: string | null
+      }
+    | null
+    | undefined
 }
 
 function RecentLessonPlanComponent({
@@ -258,7 +304,6 @@ function RecentLessonPlanComponent({
 
   const toggleHomeworkSent = useCallback(async () => {
     sethmwrkSent(!hmwrkSent)
-    console.log("hmwrkSent", hmwrkSent)
     try {
       if (hmwrkSent) {
         toast.promise(
@@ -286,9 +331,9 @@ function RecentLessonPlanComponent({
         )
       }
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to toggle homework sent")
     }
-  }, [hmwrkSent])
+  }, [hmwrkSent, editLessonPlan, lesson.id])
 
   return (
     <>
@@ -433,14 +478,21 @@ function RecentLessonPlanComponent({
           <div className="h-1"></div>
           <Divider />
           <div className="h-4"></div>
-          <AddLessonPlanCommentInput currentLessonPlan={lesson} user={me} />
+          <AddLessonPlanCommentInput
+            currentLessonPlan={lesson}
+            user={{
+              id: me?.id ?? "",
+              name: me?.name ?? "Unknown User",
+              image: me?.image ?? null,
+            }}
+          />
         </Disclosure.Panel>
       </Disclosure>
     </>
   )
 }
 
-function RecentLessonPlanCard({ children }: any) {
+function RecentLessonPlanCard({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-3 bg-white shadow rounded-xl">
       <div className="pb-2">{children}</div>

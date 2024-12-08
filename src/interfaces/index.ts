@@ -35,11 +35,24 @@ export interface IStudent {
 }
 
 export interface ILessonPlan {
-  id?: string
-  date: string
+  id: string
   title: string
+  date: string
   slidesUrl: string | null
   homeworkSent: boolean | null
+  comments: {
+    id: string
+    content: string
+    createdAt: Date
+    User: {
+      id: string
+      name: string | null
+      email?: string | null
+      emailVerified?: Date | null
+      image: string | null
+      role?: string | null
+    }
+  }[]
 }
 
 export interface ILessonPlanComment {

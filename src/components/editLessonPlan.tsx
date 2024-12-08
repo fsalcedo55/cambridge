@@ -5,6 +5,7 @@ import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
 import { Fragment, useState } from "react"
 import { useSession } from "next-auth/react"
+import { toast } from "sonner"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -17,8 +18,29 @@ export type FormFields = {
   homeworkSent: boolean
 }
 
+interface LessonPlan {
+  id: string
+  title: string
+  date: string
+  slidesUrl: string | null
+  homeworkSent: boolean | null
+  comments: {
+    id: string
+    content: string
+    createdAt: Date
+    User: {
+      id: string
+      name: string | null
+      email?: string | null
+      emailVerified?: Date | null
+      image: string | null
+      role?: string | null
+    }
+  }[]
+}
+
 interface Props {
-  currentLessonPlan: any
+  currentLessonPlan: LessonPlan
   closeModal: () => void
 }
 
@@ -42,10 +64,11 @@ export default function EditLessonPlan({
         date: data.date,
         id: currentLessonPlan.id,
         slidesUrl: data.slidesUrl,
-        homeworkSent: hmwrkSent,
+        homeworkSent: hmwrkSent ?? undefined,
       })
+      toast.success("Lesson plan updated successfully")
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to update lesson plan")
     }
     closeModal()
   })
@@ -79,7 +102,7 @@ export default function EditLessonPlan({
         label="Link"
         register={register}
         errors={errors}
-        defaultValue={currentLessonPlan?.slidesUrl}
+        defaultValue={currentLessonPlan?.slidesUrl ?? undefined}
       />
 
       {session?.role === "admin" && (
@@ -90,7 +113,7 @@ export default function EditLessonPlan({
             </span>
           </Switch.Label>
           <Switch
-            defaultChecked={currentLessonPlan?.homeworkSent}
+            defaultChecked={currentLessonPlan?.homeworkSent ?? undefined}
             onChange={sethmwrkSent}
             as={Fragment}
           >

@@ -3,11 +3,10 @@ import { FormInput } from "@ui/form/form-input"
 import { ButtonLegacy } from "@ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
 import { Switch } from "@headlessui/react"
-import { Fragment, useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
+import { Fragment, useState } from "react"
 import { ErrorMessage } from "@hookform/error-message"
 import Link from "next/link"
-import { MdAddCircle } from "react-icons/md"
+import { toast } from "sonner"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -26,12 +25,46 @@ export type FormFields = {
 }
 
 interface Props {
-  currentLesson: any
+  currentLesson: {
+    data: {
+      id: string
+      title: string
+      published: boolean
+      number: number
+      photoUrl: string
+      slidesUrl: string | null
+      objective: string | null
+      Unit: {
+        id: string
+        number: number
+        title: string
+        Level: {
+          id: string
+          number: number
+          title: string
+        }
+      }
+    }
+  }
   closeModal: () => void
 }
 
+interface LevelData {
+  id: string
+  number: number
+  title: string
+  Unit: Array<{
+    id: string
+  }>
+}
+
+interface UnitData {
+  id: string
+  number: number
+  title: string
+}
+
 export default function EditLesson({ closeModal, currentLesson }: Props) {
-  const { data: session } = useSession()
   const [published, setPublished] = useState(currentLesson?.data?.published)
   const [levelIdState, setLevelIdState] = useState<string>(
     currentLesson?.data?.Unit?.Level?.id
@@ -43,17 +76,13 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
   const levels = trpc.level.getLevelsReduced.useQuery()
   const units = trpc.unit.getById.useQuery(
     { levelId: levelIdState },
-    { enabled: typeof levelIdState == "string" }
+    { enabled: typeof levelIdState === "string" }
   )
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
-  const [assignmentsArray, setAssignmentsArray] = useState([])
-  const [assignment, setAssignment] = useState("")
-
-  const [count, setCount] = useState(1)
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -67,8 +96,9 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         slidesUrl: data.slidesUrl,
         objective: data.lessonObjective,
       })
+      toast.success("Lesson updated successfully")
     } catch (error) {
-      console.log("Error editing lesson.", error)
+      toast.error("Error updating lesson")
     }
     closeModal()
   })
@@ -80,10 +110,6 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
   const selectUnit = register("unitId", {
     required: "You must enter a unit.",
   })
-
-  const handleNewAssignmentInput = () => {
-    setCount(count + 1)
-  }
 
   return (
     <form onSubmit={onSubmit}>
@@ -107,7 +133,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
             {`Level ${currentLesson?.data?.Unit?.Level?.number}: ${currentLesson?.data?.Unit?.Level?.title}`}
           </option>
 
-          {levels?.data?.map((level: any) => {
+          {levels?.data?.map((level: LevelData) => {
             if (level.Unit?.length > 0) {
               return (
                 <option value={level.id} key={level.id}>
@@ -115,6 +141,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
                 </option>
               )
             }
+            return null
           })}
         </select>
 
@@ -145,7 +172,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
             value={currentLesson.data.Unit.id}
           >{`Unit ${currentLesson?.data?.Unit?.number}: ${currentLesson?.data?.Unit?.title}`}</option>
           {units &&
-            units.data?.map((unit: any) => (
+            units.data?.map((unit: UnitData) => (
               <option value={unit.id} key={unit.id}>
                 {`Unit ${unit.number}: ${unit.title}`}
               </option>
@@ -246,7 +273,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         register={register}
         rules={{ required: "You must enter a number." }}
         errors={errors}
-        defaultValue={currentLesson?.data?.number}
+        defaultValue={String(currentLesson?.data?.number)}
       />
       <FormInput
         id="slidesUrl"
@@ -254,9 +281,9 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
         name="slidesUrl"
         label="Slides URL"
         register={register}
-        // rules={{ required: "You must enter a url." }}
+        rules={{ required: "You must enter a url." }}
         errors={errors}
-        defaultValue={currentLesson?.data?.slidesUrl}
+        defaultValue={currentLesson.data.slidesUrl ?? undefined}
       />
       <div>
         <label
@@ -271,7 +298,7 @@ export default function EditLesson({ closeModal, currentLesson }: Props) {
             // name="objective"
             id="objective"
             className="block w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-            defaultValue={currentLesson?.data?.objective}
+            defaultValue={currentLesson?.data?.objective ?? undefined}
             {...register("lessonObjective", {})}
           />
         </div>
