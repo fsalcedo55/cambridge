@@ -6,12 +6,30 @@ import { MdDescription } from "react-icons/md"
 import { BsFillCheckCircleFill } from "react-icons/bs"
 
 interface CurrentLessonProps {
-  lessonList: []
+  lessonList: Lesson[]
   admin: boolean
   unitPublished: boolean
   studentId?: string
   edit?: boolean
-  lessonCompletions?: any
+  lessonCompletions?: Record<string, boolean>
+}
+
+interface Assignment {
+  id: string
+  title: string
+  url: string
+  lessonId: string
+}
+
+interface Lesson {
+  id: string
+  number: number
+  photoUrl: string
+  title: string
+  slidesUrl: string
+  objective: string
+  assignments: Assignment[]
+  published: boolean
 }
 
 export function CurrentLesson({
@@ -29,7 +47,7 @@ export function CurrentLesson({
     lessonTitle: string
     lessonSlides: string
     lessonObjective: string
-    lessonAssignments: any
+    lessonAssignments: Assignment[]
     published: boolean
   }
 
@@ -58,7 +76,7 @@ export function CurrentLesson({
       <div className="relative z-0 flex items-center space-x-3">
         <span
           className={
-            lessonCompletions && lessonCompletions.includes(lessonId)
+            lessonCompletions && lessonCompletions[lessonId]
               ? "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100 opacity-30"
               : "inline-flex items-center justify-center w-12 h-12 p-2 text-2xl font-bold rounded-full bg-primary-800 text-primary-100"
           }
@@ -68,7 +86,7 @@ export function CurrentLesson({
         <Link href={getLinkHref()} legacyBehavior>
           <div
             className={
-              lessonCompletions && lessonCompletions.includes(lessonId)
+              lessonCompletions && lessonCompletions[lessonId]
                 ? "flex justify-between flex-1 min-w-0 space-x-4 opacity-30"
                 : "flex justify-between flex-1 min-w-0 space-x-4"
             }
@@ -116,7 +134,7 @@ export function CurrentLesson({
                     </div>
                   ) : null}
                 </div>
-                {lessonCompletions && lessonCompletions.includes(lessonId) && (
+                {lessonCompletions && lessonCompletions[lessonId] && (
                   <div className="absolute top-0 right-0 z-10 text-2xl transform translate-x-1/2 -translate-y-1/2 bg-white rounded-full opacity-100 text-primary-800">
                     <BsFillCheckCircleFill />
                   </div>
@@ -134,7 +152,7 @@ export function CurrentLesson({
       return (
         <span
           className={
-            lessonCompletions.includes(idParam)
+            lessonCompletions[idParam]
               ? "absolute top-[67px] left-6 -ml-px h-[74px] w-0.5 bg-primary-800 opacity-10"
               : "absolute top-12 left-6 -ml-px h-[92px] w-0.5 bg-primary-800"
           }
@@ -144,9 +162,9 @@ export function CurrentLesson({
     } else return ""
   }
 
-  const publishedLessons = lessonList.filter((lesson: any) => lesson.published)
-
-  const adminEditBoolean = admin !== edit
+  const publishedLessons = lessonList.filter(
+    (lesson: Lesson) => lesson.published
+  )
 
   const styles = (index: number) =>
     index !== publishedLessons.length - 1 ? "relative pb-8" : "relative pb-8"
@@ -156,7 +174,7 @@ export function CurrentLesson({
       <div className="flow-root">
         <ul role="list" className="-mb-8">
           {!admin &&
-            publishedLessons.map((lesson: any, lessonIdx: number) => (
+            publishedLessons.map((lesson: Lesson, lessonIdx: number) => (
               <li key={lesson.id}>
                 <div className={styles(lessonIdx)}>
                   {lessonIdx !== publishedLessons.length - 1
@@ -177,7 +195,7 @@ export function CurrentLesson({
             ))}
           {admin &&
             !edit &&
-            publishedLessons.map((lesson: any, lessonIdx: number) => (
+            publishedLessons.map((lesson: Lesson, lessonIdx: number) => (
               <li key={lesson.id}>
                 <div className={styles(lessonIdx)}>
                   {lessonIdx !== publishedLessons.length - 1
@@ -198,7 +216,7 @@ export function CurrentLesson({
             ))}
           {admin &&
             edit &&
-            lessonList.map((lesson: any, lessonIdx: number) => (
+            lessonList.map((lesson: Lesson, lessonIdx: number) => (
               <li key={lesson.id}>
                 <div className={styles(lessonIdx)}>
                   {lessonIdx !== lessonList.length - 1 ? (

@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { GetServerSidePropsContext } from "next"
 import { Disclosure } from "@headlessui/react"
 import AddLevel from "@src/components/admin/lessons/AddLevel"
 import AddUnit from "@src/components/admin/lessons/AddUnit"
@@ -11,15 +13,14 @@ import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri"
 import { MdError } from "react-icons/md"
 import AddLesson from "@src/components/admin/lessons/AddLesson"
 import EditLevel from "@src/components/admin/lessons/EditLevel"
-import EditUnit from "@src/components/admin/lessons/EditUnit"
+import EditUnit, { type Unit } from "@src/components/admin/lessons/EditUnit"
 import Loading from "@src/components/ui/loading"
 import { CurrentLesson } from "@src/components/curriculum/CurrentLesson"
 import { UnitPanel } from "@src/components/curriculum/UnitPanel"
 import { LevelPanel } from "@src/components/curriculum/LevelPanel"
-import { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
-import { Unit } from "@src/components/admin/lessons/EditUnit"
+import { toast } from "sonner"
 
 interface Level {
   id: string
@@ -28,9 +29,29 @@ interface Level {
   number: number
 }
 
+// Add this interface near your other interfaces
+interface CurriculumLevel extends Level {
+  Unit: {
+    id: string
+    title: string
+    photoUrl: string
+    published: boolean
+    number: number
+    Lesson: Lesson[]
+  }[]
+}
+
+// Add this interface with the others
+export interface Lesson {
+  id: string
+  title: string
+  published: boolean
+  number: number
+}
+
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "admin") {
+  if (!session || session.role !== "admin") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -69,10 +90,11 @@ export default function Curriculum() {
   const deleteLevelEvent = async () => {
     try {
       await deleteLevel.mutateAsync({
-        id: levelId!,
+        id: levelId ?? "",
       })
+      toast.success("Level deleted successfully")
     } catch (error) {
-      console.log("Error deleting level.", error)
+      toast.error("Error deleting level")
     }
     setIsOpenDeleteLevelModal(false)
     setLevelId("")
@@ -86,10 +108,11 @@ export default function Curriculum() {
   const deleteUnitEvent = async () => {
     try {
       await deleteUnit.mutateAsync({
-        id: unitId!,
+        id: unitId ?? "",
       })
+      toast.success("Unit deleted successfully")
     } catch (error) {
-      console.log("Error deleting unit.", error)
+      toast.error("Error deleting unit")
     }
     setIsOpenDeleteUnitModal(false)
     setUnitId("")
@@ -100,7 +123,15 @@ export default function Curriculum() {
     setCurrentLevel(level)
   }
 
-  const handleEditUnitModal = (unit: Unit) => {
+  const handleEditUnitModal = (unit: {
+    id: string
+    title: string
+    photoUrl: string
+    published: boolean
+    number: number
+    Lesson: Lesson[]
+    Level?: Level
+  }) => {
     setIsOpenEditUnitModal(true)
     setCurrentUnit(unit)
   }
@@ -171,16 +202,12 @@ export default function Curriculum() {
         description={
           <AddLesson
             closeModal={() => setIsOpenLessonBtn(false)}
-            levelsArray={levels.data}
+            levelsArray={levels.data ?? []}
           />
         }
       />
     </div>
   )
-
-  function classNames(...classes: any) {
-    return classes.filter(Boolean).join(" ")
-  }
 
   if (levels.isLoading) {
     return (
@@ -218,8 +245,8 @@ export default function Curriculum() {
     )
 
     const tabButton = (
-      handleOnClick: any,
-      icon: any,
+      handleOnClick: () => void,
+      icon: React.ReactNode,
       title: string,
       editButton: boolean
     ) => {
@@ -265,14 +292,17 @@ export default function Curriculum() {
     )
   }
 
-  function curriculumDisclosure(levelsArray: any, admin: boolean) {
+  function curriculumDisclosure(
+    levelsArray: CurriculumLevel[],
+    admin: boolean
+  ) {
     return (
       <nav
         className="h-full mt-3 bg-white border-8 border-white rounded-3xl"
         aria-label="Directory"
       >
         {levelsArray &&
-          levelsArray.map((level: any) => (
+          levelsArray.map((level: CurriculumLevel) => (
             <div key={level.id} className="relative bg-white">
               {
                 <LevelPanel
@@ -291,52 +321,61 @@ export default function Curriculum() {
                 />
               }
               <ul role="list" className="relative z-0">
-                {level.Unit.map((currentUnit: any) => (
-                  <li
-                    key={currentUnit.id}
-                    className="my-1 bg-white hover:bg-neutral-50 rounded-2xl"
-                  >
-                    <Disclosure>
-                      <Disclosure.Button
-                        as="div"
-                        className="flex items-center justify-between pr-6 cursor-pointer"
-                      >
-                        {
-                          <UnitPanel
-                            imageUrl={currentUnit.photoUrl}
-                            title={currentUnit.title}
-                            levelPublished={level.published}
-                            unitPublished={currentUnit.published}
-                            unitNumber={currentUnit.number}
-                            numberOfLessons={currentUnit.Lesson.length}
-                            admin={admin}
-                            edit={true}
-                          />
-                        }
-                      </Disclosure.Button>
-                      <div ref={lessonPanelRef}>
-                        <Disclosure.Panel className="px-6 pb-3 overflow-y-hidden shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500 rounded-b-2xl">
-                          <UnitCrudTabs
-                            editUnit={() => handleEditUnitModal(currentUnit)}
-                            numberOfLessons={currentUnit.Lesson.length}
-                            deleteUnitDisabled={() =>
-                              setIsOpenDisabledDeleteUnitModal(true)
-                            }
-                            deleteUnit={() =>
-                              handleDeleteUnitModal(currentUnit.id)
-                            }
-                          />
-                          <CurrentLesson
-                            lessonList={currentUnit?.Lesson}
-                            admin={admin}
-                            unitPublished={currentUnit.published}
-                            edit={true}
-                          />
-                        </Disclosure.Panel>
-                      </div>
-                    </Disclosure>
-                  </li>
-                ))}
+                {level.Unit.map(
+                  (currentUnit: {
+                    id: string
+                    title: string
+                    photoUrl: string
+                    published: boolean
+                    number: number
+                    Lesson: Lesson[]
+                  }) => (
+                    <li
+                      key={currentUnit.id}
+                      className="my-1 bg-white hover:bg-neutral-50 rounded-2xl"
+                    >
+                      <Disclosure>
+                        <Disclosure.Button
+                          as="div"
+                          className="flex items-center justify-between pr-6 cursor-pointer"
+                        >
+                          {
+                            <UnitPanel
+                              imageUrl={currentUnit.photoUrl}
+                              title={currentUnit.title}
+                              levelPublished={level.published}
+                              unitPublished={currentUnit.published}
+                              unitNumber={currentUnit.number}
+                              numberOfLessons={currentUnit.Lesson.length}
+                              admin={admin}
+                              edit={true}
+                            />
+                          }
+                        </Disclosure.Button>
+                        <div ref={lessonPanelRef}>
+                          <Disclosure.Panel className="px-6 pb-3 overflow-y-hidden shadow-inner bg-gradient-to-l from-neutral-400 to-neutral-200 text-neutral-500 rounded-b-2xl">
+                            <UnitCrudTabs
+                              editUnit={() => handleEditUnitModal(currentUnit)}
+                              numberOfLessons={currentUnit.Lesson.length}
+                              deleteUnitDisabled={() =>
+                                setIsOpenDisabledDeleteUnitModal(true)
+                              }
+                              deleteUnit={() =>
+                                handleDeleteUnitModal(currentUnit.id)
+                              }
+                            />
+                            <CurrentLesson
+                              lessonList={currentUnit?.Lesson as []}
+                              admin={admin}
+                              unitPublished={currentUnit.published}
+                              edit={true}
+                            />
+                          </Disclosure.Panel>
+                        </div>
+                      </Disclosure>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           ))}
@@ -352,7 +391,9 @@ export default function Curriculum() {
           {addLevelBtn} {addUnitBtn} {addLessonBtn}
         </div>
       </div>
-      <div className="z-50">{curriculumDisclosure(levels.data, true)}</div>
+      <div className="z-50">
+        {curriculumDisclosure(levels.data ?? [], true)}
+      </div>
       {/* <CurriculumNav
         levelsArray={levels.data}
         handleEditLevelModal={handleEditLevelModal}

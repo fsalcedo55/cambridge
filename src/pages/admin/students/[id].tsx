@@ -2,7 +2,6 @@ import { useRef, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import Image from "next/image"
-import { Disclosure, Tab } from "@headlessui/react"
 import { trpc } from "@src/utils/trpc"
 import PageHeading from "@src/components/ui/pageHeading"
 import EditLessonPlan from "@src/components/editLessonPlan"
@@ -16,21 +15,25 @@ import { HiOutlineFolderAdd } from "react-icons/hi"
 import AddLessonPlanCommentInput from "@components/addLessonPlanCommentInput"
 import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
-import { ILessonPlan } from "@src/interfaces/index"
+import { type ILessonPlan } from "@src/interfaces/index"
 import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
 import Breadcrumbs from "@src/components/ui/breadcrumbs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
 import type { User } from "@src/pages/admin/users"
-
-type Student = {
-  studentFirstName: string
-  studentLastName: string
-  userId: string
+import { toast } from "sonner"
+import { Level } from "@src/components/curriculum/curriculumDisclosure"
+type AdminStudentPageProps = {
+  sessionSSR: {
+    user: {
+      email: string
+    }
+    role: string
+  }
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
-  if (!session || session.role != "admin") {
+  if (!session || session.role !== "admin") {
     return { redirect: { destination: "/", permanent: false } }
   }
   return {
@@ -40,7 +43,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default function AdminStudentPage({ sessionSSR }: any) {
+export default function AdminStudentPage({
+  sessionSSR,
+}: AdminStudentPageProps) {
   const { data: session } = useSession()
   const router = useRouter()
   const { id, tab = "lessonPlans" } = router.query
@@ -50,21 +55,15 @@ export default function AdminStudentPage({ sessionSSR }: any) {
   const [isOpenDeleteCommentModal, setIsOpenDeleteCommentModal] =
     useState(false)
   const [commentId, setCommentId] = useState<string>()
-  const [levelIds, setLevelIds] = useState<string[]>([])
   const lessonId = useRef("")
-  const currentLessonPlan = useRef({})
+  const currentLessonPlan = useRef<ILessonPlan>({} as ILessonPlan)
   const student = trpc.student.byId.useQuery(
     {
       id: id as string,
     },
     { enabled: router.isReady }
   )
-  const levelsById = trpc.level.byId.useQuery(
-    {
-      id: levelIds,
-    },
-    { enabled: levelIds.length > 0 }
-  )
+
   const studentEntitlements = trpc.student.getEntitlementsByStudentId.useQuery(
     {
       id: id as string,
@@ -112,8 +111,9 @@ export default function AdminStudentPage({ sessionSSR }: any) {
       await deleteComment.mutateAsync({
         id: commentId,
       })
+      toast.success("Comment deleted successfully")
     } catch (error) {
-      console.log(error)
+      toast.error("Failed to delete comment")
     }
     setIsOpenDeleteCommentModal(false)
   }
@@ -129,23 +129,25 @@ export default function AdminStudentPage({ sessionSSR }: any) {
           >
             + Add Lesson Plan
           </ButtonLegacy>
-          <Modal
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            closeButton="Cancel"
-            title="Add Lesson Plan"
-            description={
-              <AddLessonPlan
-                studentId={student?.data?.id}
-                teacherId={student?.data?.teacher?.id}
-                closeModal={() => setIsOpen(false)}
-                actorId={session?.user?.email!}
-                recipientId={student?.data?.teacher?.email!}
-                studentName={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
-                actionUrl={`/teacher/students/${student?.data?.id}`}
-              />
-            }
-          />
+          {session?.user?.email && student?.data?.teacher?.email && (
+            <Modal
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              closeButton="Cancel"
+              title="Add Lesson Plan"
+              description={
+                <AddLessonPlan
+                  studentId={student?.data?.id}
+                  teacherId={student?.data?.teacher?.id}
+                  closeModal={() => setIsOpen(false)}
+                  actorId={session.user.email}
+                  recipientId={student.data.teacher.email}
+                  studentName={`${student.data?.studentFirstName} ${student.data?.studentLastName}`}
+                  actionUrl={`/teacher/students/${student?.data?.id}`}
+                />
+              }
+            />
+          )}
         </div>
       ) : (
         ""
@@ -169,11 +171,18 @@ export default function AdminStudentPage({ sessionSSR }: any) {
       <div>
         {studentEntitlements?.data && (
           <CurriculumDisclosure
-            levelsArray={studentEntitlements?.data}
+            levelsArray={studentEntitlements.data as Level[]}
             studentId={student.data?.id}
             admin={true}
             edit={false}
-            lessonCompletions={lessonCompletion.data}
+            lessonCompletions={
+              Array.isArray(lessonCompletion.data)
+                ? lessonCompletion.data.reduce((acc, lessonId) => {
+                    acc[lessonId] = true
+                    return acc
+                  }, {} as Record<string, boolean>)
+                : {}
+            }
           />
         )}
       </div>
@@ -182,7 +191,7 @@ export default function AdminStudentPage({ sessionSSR }: any) {
 
   const lessonPlans = (
     <div>
-      {student.data?.lessonPlans.length == 0 ? (
+      {student.data?.lessonPlans.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-6 shadow bg-neutral-50 h-96 rounded-xl">
           <div className="text-6xl text-base-300">
             <HiOutlineFolderAdd />
@@ -197,26 +206,28 @@ export default function AdminStudentPage({ sessionSSR }: any) {
         <div>
           <div className="flex justify-start my-3">{addLessonPlanBtn}</div>
           {student.data?.lessonPlans &&
-            student.data?.lessonPlans.map((lessonPlan, idx) => (
+            student.data?.lessonPlans.map((lessonPlan) => (
               <div key={lessonPlan.id}>
-                <LessonPlan
-                  title={lessonPlan.title}
-                  date={lessonPlan.date}
-                  slidesUrl={lessonPlan.slidesUrl}
-                  homeworkSent={lessonPlan.homeworkSent}
-                  handleDeleteModal={() => handleDeleteModal(lessonPlan.id)}
-                  handleEditModal={() => handleEditModal(lessonPlan)}
-                  handleDeleteCommentModal={handleDeleteCommentModal}
-                  comments={lessonPlan.comments}
-                  setCommentId={setCommentId}
-                  AddLessonPlanCommentInput={
-                    <AddLessonPlanCommentInput
-                      currentLessonPlan={lessonPlan}
-                      user={me.data as User}
-                    />
-                  }
-                  currentUserId={me.data?.id!}
-                />
+                {me.data?.id && (
+                  <LessonPlan
+                    title={lessonPlan.title}
+                    date={lessonPlan.date}
+                    slidesUrl={lessonPlan.slidesUrl}
+                    homeworkSent={lessonPlan.homeworkSent}
+                    handleDeleteModal={() => handleDeleteModal(lessonPlan.id)}
+                    handleEditModal={() => handleEditModal(lessonPlan)}
+                    handleDeleteCommentModal={handleDeleteCommentModal}
+                    comments={lessonPlan.comments}
+                    setCommentId={setCommentId}
+                    AddLessonPlanCommentInput={
+                      <AddLessonPlanCommentInput
+                        currentLessonPlan={lessonPlan}
+                        user={me.data as User}
+                      />
+                    }
+                    currentUserId={me.data.id}
+                  />
+                )}
                 <div className="h-12"></div>
               </div>
             ))}
@@ -224,10 +235,6 @@ export default function AdminStudentPage({ sessionSSR }: any) {
       )}
     </div>
   )
-
-  function classNames(...classes: any) {
-    return classes.filter(Boolean).join(" ")
-  }
 
   const tabsTriggerData = [
     {
@@ -350,25 +357,27 @@ export default function AdminStudentPage({ sessionSSR }: any) {
         }
       />
       {/* Delete Comment Modal */}
-      <Modal
-        isOpen={isOpenDeleteCommentModal}
-        setIsOpen={setIsOpenDeleteCommentModal}
-        loading={deleteComment.isLoading}
-        loadingLabel="Deleting Comment..."
-        btnIntent="danger"
-        currentData={commentId}
-        actionFunction={() => deleteCommentEvent(commentId!)}
-        closeButton="Cancel"
-        actionButton="Delete"
-        title="Delete Comment"
-        description={
-          <div>
-            <p className="mt-2">
-              Are you sure you want to delete this comment?
-            </p>
-          </div>
-        }
-      />
+      {commentId && (
+        <Modal
+          isOpen={isOpenDeleteCommentModal}
+          setIsOpen={setIsOpenDeleteCommentModal}
+          loading={deleteComment.isLoading}
+          loadingLabel="Deleting Comment..."
+          btnIntent="danger"
+          currentData={commentId}
+          actionFunction={() => deleteCommentEvent(commentId)}
+          closeButton="Cancel"
+          actionButton="Delete"
+          title="Delete Comment"
+          description={
+            <div>
+              <p className="mt-2">
+                Are you sure you want to delete this comment?
+              </p>
+            </div>
+          }
+        />
+      )}
     </div>
   )
 }

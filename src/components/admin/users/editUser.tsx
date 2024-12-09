@@ -1,16 +1,11 @@
 import { ButtonLegacy } from "@ui/buttonLegacy"
-import { Switch } from "@headlessui/react"
-import { useState } from "react"
+// import { Switch } from "@headlessui/react"
 import { useForm } from "react-hook-form"
-import { FormInput } from "@ui/form/form-input"
+// import { FormInput } from "@ui/form/form-input"
 import { trpc } from "@src/utils/trpc"
-import { useSession } from "next-auth/react"
-import { IUser } from "@src/interfaces"
+import { type IUser } from "@src/interfaces"
 import { capFirstLetter } from "@src/helpers/string"
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
+import { toast } from "sonner"
 
 export type FormFields = {
   id: string
@@ -23,22 +18,18 @@ interface Props {
 }
 
 export default function EditUser({ user, closeModal }: Props) {
-  const { data: session } = useSession()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormFields>()
+  const { register, handleSubmit } = useForm<FormFields>()
   const editUser = trpc.user.editUser.useMutation()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       await editUser.mutateAsync({
-        id: user?.id!,
+        id: user?.id ?? "",
         role: data.role,
       })
+      toast.success("User updated successfully")
     } catch (error) {
-      console.log(error)
+      toast.error("Error updating user")
     }
     closeModal()
   })

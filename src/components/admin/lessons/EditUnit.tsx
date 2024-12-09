@@ -6,6 +6,7 @@ import { Switch } from "@headlessui/react"
 import { Fragment, useState } from "react"
 import { ErrorMessage } from "@hookform/error-message"
 import { toast } from "sonner"
+import { type Lesson } from "@src/pages/admin/curriculum"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -30,7 +31,8 @@ export interface Unit {
   photoUrl: string
   published: boolean
   number: number
-  Level: Level
+  Lesson: Lesson[]
+  Level?: Level
 }
 
 interface Props {
@@ -77,8 +79,8 @@ export default function EditUnit({ closeModal, currentUnit, levels }: Props) {
             required: "You must enter a level.",
           })}
         >
-          <option disabled selected value={currentUnit.Level.id}>
-            {currentUnit.Level.title}
+          <option disabled selected value={currentUnit.Level?.id}>
+            {currentUnit.Level?.title}
           </option>
 
           {levels?.map((level: Level) => (

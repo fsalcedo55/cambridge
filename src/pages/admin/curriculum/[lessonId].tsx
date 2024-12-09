@@ -253,7 +253,12 @@ export default function LessonPage() {
         loadingLabel="Updating Lesson..."
         title="Edit Lesson"
         description={
-          <EditLesson currentLesson={lesson} closeModal={handleClose} />
+          lesson.data ? (
+            <EditLesson
+              currentLesson={{ data: lesson.data }}
+              closeModal={handleClose}
+            />
+          ) : null
         }
         closeButton="Cancel"
       />

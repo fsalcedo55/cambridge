@@ -1,12 +1,11 @@
-import { useState } from "react"
-import { RadioGroup } from "@headlessui/react"
-import { IoMdInformationCircleOutline } from "react-icons/io"
-import { useAutoAnimate } from "@formkit/auto-animate/react"
+// import { useState } from "react"
+// import { RadioGroup } from "@headlessui/react"
+// import { IoMdInformationCircleOutline } from "react-icons/io"
 import { useForm } from "react-hook-form"
 import { ButtonLegacy } from "@src/components/ui/buttonLegacy"
 import { trpc } from "@src/utils/trpc"
-import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
+import { toast } from "sonner"
 
 interface Props {
   studentId: string
@@ -25,11 +24,6 @@ export default function AddFeedback({
 }: Props) {
   const { data: session } = useSession()
 
-  const router = useRouter()
-  const { id } = router.query
-
-  console.log("id: ", id)
-
   const addLessonComment = trpc.lessonComment.addComment.useMutation({
     onMutate: () => {
       reset()
@@ -40,14 +34,7 @@ export default function AddFeedback({
     { enabled: !!session }
   )
 
-  console.log("me: ", me.data?.id)
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormFields>()
+  const { register, handleSubmit, reset } = useForm<FormFields>()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -58,50 +45,51 @@ export default function AddFeedback({
         lessonId: lessonId,
         studentId: studentId,
       })
+      toast.success("Feedback submitted successfully")
     } catch (error) {
-      console.error("Error adding comment.", error)
+      toast.error("Error submitting feedback")
     }
     closeModal()
   })
 
-  const metrics = [
-    {
-      id: 1,
-      label: "Attitude",
-      description:
-        "Actitud: Evaluar el entusiasmo, cooperación y persistencia del estudiante en actividades de aprendizaje.",
-    },
-    {
-      id: 2,
-      label: "Grammar",
-      description:
-        "Gramática: Evaluar la precisión y aplicación de reglas gramaticales tanto en español hablado como escrito.",
-    },
-    {
-      id: 3,
-      label: "Speaking",
-      description:
-        "Habla: Observar la fluidez, pronunciación y capacidad del estudiante para participar en conversaciones en español.",
-    },
-    {
-      id: 4,
-      label: "Reading",
-      description:
-        "Lectura: Determinar la comprensión e interpretación del estudiante de textos escritos en español.",
-    },
-    {
-      id: 5,
-      label: "Writing",
-      description:
-        "Escritura: Evaluar la coherencia, gramática y creatividad en los trabajos escritos del estudiante.",
-    },
-    {
-      id: 6,
-      label: "Vocabulary",
-      description:
-        "Vocabulario: Evaluar la amplitud y adecuación del vocabulario del estudiante en diversos contextos.",
-    },
-  ]
+  // const metrics = [
+  //   {
+  //     id: 1,
+  //     label: "Attitude",
+  //     description:
+  //       "Actitud: Evaluar el entusiasmo, cooperación y persistencia del estudiante en actividades de aprendizaje.",
+  //   },
+  //   {
+  //     id: 2,
+  //     label: "Grammar",
+  //     description:
+  //       "Gramática: Evaluar la precisión y aplicación de reglas gramaticales tanto en español hablado como escrito.",
+  //   },
+  //   {
+  //     id: 3,
+  //     label: "Speaking",
+  //     description:
+  //       "Habla: Observar la fluidez, pronunciación y capacidad del estudiante para participar en conversaciones en español.",
+  //   },
+  //   {
+  //     id: 4,
+  //     label: "Reading",
+  //     description:
+  //       "Lectura: Determinar la comprensión e interpretación del estudiante de textos escritos en español.",
+  //   },
+  //   {
+  //     id: 5,
+  //     label: "Writing",
+  //     description:
+  //       "Escritura: Evaluar la coherencia, gramática y creatividad en los trabajos escritos del estudiante.",
+  //   },
+  //   {
+  //     id: 6,
+  //     label: "Vocabulary",
+  //     description:
+  //       "Vocabulario: Evaluar la amplitud y adecuación del vocabulario del estudiante en diversos contextos.",
+  //   },
+  // ]
 
   return (
     <form onSubmit={onSubmit}>
@@ -152,79 +140,79 @@ export default function AddFeedback({
   )
 }
 
-const performanceLevels = [
-  {
-    id: 1,
-    title: "Needs Work",
-  },
-  {
-    id: 2,
-    title: "Normal",
-  },
-  {
-    id: 3,
-    title: "Great",
-  },
-]
+// const performanceLevels = [
+//   {
+//     id: 1,
+//     title: "Needs Work",
+//   },
+//   {
+//     id: 2,
+//     title: "Normal",
+//   },
+//   {
+//     id: 3,
+//     title: "Great",
+//   },
+// ]
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
+// function classNames(...classes: string[]) {
+//   return classes.filter(Boolean).join(" ")
+// }
 
-interface RadioButtonProps {
-  label: string
-  description: string
-}
+// interface RadioButtonProps {
+//   label: string
+//   description: string
+// }
 
-function RadioButton({ label, description }: RadioButtonProps) {
-  const [selectedPerformanceLevels, setSelectedPerformanceLevels] = useState(
-    performanceLevels[1]
-  )
+// function RadioButton({ label, description }: RadioButtonProps) {
+//   const [selectedPerformanceLevels, setSelectedPerformanceLevels] = useState(
+//     performanceLevels[1]
+//   )
 
-  return (
-    <RadioGroup
-      value={selectedPerformanceLevels}
-      onChange={setSelectedPerformanceLevels}
-      className="flex items-center justify-between"
-    >
-      <RadioGroup.Label className="flex items-center gap-1 text-sm font-semibold text-neutral-900">
-        {label}{" "}
-        <span title={description}>
-          <IoMdInformationCircleOutline />
-        </span>
-      </RadioGroup.Label>
+//   return (
+//     <RadioGroup
+//       value={selectedPerformanceLevels}
+//       onChange={setSelectedPerformanceLevels}
+//       className="flex items-center justify-between"
+//     >
+//       <RadioGroup.Label className="flex items-center gap-1 text-sm font-semibold text-neutral-900">
+//         {label}{" "}
+//         <span title={description}>
+//           <IoMdInformationCircleOutline />
+//         </span>
+//       </RadioGroup.Label>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3">
-        {performanceLevels.map((mailingList) => (
-          <RadioGroup.Option
-            key={mailingList.id}
-            value={mailingList}
-            className={({ checked, active }) =>
-              classNames(
-                active ? "border-primary-600" : "border-neutral-100",
-                checked ? "bg-primary-500" : "bg-white",
-                "transition-all duration-300 flex cursor-pointer border p-2 shadow first:rounded-l-full last:rounded-r-full focus:outline-none focus:z-50 focus:ring focus:ring-primary-300"
-              )
-            }
-          >
-            {({ checked, active }) => (
-              <span className="flex justify-center flex-1">
-                <span className="flex flex-col">
-                  <RadioGroup.Label
-                    as="span"
-                    className={classNames(
-                      checked ? "text-white" : "text-neutral-900 font-medium",
-                      "block text-xs"
-                    )}
-                  >
-                    {mailingList.title}
-                  </RadioGroup.Label>
-                </span>
-              </span>
-            )}
-          </RadioGroup.Option>
-        ))}
-      </div>
-    </RadioGroup>
-  )
-}
+//       <div className="grid grid-cols-1 sm:grid-cols-3">
+//         {performanceLevels.map((mailingList) => (
+//           <RadioGroup.Option
+//             key={mailingList.id}
+//             value={mailingList}
+//             className={({ checked, active }) =>
+//               classNames(
+//                 active ? "border-primary-600" : "border-neutral-100",
+//                 checked ? "bg-primary-500" : "bg-white",
+//                 "transition-all duration-300 flex cursor-pointer border p-2 shadow first:rounded-l-full last:rounded-r-full focus:outline-none focus:z-50 focus:ring focus:ring-primary-300"
+//               )
+//             }
+//           >
+//             {({ checked }) => (
+//               <span className="flex justify-center flex-1">
+//                 <span className="flex flex-col">
+//                   <RadioGroup.Label
+//                     as="span"
+//                     className={classNames(
+//                       checked ? "text-white" : "text-neutral-900 font-medium",
+//                       "block text-xs"
+//                     )}
+//                   >
+//                     {mailingList.title}
+//                   </RadioGroup.Label>
+//                 </span>
+//               </span>
+//             )}
+//           </RadioGroup.Option>
+//         ))}
+//       </div>
+//     </RadioGroup>
+//   )
+// }

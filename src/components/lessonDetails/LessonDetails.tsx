@@ -6,8 +6,32 @@ import Link from "next/link"
 import { ButtonLegacy } from "../ui/buttonLegacy"
 import { HiOutlineExternalLink } from "react-icons/hi"
 
+interface LessonData {
+  number: number
+  title: string
+  Unit: {
+    number: number
+    title: string
+    Level: {
+      number: number
+      title: string
+      id: string
+    }
+    id: string
+    published: boolean
+  }
+  id: string
+  published: boolean
+  slidesUrl: string | null
+  photoUrl: string
+  objective: string | null
+}
+
 interface LessonInfoProps {
-  lesson: any
+  lesson: {
+    data?: LessonData | null
+    isLoading?: boolean
+  }
   edit?: boolean
 }
 
@@ -15,25 +39,30 @@ export function LessonInfo({ lesson, edit }: LessonInfoProps) {
   return (
     <div className="flex justify-between flex-1 min-w-0 space-x-4">
       <div className="flex items-center gap-4">
-        <Image
-          height={138.24}
-          width={200}
-          className="rounded"
-          src={lesson.data?.photoUrl!}
-          alt=""
-        />
+        {lesson.data?.photoUrl && (
+          <Image
+            height={138.24}
+            width={200}
+            className="rounded"
+            src={lesson.data.photoUrl}
+            alt=""
+          />
+        )}
         <div className="flex items-center w-full gap-2">
           <p className="text-2xl font-bold text-neutral-900">
             {lesson.data?.title}
           </p>
           <div>
-            {lesson.data && edit && (
-              <PublishedStatus
-                published={lesson.data?.published}
-                parentPublished={lesson.data?.Unit.published}
-                draftedBy="Unit"
-              />
-            )}
+            {lesson.data &&
+              lesson.data.published &&
+              lesson.data.Unit?.published &&
+              edit && (
+                <PublishedStatus
+                  published={lesson.data.published}
+                  parentPublished={lesson.data.Unit.published}
+                  draftedBy="Unit"
+                />
+              )}
           </div>
         </div>
       </div>
@@ -41,12 +70,18 @@ export function LessonInfo({ lesson, edit }: LessonInfoProps) {
   )
 }
 
-function SlideContent({ isLoading, data }: any) {
+function SlideContent({
+  isLoading,
+  data,
+}: {
+  isLoading: boolean | undefined
+  data: LessonData | null | undefined
+}) {
   if (isLoading) return <Loading />
   if (data?.slidesUrl) {
     return (
       <iframe
-        src={`${data?.slidesUrl}/embed?start=false&loop=false&delayms=60000`}
+        src={`${data.slidesUrl}/embed?start=false&loop=false&delayms=60000`}
         width="480"
         height="299"
         allowFullScreen={true}
@@ -65,7 +100,10 @@ function SlideContent({ isLoading, data }: any) {
 }
 
 interface SlideComponentProps {
-  lesson: any
+  lesson: {
+    data?: LessonData | null
+    isLoading?: boolean
+  }
   admin?: boolean
 }
 
@@ -76,7 +114,7 @@ export function SlideComponent({ lesson, admin }: SlideComponentProps) {
         <div className="text-xl font-bold">Slides</div>
         {admin && lesson.data?.slidesUrl && (
           <Link
-            href={lesson.data?.slidesUrl!}
+            href={lesson.data.slidesUrl}
             target="_blank"
             rel="noopener noreferrer"
           >

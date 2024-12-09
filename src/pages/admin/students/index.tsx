@@ -311,29 +311,31 @@ export default function Students() {
                 </ButtonLegacy>
               </div>
               {/* Delete Modal */}
-              <Modal
-                isOpen={isOpenDeleteModal}
-                setIsOpen={setIsOpenDeleteModal}
-                loading={deleteStudent.isLoading}
-                currentData={currentStudent}
-                actionFunction={() => handleDelete(currentStudent!)}
-                closeButton="Cancel"
-                actionButton="Delete"
-                actionButtonLoading="Deleting"
-                btnIntent="danger"
-                title={`Delete ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
-                loadingLabel="Deleting..."
-                description={
-                  <div>
-                    <p>This will permanently delete this student</p>
-                    <p className="mt-2 mb-3">
-                      Are you sure you want to delete this student? All of the
-                      data will be permanently removed. This action cannot be
-                      undone.
-                    </p>
-                  </div>
-                }
-              />
+              {currentStudent && (
+                <Modal
+                  isOpen={isOpenDeleteModal}
+                  setIsOpen={setIsOpenDeleteModal}
+                  loading={deleteStudent.isLoading}
+                  currentData={currentStudent}
+                  actionFunction={() => handleDelete(currentStudent)}
+                  closeButton="Cancel"
+                  actionButton="Delete"
+                  actionButtonLoading="Deleting"
+                  btnIntent="danger"
+                  title={`Delete ${currentStudent?.studentFirstName} ${currentStudent?.studentLastName}`}
+                  loadingLabel="Deleting..."
+                  description={
+                    <div>
+                      <p>This will permanently delete this student</p>
+                      <p className="mt-2 mb-3">
+                        Are you sure you want to delete this student? All of the
+                        data will be permanently removed. This action cannot be
+                        undone.
+                      </p>
+                    </div>
+                  }
+                />
+              )}
 
               {/* Add Student Modal */}
               <Modal

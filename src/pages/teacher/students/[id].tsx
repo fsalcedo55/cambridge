@@ -5,7 +5,9 @@ import { getAuthSession } from "@src/server/common/get-server-session"
 import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
 import LessonPlans from "@src/components/teacher/students/LessonPlans"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
-import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
+import CurriculumDisclosure, {
+  Level,
+} from "@src/components/curriculum/curriculumDisclosure"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getAuthSession(ctx)
@@ -120,10 +122,17 @@ export default function TeacherStudentPage({
             <div>
               {studentEntitlements?.data && (
                 <CurriculumDisclosure
-                  levelsArray={studentEntitlements?.data}
+                  levelsArray={studentEntitlements?.data as Level[]}
                   studentId={student.data?.id}
                   admin={false}
-                  lessonCompletions={lessonCompletion.data}
+                  lessonCompletions={
+                    Array.isArray(lessonCompletion.data)
+                      ? lessonCompletion.data.reduce((acc, lessonId) => {
+                          acc[lessonId] = true
+                          return acc
+                        }, {} as Record<string, boolean>)
+                      : {}
+                  }
                 />
               )}
             </div>

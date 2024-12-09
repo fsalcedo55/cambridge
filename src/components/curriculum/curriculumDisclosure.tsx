@@ -7,12 +7,45 @@ import { AnimatePresence, motion, useIsPresent } from "framer-motion"
 import { Progress } from "../ui/progress"
 import { trpc } from "@src/utils/trpc"
 
+interface Lesson {
+  id: string
+  number: number
+  photoUrl: string
+  title: string
+  slidesUrl: string
+  objective: string
+  assignments: {
+    id: string
+    title: string
+    url: string
+    lessonId: string
+  }[]
+  published: boolean
+}
+
+interface Unit {
+  id: string
+  photoUrl: string
+  title: string
+  published: boolean
+  number: number
+  Lesson: Lesson[]
+}
+
+export interface Level {
+  id: string
+  number: number
+  title: string
+  published: boolean
+  Unit: Unit[]
+}
+
 interface CurriculumDisclosureProps {
-  levelsArray: any
+  levelsArray: Level[]
   admin: boolean
   studentId?: string
   edit?: boolean
-  lessonCompletions: any
+  lessonCompletions: Record<string, boolean>
 }
 
 const CurriculumDisclosure = memo(
@@ -23,7 +56,6 @@ const CurriculumDisclosure = memo(
     edit,
     lessonCompletions,
   }: CurriculumDisclosureProps) => {
-    console.log("curriculumDisclosure rendered....")
     interface unitMapProps {
       unitPhoto: string
       unitTitle: string
@@ -31,7 +63,7 @@ const CurriculumDisclosure = memo(
       unitNumber: number
       unitNumberOfLessons: number
       levelPublished: boolean
-      currentLessonList: any
+      currentLessonList: Lesson[]
       isSelected: boolean
       unitId: string
     }
@@ -44,13 +76,12 @@ const CurriculumDisclosure = memo(
       unitNumberOfLessons,
       levelPublished,
       currentLessonList,
-      isSelected,
       unitId,
     }: unitMapProps) {
       const router = useRouter()
       const isPresent = useIsPresent()
-      const numOfLessonsCompleted: any =
-        trpc.unit.getCompletedLessonsPerUnit.useQuery(
+      const numOfLessonsCompleted =
+        trpc.unit.getCompletedLessonsPerUnit.useQuery<number>(
           {
             unitId,
             studentId: router.query.id as string,
@@ -78,10 +109,10 @@ const CurriculumDisclosure = memo(
         router.push(newUrl, undefined, { scroll: false, shallow: true })
       }
 
-      const isOpen = router.query.unit == unitId
+      const isOpen = router.query.unit === unitId
 
       function percentage(completed: number, totalLessons: number) {
-        if (totalLessons == 0) return 0
+        if (totalLessons === 0) return 0
 
         const divided = completed / totalLessons
         return divided * 100
@@ -113,7 +144,7 @@ const CurriculumDisclosure = memo(
             <div className="w-60">
               <Progress
                 value={
-                  numOfLessonsCompleted.data != undefined
+                  numOfLessonsCompleted.data !== undefined
                     ? percentage(
                         numOfLessonsCompleted.data,
                         unitNumberOfLessons
@@ -123,7 +154,7 @@ const CurriculumDisclosure = memo(
               />
               <div className="flex justify-between py-1">
                 <div className="font-bold text-neutral-500">
-                  {numOfLessonsCompleted.data != undefined
+                  {numOfLessonsCompleted.data !== undefined
                     ? percentage(
                         numOfLessonsCompleted.data,
                         unitNumberOfLessons
@@ -169,8 +200,8 @@ const CurriculumDisclosure = memo(
       levelTitle: string
       levelPublished: boolean
       numberOfUnits: number
-      publishedUnitsArray: []
-      unitsArray: []
+      publishedUnitsArray: Unit[]
+      unitsArray: Unit[]
     }
 
     function LevelMap({
@@ -182,7 +213,7 @@ const CurriculumDisclosure = memo(
       publishedUnitsArray,
       unitsArray,
     }: LevelMapProps) {
-      const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null)
+      const [selectedUnitId] = useState<string | null>(null)
 
       return (
         <div key={levelId} className="relative bg-white">
@@ -199,9 +230,9 @@ const CurriculumDisclosure = memo(
           </div>
           <ul role="list" className="relative z-0">
             {!admin &&
-              publishedUnitsArray.map((currentUnit: any) => {
+              publishedUnitsArray.map((currentUnit: Unit) => {
                 const publishedLessons = currentUnit.Lesson.filter(
-                  (item: any) => item.published
+                  (item: Lesson) => item.published
                 )
                 return (
                   <div key={currentUnit.id}>
@@ -221,9 +252,9 @@ const CurriculumDisclosure = memo(
               })}
             {admin &&
               !edit &&
-              publishedUnitsArray.map((currentUnit: any) => {
+              publishedUnitsArray.map((currentUnit: Unit) => {
                 const publishedLessons = currentUnit.Lesson.filter(
-                  (item: any) => item.published
+                  (item: Lesson) => item.published
                 )
                 return (
                   <div key={currentUnit.id}>
@@ -243,10 +274,7 @@ const CurriculumDisclosure = memo(
               })}
             {admin &&
               edit &&
-              unitsArray?.map((currentUnit: any) => {
-                const publishedLessons = currentUnit.Lesson.filter(
-                  (item: any) => item.published
-                )
+              unitsArray?.map((currentUnit: Unit) => {
                 return (
                   <div key={currentUnit.id}>
                     <UnitMap
@@ -268,7 +296,10 @@ const CurriculumDisclosure = memo(
       )
     }
 
-    const publishedLevels = levelsArray.filter((level: any) => level.published)
+    const publishedLevels =
+      levelsArray?.filter(
+        (level): level is Level => level !== null && level.published
+      ) ?? []
 
     return (
       <nav
@@ -277,9 +308,9 @@ const CurriculumDisclosure = memo(
       >
         {!admin &&
           levelsArray &&
-          publishedLevels.map((level: any) => {
+          publishedLevels.map((level: Level) => {
             const publishedUnits = level.Unit.filter(
-              (uniqueUnit: any) => uniqueUnit.published
+              (uniqueUnit: Unit) => uniqueUnit.published
             )
             return (
               <div key={level.id}>
@@ -297,9 +328,9 @@ const CurriculumDisclosure = memo(
           })}
         {admin &&
           levelsArray &&
-          publishedLevels.map((level: any) => {
+          publishedLevels.map((level: Level) => {
             const publishedUnits = level.Unit.filter(
-              (uniqueUnit: any) => uniqueUnit.published
+              (uniqueUnit: Unit) => uniqueUnit.published
             )
             return (
               <div key={level.id}>
@@ -319,5 +350,7 @@ const CurriculumDisclosure = memo(
     )
   }
 )
+
+CurriculumDisclosure.displayName = "CurriculumDisclosure"
 
 export default CurriculumDisclosure
