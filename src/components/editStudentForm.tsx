@@ -52,11 +52,8 @@ export default function EditStudentForm({
   function getExistingLevelIds() {
     const newArray: string[] = []
     currentStudent.entitlements.forEach((entitlement) => {
-      if (
-        entitlement.Level &&
-        !newArray.includes(entitlement.Level.number.toString())
-      ) {
-        newArray.push(entitlement.Level.number.toString())
+      if (entitlement.Level && !newArray.includes(entitlement.Level.id)) {
+        newArray.push(entitlement.Level.id)
       }
     })
     return newArray
@@ -175,13 +172,8 @@ export default function EditStudentForm({
                     aria-describedby={`${level.id}-description`}
                     name="level"
                     type="checkbox"
-                    value={
-                      getExistingLevelIds().length > 0 && levelId.length === 0
-                        ? getExistingLevelIds()
-                        : levelId
-                    }
+                    checked={levelId.includes(level.id)}
                     onChange={() => handleCheckboxChange(level.id)}
-                    defaultChecked={getExistingLevelIds().includes(level.id)}
                     className="w-4 h-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
                   />
                 </div>
