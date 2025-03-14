@@ -16,12 +16,14 @@ import AddLessonPlanCommentInput from "@components/addLessonPlanCommentInput"
 import type { GetServerSidePropsContext } from "next"
 import { getAuthSession } from "@src/server/common/get-server-session"
 import { type ILessonPlan } from "@src/interfaces/index"
-import CurriculumDisclosure from "@src/components/curriculum/curriculumDisclosure"
+import CurriculumDisclosure, {
+  type Level,
+} from "@src/components/curriculum/curriculumDisclosure"
 import Breadcrumbs from "@src/components/ui/breadcrumbs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
 import type { User } from "@src/pages/admin/users"
 import { toast } from "sonner"
-import { Level } from "@src/components/curriculum/curriculumDisclosure"
+
 type AdminStudentPageProps = {
   sessionSSR: {
     user: {

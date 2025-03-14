@@ -13,7 +13,7 @@ import { Toaster } from "sonner"
 
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
-  Component: NextComponentType & { auth?: boolean } // add auth type
+  Component: NextComponentType & { auth?: boolean; onboarding?: boolean } // add auth type
 }
 
 const MyApp: AppType<{ session: Session }> = ({
@@ -24,16 +24,61 @@ const MyApp: AppType<{ session: Session }> = ({
     <SessionProvider session={session}>
       <NextNProgress height={7} showOnShallow={false} />
       {Component.auth ? (
-        <Layout>
+        Component.onboarding ? (
+          // Onboarding layout - just the bare page without nav/sidebar
           <Component {...pageProps} />
-        </Layout>
+        ) : (
+          // Regular authenticated layout
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        )
       ) : (
+        // Non-authenticated pages
         <Component {...pageProps} />
       )}
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       <Toaster />
     </SessionProvider>
   )
+
+  // return (
+  //   <SessionProvider session={session}>
+  //     <NextNProgress height={7} showOnShallow={false} />
+
+  //     {Component.auth ? (
+  //       <Layout>
+  //         <Component {...pageProps} />
+  //       </Layout>
+  //     ) : (
+  //       <Component {...pageProps} />
+  //     )}
+  //     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+  //     <Toaster />
+  //   </SessionProvider>
+  // )
 }
+
+// function MylApp({ Component, pageProps }: CustomAppProps) {
+//   // Check if the page is using auth
+//   if (Component.auth) {
+//     // If it's onboarding, use a different layout
+//     if (Component.onboarding) {
+//       return (
+//         // Your onboarding layout here - maybe just the bare page without nav/sidebar
+//         <Component {...pageProps} />
+//       )
+//     }
+
+//     // Your regular authenticated layout
+//     return (
+//       <Layout>
+//         <Component {...pageProps} />
+//       </Layout>
+//     )
+//   }
+
+//   // Non-authenticated pages
+//   return <Component {...pageProps} />
+// }
 
 export default trpc.withTRPC(MyApp)
