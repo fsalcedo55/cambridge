@@ -1,6 +1,6 @@
 import React from "react"
 import { render, screen } from "@testing-library/react"
-import StudentPageHeader from "../StudentPageHeader"
+import StudentPageHeader from "./StudentPageHeader"
 import { useRouter } from "next/router"
 import { describe, it, expect, beforeEach, vi, type MockInstance } from "vitest"
 

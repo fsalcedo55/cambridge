@@ -6,7 +6,7 @@ import PageHeadingWithBreadcrumb from "@ui/pageHeadingWithBreadcrumb"
 import LessonPlans from "@src/components/teacher/students/LessonPlans"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
 import CurriculumDisclosure, {
-  Level,
+  type Level,
 } from "@src/components/curriculum/curriculumDisclosure"
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {

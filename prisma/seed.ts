@@ -172,7 +172,7 @@ async function main() {
   await Promise.all(
     students.map(async (student) => {
       await Promise.all(
-        lessons.map(async (lesson) => {
+        lessons.map(async () => {
           await db.lessonPlan.create({
             data: {
               title: `${student.studentFirstName}'s Lesson Plan`,
@@ -197,6 +197,7 @@ async function main() {
     })
   )
 
+  // eslint-disable-next-line no-console
   console.log({
     teachers,
     parents,

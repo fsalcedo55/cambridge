@@ -2,7 +2,7 @@ import React from "react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import AddStudent from "../addStudent"
+import AddStudent from "./addStudent"
 
 // Mock the trpc hook
 vi.mock("@src/utils/trpc", () => ({
