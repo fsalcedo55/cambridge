@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "verify-deps": "node scripts/verify-deps.js",
+    "prebuild": "npm run verify-deps",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
