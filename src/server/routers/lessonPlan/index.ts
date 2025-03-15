@@ -1,6 +1,8 @@
 import { router, protectedProcedure, adminProcedure } from "../../trpc"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
+import { sendLessonPlanNotificationEmail } from "../../../utils/email"
+import { logger } from "../../../utils/logger"
 
 const prisma = new PrismaClient()
 
@@ -17,9 +19,55 @@ export const lessonPlanRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      // Create the lesson plan
       const lessonPlan = await prisma.lessonPlan.create({
         data: input,
+        include: {
+          User: {
+            select: {
+              name: true,
+            },
+          },
+          Student: {
+            select: {
+              id: true,
+              studentFirstName: true,
+              studentLastName: true,
+            },
+          },
+        },
       })
+
+      // Send email notification to admin
+      try {
+        // Only proceed if we have the teacher and student information
+        if (lessonPlan.User && lessonPlan.Student) {
+          const teacherName = lessonPlan.User.name || 'Unknown Teacher';
+          const studentName = `${lessonPlan.Student.studentFirstName} ${lessonPlan.Student.studentLastName}`;
+          
+          await sendLessonPlanNotificationEmail({
+            teacherName,
+            lessonPlanTitle: lessonPlan.title,
+            lessonPlanId: lessonPlan.id,
+            studentId: lessonPlan.Student.id,
+            studentName,
+            lessonDate: lessonPlan.date,
+            slidesUrl: lessonPlan.slidesUrl,
+          });
+        } else {
+          logger.warn('Missing teacher or student information for email notification', { 
+            lessonPlanId: lessonPlan.id, 
+            userId: input.userId, 
+            studentId: input.studentId 
+          });
+        }
+      } catch (error) {
+        // Log the error but don't fail the mutation
+        logger.error('Failed to send lesson plan notification email', { 
+          error, 
+          lessonPlanId: lessonPlan.id 
+        });
+      }
 
       return lessonPlan
     }),
