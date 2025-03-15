@@ -30,14 +30,14 @@ export const authOptions: NextAuthOptions = {
     }),
     EmailProvider({
       server: {
-        host: process.env.EMAIL_SERVER_HOST as string,
-        port: process.env.EMAIL_SERVER_PORT as string,
+        host: process.env.EMAIL_SERVER_HOST || "smtp.resend.com",
+        port: Number(process.env.EMAIL_SERVER_PORT) || 465,
         auth: {
-          user: process.env.EMAIL_SERVER_USER as string,
-          pass: process.env.EMAIL_SERVER_PASSWORD as string,
+          user: process.env.EMAIL_SERVER_USER || "resend",
+          pass: process.env.RESEND_API_KEY || process.env.EMAIL_SERVER_PASSWORD,
         },
       },
-      from: process.env.EMAIL_FROM as string,
+      from: process.env.EMAIL_FROM || "noreply@spanishforuskids.com",
     }),
   ],
   theme: {
@@ -46,6 +46,11 @@ export const authOptions: NextAuthOptions = {
     brandColor: "#0175BC",
     buttonText: "#FFFFFF",
   },
+  // Removing custom pages to use default NextAuth pages
+  // pages: {
+  //   signIn: "/api/auth/signin",
+  //   error: "/api/auth/error",
+  // },
   callbacks: {
     async signIn({ user }) {
       // Ensure email is not null before proceeding
